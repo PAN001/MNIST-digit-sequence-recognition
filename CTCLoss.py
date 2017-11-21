@@ -61,7 +61,7 @@ class CTCLoss(torch.autograd.Function):
             alphas[1, 0] = params[seq[0], 0]
             c = np.sum(alphas[:, 0])
 
-            # print "c: ", c
+            print "c: ", c
             # print "alphas: ", alphas
 
             alphas[:, 0] = alphas[:, 0] / c
