@@ -39,7 +39,6 @@ cuda = args.cuda
 def train(input, target):
     net.reset_hidden()
     opt.zero_grad()
-    loss = 0
 
     # # splice
     # cnt = 0
@@ -51,9 +50,9 @@ def train(input, target):
     #     outs.append(out.numpy())
     #     cnt + window_size
 
-    out = net(input[0:batch_size]) # D(out) = (batch_size * seq_len, classes)
+    out = net(input) # D(out) = (batch_size * seq_len, classes)
     out = out.view(batch_size, -1, classes) # D(out) = (batch_size, seq_len, classes)
-    loss = criterion(out, target[0:batch_size])
+    loss = criterion(out, target)
 
     # plt.title(str(predictions[0]))
     # plt.imshow(dataset_data[0], cmap='gray')

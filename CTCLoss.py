@@ -100,6 +100,7 @@ class CTCLoss(torch.autograd.Function):
 
                 for s in xrange(end - 1, -1, -1):
                     l = (s - 1) / 2
+
                     if s % 2 == 0:  # blank
                         if s == L - 1:
                             betas[s, t] = betas[s, t + 1] * params[self.blank, t]
@@ -110,10 +111,10 @@ class CTCLoss(torch.autograd.Function):
                     else:
                         betas[s, t] = (betas[s, t + 1] + betas[s + 1, t + 1] + betas[s + 2, t + 1]) * params[seq[l], t]
 
-            # normalize at current time (prevent underflow)
-            c = np.sum(betas[start:end, t])
-            betas[start:end, t] = betas[start:end, t] / c
-            llBackward += np.log(c)
+                # normalize at current time (prevent underflow)
+                c = np.sum(betas[start:end, t])
+                betas[start:end, t] = betas[start:end, t] / c
+                llBackward += np.log(c)
 
             # add to the list
             alphases.append(alphas)
