@@ -72,7 +72,7 @@ def train(input, target):
     loss.backward()
     opt.step()
 
-net = Net(batch_size)
+net = Net(cuda, batch_size)
 opt = torch.optim.Adam(net.parameters(), lr = lr)
 # opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
 criterion = CTCLoss()

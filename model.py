@@ -10,12 +10,12 @@ import argparse
 
 class Net(nn.Module):
 
-    def __init__(self, batch_size):
+    def __init__(self, use_cuda, batch_size):
         super(Net, self).__init__()
 
         self.classes = 10 + 1
         self.batch_size = batch_size
-        self.use_cuda = False
+        self.use_cuda = use_cuda
         self.image_H = 32
 
         # CNN
@@ -50,18 +50,18 @@ class Net(nn.Module):
     def forward(self, x):
         out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
         out = F.relu(out)
-        # out = self.pool(out)
-        print "D(out) = (batch_size, cnn_output_chanel, H, W): ", out.size()
+
+        # print "D(out) = (batch_size, cnn_output_chanel, H, W): ", out.size()
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
         out.contiguous()
         out = out.view(self.batch_size, -1, self.lstm_input_size) # D(out) = (batch_size, seq_len, lstm_input_size) where seq_len = W, lstm_input_size = H * cnn_output_chanel
-        print "D(out) = (batch_size, seq_len, lstm_input_size): ", out.size()
+        # print "D(out) = (batch_size, seq_len, lstm_input_size): ", out.size()
         out, self.lstm_hidden = self.lstm(out, (self.lstm_hidden, self.lstm_cell)) # D(out) = (batch_size, seq_len, hidden_size)
-        print "D(out) = (batch_size, seq_len, hidden_size): ", out.size()
-        # out = out.permute(2,0,1) # D(out) = (hidden_size, batch_size, seq_len)
+        # print "D(out) = (batch_size, seq_len, hidden_size): ", out.size()
+
         out.contiguous()
         out = out.view(-1, self.lstm_hidden_size) # D(out) = (batch_size * seq_len, hidden_size)
-        print "D(out) = (batch_size * seq_len, hidden_size): ", out.size()
+        # print "D(out) = (batch_size * seq_len, hidden_size): ", out.size()
         out = self.mlp(out) # D(out) = (batch_size * seq_len, classes)
         out = self.softmax(out)
         return out
