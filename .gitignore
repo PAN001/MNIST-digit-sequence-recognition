@@ -4,3 +4,4 @@ MNIST/*
 dataset/*
 images/*
 handwrittenDigitSequenceRec/*
+*.pyc
