@@ -8,24 +8,20 @@ import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-# argparser = argparse.ArgumentParser()
-# argparser.add_argument('file', type=str)
-# argparser.add_argument('--lr', type=float, default=0.01)
-# argparser.add_argument('--epochs', type=int, default=2000)
-# argparser.add_argument('--window_size', type=int, default=int(2000/20))
-# argparser.add_argument('--batch_size', type=int, default=100*20)
-# argparser.add_argument('--cuda', type=bool, default=True)
-# args = argparser.parse_args()
-# args.cuda = False
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--lr', type=float, default=0.01)
+argparser.add_argument('--epochs', type=int, default=2000)
+argparser.add_argument('--batch_size', type=int, default=100*20)
+argparser.add_argument('--cuda', type=bool, default=False)
+args = argparser.parse_args()
+args.cuda = False
 
-batch_size = 100
-lr = 0.01
-epochs = 100
-input_length = 50
+batch_size = args.batch_size
+lr = args.lr
+epochs = args.epochs
 classes = 10 + 1
-cuda = False
-seq_length = 20
-#
+cuda = args.cuda
+
 # def random_training_set():
 #     input = torch.LongTensor(batch_size, chunk_size)
 #     target = torch.LongTensor(batch_size, chunk_size)
@@ -55,26 +51,34 @@ def train(input, target):
     #     outs.append(out.numpy())
     #     cnt + window_size
 
-    out = net(input) # D(out) = (batch_size * seq_len, classes)
+    out = net(input[0:batch_size]) # D(out) = (batch_size * seq_len, classes)
     out = out.view(batch_size, -1, classes) # D(out) = (batch_size, seq_len, classes)
-    loss = criterion(out, target)
-    predictions = criterion.decode_best_path(out)
+    loss = criterion(out, target[0:batch_size])
 
     # plt.title(str(predictions[0]))
     # plt.imshow(dataset_data[0], cmap='gray')
     # plt.show()
 
     print "loss: ", loss
-    print "predictions[0]: ", predictions[0]
+
+    predictions = criterion.decode_best_path(out)
+    print "best_path_predictions[0]: ", predictions[0]
+
+    pred_0, score_0 = criterion.decode_beam(out.data.numpy()[0])
+    print "beam_predictions[0]: ", pred_0
+
+    print "label[0]: ", target.data.numpy()[0]
+
     loss.backward()
     opt.step()
 
 net = Net(batch_size)
 opt = torch.optim.Adam(net.parameters(), lr = lr)
+# opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
 criterion = CTCLoss()
 
-dataset_data = np.load("./dataset/data_20.npy")
-dataset_labels = np.load("./dataset/labels_20.npy")
+dataset_data = np.load("./dataset/data_5_10000.npy")
+dataset_labels = np.load("./dataset/labels_5_10000.npy")
 dataset_labels = dataset_labels.astype(int)
 
 data = torch.Tensor(dataset_data)
@@ -85,6 +89,8 @@ labels = torch.IntTensor(dataset_labels)
 labels = Variable(labels.cuda()) if cuda else Variable(labels)
 
 for i in tqdm(range(epochs)):
-    print i
-    train(data, labels)
+    print ""
+    data_batch = data[i * batch_size: (i+1) * batch_size]
+    labels_batch = labels[i * batch_size: (i+1) * batch_size]
+    train(data_batch, labels_batch)
 

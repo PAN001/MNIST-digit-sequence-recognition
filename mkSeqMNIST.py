@@ -8,8 +8,8 @@ from PIL import Image
 import os
 from matplotlib import pyplot as plt
 
-N = 20
-M = 100
+N = 5
+M = 10000
 space = 200
 overlap = 15
 
@@ -59,5 +59,5 @@ for i in range(M):
 dataset_data = np.array(images)
 
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-np.save("./dataset/data_20", dataset_data)
-np.save("./dataset/labels_20", dataset_labels)
+np.save("./dataset/data_5_10000", dataset_data)
+np.save("./dataset/labels_5_10000", dataset_labels)

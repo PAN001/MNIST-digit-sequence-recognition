@@ -29,9 +29,6 @@ class CTCLoss(torch.autograd.Function):
         Returns objective and gradient.
         """
 
-        print "type: ", type(input)
-        print type(seqs)
-
         self.blank = 10
 
         input_np = input.numpy()
@@ -49,7 +46,6 @@ class CTCLoss(torch.autograd.Function):
         sum = 0.0
 
         for i in range(0, input.shape[0]):
-            print i
             params = input_np[i]
             seq = seqs_np[i]
 
@@ -200,16 +196,16 @@ class CTCLoss(torch.autograd.Function):
             grads.append(grad)
 
         # print grads
-        print "grads: ", grads
+        # print "grads: ", grads
         return torch.FloatTensor(grads), None
 
-    def decode_best_path(self, input, blank=10):
+    def decode_best_path(self, input):
         """
         Computes best path given sequence of probability distributions per frame.
         Simply chooses most likely label at each timestep then collapses result to
         remove blanks and repeats.
 
-        input: A tensor with dimenssion D = (batch_size, seq_len, classes)
+        input: A tensor of probabilities with dimenssion D = (batch_size, seq_len, classes)
 
         Returns hypothesis transcription
         """
@@ -228,7 +224,7 @@ class CTCLoss(torch.autograd.Function):
             hyp = []
             for i, b in enumerate(best_path):
                 # ignore blanks
-                if b == blank:
+                if b == self.blank:
                     continue
                 # ignore repeats
                 elif i != 0 and b == best_path[i - 1]:
@@ -255,18 +251,22 @@ class CTCLoss(torch.autograd.Function):
                            for a in args))
         return a_max + lsp
 
-    def decode_beam(self, probs, beam_size=100, blank=10):
+    def decode_beam(self, probs, beam_size=100):
         """
         Performs inference for the given output probabilities.
 
         Arguments:
-            probs: The output probabilities (e.g. post-softmax) for each
+            probs (D = (seq_len, clases)): The output probabilities (e.g. post-softmax) for each
               time step. Should be an array of shape (time x output dim).
+
             beam_size (int): Size of the beam to use during inference.
+
             blank (int): Index of the CTC blank label.
         Returns the output label sequence and the corresponding negative
         log-likelihood estimated by the decoder.
         """
+        probs = probs.transpose(0, 1) # D = (classes, seq_len)
+
         T, S = probs.shape
         probs = np.log(probs)
 
@@ -291,7 +291,7 @@ class CTCLoss(torch.autograd.Function):
 
                     # If we propose a blank the prefix doesn't change.
                     # Only the probability of ending in blank gets updated.
-                    if s == blank:
+                    if s == self.blank:
                         n_p_b, n_p_nb = next_beam[prefix]
                         n_p_b = self.logsumexp(n_p_b, p_b + p, p_nb + p)
                         next_beam[prefix] = (n_p_b, n_p_nb)
@@ -385,4 +385,5 @@ class CTCLoss(torch.autograd.Function):
 #
 # criterion = CTCLoss()
 # labels, score = criterion.decode_beam(probs)
+# print labels
 # print("Score {:.3f}".format(score))
