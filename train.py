@@ -38,6 +38,7 @@ cuda = args.cuda
 
 def train(input, target):
     net.reset_hidden()
+    net.reset_cell()
     opt.zero_grad()
 
     # # splice
