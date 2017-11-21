@@ -61,12 +61,16 @@ def train(input, target):
     print "loss: ", loss
 
     predictions = criterion.decode_best_path(out)
-    print "best_path_predictions[0]: ", predictions[0]
+    # print "best_path_predictions[0]: ", predictions[0]
+    print "best_path_predictions: "
+    print predictions
 
     # pred_0, score_0 = criterion.decode_beam(out.data.numpy()[0])
     # print "beam_predictions[0]: ", pred_0
 
-    print "label[0]: ", target.data.numpy()[0]
+    # print "label[0]: ", target.data.numpy()[0]
+    print "label:"
+    print target.data.numpy()
 
     loss.backward()
     opt.step()

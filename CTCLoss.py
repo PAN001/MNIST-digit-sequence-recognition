@@ -166,7 +166,7 @@ class CTCLoss(torch.autograd.Function):
             # compute gradient of the loss function with respect to unnormalized input parameters
             grad = np.zeros(params.shape)
             ab = alphas * betas
-            for s in xrange(L):
+            for s in xrange(L): #
                 if s % 2 == 0:  # blank
                     grad[self.blank, :] += ab[s, :]
                     ab[s, :] = ab[s, :] / params[self.blank, :]
