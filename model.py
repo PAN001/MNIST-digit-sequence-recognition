@@ -52,9 +52,9 @@ class Net(nn.Module):
         self.reset_hidden()
         self.reset_cell()
         self.lstm = nn.LSTM(self.lstm_input_size, self.lstm_hidden_size, self.lstm_num_layers, batch_first = True)
-        # initialization
-        init.xavier_uniform(self.lstm.weight, gain=np.sqrt(2))
-        init.constant(self.lstm.bias, 0.1)
+        # # initialization
+        # init.xavier_uniform(self.lstm.weights, gain=np.sqrt(2))
+        # init.constant(self.lstm.bias, 0.1)
 
         # MLP: convert to 11-d probability vector
         self.mlp_output_size = self.classes
