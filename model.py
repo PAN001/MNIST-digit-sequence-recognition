@@ -6,6 +6,16 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 import argparse
+import torch.nn.init as init
+
+# # custom weights initialization
+# def weights_init(m):
+#     classname = m.__class__.__name__
+#     if classname.find('Conv') != -1:
+#         m.weight.data.normal_(0.0, 0.02)
+#     elif classname.find('BatchNorm') != -1:
+#         m.weight.data.normal_(1.0, 0.02)
+#         m.bias.data.fill_(0)
 
 
 class Net(nn.Module):
@@ -26,6 +36,10 @@ class Net(nn.Module):
         # self.pool_stride = 2
 
         self.conv = nn.Conv2d(self.cnn_input_chanel, self.cnn_output_chanel, self.cnn_conv_kernelsize)
+        # initialization
+        init.xavier_uniform(self.conv.weight, gain=np.sqrt(2))
+        init.constant(self.conv.bias, 0.1)
+
         # self.pool = nn.MaxPool2d(self.pool_kernelsize, self.pool_stride)
 
         # LSTM
@@ -43,9 +57,13 @@ class Net(nn.Module):
         # MLP: convert to 11-d probability vector
         self.mlp_output_size = self.classes
         self.mlp = nn.Linear(self.lstm_hidden_size, self.mlp_output_size)
+        # initialization
+        init.xavier_uniform(self.mlp.weight, gain=np.sqrt(2))
+        init.constant(self.mlp.bias, 0.1)
 
         # softmax:
         self.softmax = nn.Softmax()
+
 
     def forward(self, x):
         out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
