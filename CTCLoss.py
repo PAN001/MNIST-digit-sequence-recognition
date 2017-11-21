@@ -39,9 +39,7 @@ class CTCLoss(torch.autograd.Function):
         self.seqs_np = seqs_np
 
         alphases = []
-        betases = []
         ll_forwards = []
-        llBackwards = []
 
         sum = 0.0
 
@@ -54,7 +52,6 @@ class CTCLoss(torch.autograd.Function):
             T = params.shape[1]  # length of input sequence (time) (m)
 
             alphas = np.zeros((L, T))  # L * T
-            betas = np.zeros((L, T))  # L * T
 
             # initialize alphas and forward pass
             alphas[0, 0] = params[self.blank, 0]  # a(u, t)
@@ -89,12 +86,57 @@ class CTCLoss(torch.autograd.Function):
                 alphas[start:end, t] = alphas[start:end, t] / c
                 ll_forward += np.log(c)
 
+            # add to the list
+            alphases.append(alphas)
+
+            ll_forwards.append(ll_forward)
+
+            sum = sum - ll_forward
+
+        # cache Tensors for use in the backward pass
+        # self.save_for_backward(input)
+        # self.save_for_backward(seqs)
+
+        self.alphases = alphases
+        self.ll_forwards = ll_forwards
+
+        return torch.FloatTensor([sum])
+
+    def backward(self, grad_output):
+        """
+        In the backward pass we receive a Tensor containing the gradient of the loss
+        with respect to the output, and we need to compute the gradient of the loss
+        with respect to the input.
+        """
+
+        input = self.input_np
+        seqs = self.seqs_np
+        alphases = self.alphases
+        ll_forwards = self.ll_forwards
+
+
+        grads = []
+        betases = []
+        for i in range(0, input.shape[0]):
+            # get data for each sample
+            alphas = alphases[i]
+            ll_forward = ll_forwards[i]
+            seq = seqs[i]
+            params = input[i]
+
+            seq_len = seq.shape[0]  # Length of label sequence (# phones)
+            L = 2 * seq_len + 1  # Length of label sequence with blanks
+            T = params.shape[1]  # length of input sequence (time) (m)
+
             # initialize betas and backwards pass
+            betas = np.zeros((L, T))
+
             betas[-1, -1] = params[self.blank, -1]
             betas[-2, -1] = params[seq[-1], -1]
             c = np.sum(betas[:, -1])
             betas[:, -1] = betas[:, -1] / c
-            llBackward = np.log(c)
+            ll_backward = np.log(c)
+
             for t in xrange(T - 2, -1, -1):
                 start = max(0, L - 2 * (T - t))
                 end = min(2 * t + 2, L)
@@ -115,62 +157,9 @@ class CTCLoss(torch.autograd.Function):
                 # normalize at current time (prevent underflow)
                 c = np.sum(betas[start:end, t])
                 betas[start:end, t] = betas[start:end, t] / c
-                llBackward += np.log(c)
+                ll_backward += np.log(c)
 
-            # add to the list
-            alphases.append(alphas)
             betases.append(betas)
-            ll_forwards.append(ll_forward)
-            llBackwards.append(llBackward)
-
-            sum = sum - ll_forward
-
-        # cache Tensors for use in the backward pass
-        # self.save_for_backward(input)
-        # self.save_for_backward(seqs)
-
-        self.alphases = alphases
-        self.betases = betases
-        self.ll_forwards = ll_forwards
-        self.llBackwards = llBackwards
-
-        # self.save_for_backward(torch.Tensor(alphases))
-        # self.save_for_backward(torch.Tensor(betases))
-        # self.save_for_backward(torch.Tensor(ll_forwards))
-        # self.save_for_backward(torch.Tensor(llBackwards))
-
-        # res = [ -ll_forward for ll_forward in ll_forwards]
-        #
-        # return torch.Tensor(res)
-
-        return torch.FloatTensor([sum])
-
-    def backward(self, grad_output):
-        """
-        In the backward pass we receive a Tensor containing the gradient of the loss
-        with respect to the output, and we need to compute the gradient of the loss
-        with respect to the input.
-        """
-
-        input = self.input_np
-        seqs = self.seqs_np
-        alphases = self.alphases
-        betases = self.betases
-        ll_forwards = self.ll_forwards
-        llBackwards = self.llBackwards
-
-        grads = []
-        for i in range(0, input.shape[0]):
-            # get data for each sample
-            alphas = alphases[i]
-            betas = betases[i]
-            ll_forward = ll_forwards[i]
-            llBackward = llBackwards[i]
-            seq = seqs[i]
-            params = input[i]
-
-            seq_len = seq.shape[0]  # Length of label sequence (# phones)
-            L = 2 * seq_len + 1  # Length of label sequence with blanks
 
             # compute gradient of the loss function with respect to unnormalized input parameters
             grad = np.zeros(params.shape)
@@ -186,7 +175,7 @@ class CTCLoss(torch.autograd.Function):
             absum = np.sum(ab, axis=0)
 
             # heck for underflow or zeros in denominator of gradient
-            llDiff = np.abs(ll_forward - llBackward)
+            llDiff = np.abs(ll_forward - ll_backward)
             if llDiff > 1e-5 or np.sum(absum == 0) > 0:
                 print "Diff in forward/backward LL : %f" % llDiff
                 print "Zeros found : (%d/%d)" % (np.sum(absum == 0), absum.shape[0])
