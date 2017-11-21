@@ -5,10 +5,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
+import argparse
 
 labels = torch.Tensor(np.load('./labels.npy'))
 data = torch.Tensor(np.load('dataset/data.npy'))
 
+parser = argparse.ArgumentParser()
 parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 args = parser.parse_args()
@@ -26,7 +28,7 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
 
-    def forward(self, x)
+    def forward(self, x):
         return x
 
 model = Net()

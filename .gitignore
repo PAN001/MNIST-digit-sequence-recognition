@@ -1,3 +1,6 @@
 MNIST/*
 11785_HW1_yichenp/MNIST/*
 .idea/*
+dataset/*
+images/*
+handwrittenDigitSequenceRec/*

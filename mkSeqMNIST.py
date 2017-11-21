@@ -4,15 +4,18 @@ import random
 import numpy as np
 from random import randint as rint
 from scipy.misc import imsave
+from PIL import Image
 import os
-N = 100
+from matplotlib import pyplot as plt
+
+N = 20
 M = 100
 space = 200
 overlap = 15
 
 random.seed(123456789)
 
-data = datasets.MNIST('/tmp/data', train=True, download=True,
+data = datasets.MNIST('./MNIST', train=True, download=True,
         transform=transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.1307,), (0.3081,))
@@ -51,10 +54,10 @@ for i in range(M):
         img = np.append(img, dataset_data[i,:,28*j:28*(j+1)], axis=1)
     img = dataset_data[i,:,:]
     images.append(img)
-    #name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
-    #imsave(name, img.clip(0, 255))
+    name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
+    imsave(name, img.clip(0, 255))
 dataset_data = np.array(images)
 
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-np.save("./dataset/data", dataset_data)
-np.save("./dataset/labels", dataset_labels)
+np.save("./dataset/data_20", dataset_data)
+np.save("./dataset/labels_20", dataset_labels)
