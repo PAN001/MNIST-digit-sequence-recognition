@@ -60,9 +60,6 @@ class CTCLoss(torch.autograd.Function):
             alphas[1, 0] = params[seq[0], 0]
             c = np.sum(alphas[:, 0])
 
-            print "c: ", c
-            # print "alphas: ", alphas
-
             alphas[:, 0] = alphas[:, 0] / c
             ll_forward = np.log(c) # log liklihood of forward
 
@@ -89,6 +86,8 @@ class CTCLoss(torch.autograd.Function):
                 c = np.sum(alphas[start:end, t])
                 alphas[start:end, t] = alphas[start:end, t] / c
                 ll_forward += np.log(c)
+
+            print "ll_forward: ", ll_forward
 
             # add to the list
             alphases.append(alphas)
