@@ -89,6 +89,7 @@ labels = Variable(labels.cuda()) if cuda else Variable(labels)
 
 for i in tqdm(range(epochs)):
     print ""
+    i = 0 # fix training
     data_batch = data[i * batch_size: (i+1) * batch_size]
     labels_batch = labels[i * batch_size: (i+1) * batch_size]
     train(data_batch, labels_batch)
