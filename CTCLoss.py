@@ -40,7 +40,7 @@ class CTCLoss(torch.autograd.Function):
 
         alphases = []
         betases = []
-        llForwards = []
+        ll_forwards = []
         llBackwards = []
 
         sum = 0.0
@@ -49,9 +49,9 @@ class CTCLoss(torch.autograd.Function):
             params = input_np[i]
             seq = seqs_np[i]
 
-            seqLen = seq.shape[0]  # Length of label sequence (# phones)
-            L = 2 * seqLen + 1  # Length of label sequence with blanks
-            T = params.shape[1]  # Length of utterance (time) (m)
+            seq_len = seq.shape[0]  # length of label sequence (# expected digits)
+            L = 2 * seq_len + 1  # length of label sequence with blanks
+            T = params.shape[1]  # length of input sequence (time) (m)
 
             alphas = np.zeros((L, T))  # L * T
             betas = np.zeros((L, T))  # L * T
@@ -65,7 +65,8 @@ class CTCLoss(torch.autograd.Function):
             # print "alphas: ", alphas
 
             alphas[:, 0] = alphas[:, 0] / c
-            llForward = np.log(c)
+            ll_forward = np.log(c)
+
             for t in xrange(1, T):
                 start = max(0, L - 2 * (T - t))
                 end = min(2 * t + 2, L)
@@ -86,7 +87,7 @@ class CTCLoss(torch.autograd.Function):
                 # normalize at current time (prevent underflow)
                 c = np.sum(alphas[start:end, t])
                 alphas[start:end, t] = alphas[start:end, t] / c
-                llForward += np.log(c)
+                ll_forward += np.log(c)
 
             # initialize betas and backwards pass
             betas[-1, -1] = params[self.blank, -1]
@@ -119,10 +120,10 @@ class CTCLoss(torch.autograd.Function):
             # add to the list
             alphases.append(alphas)
             betases.append(betas)
-            llForwards.append(llForward)
+            ll_forwards.append(ll_forward)
             llBackwards.append(llBackward)
 
-            sum = sum - llForward
+            sum = sum - ll_forward
 
         # cache Tensors for use in the backward pass
         # self.save_for_backward(input)
@@ -130,15 +131,15 @@ class CTCLoss(torch.autograd.Function):
 
         self.alphases = alphases
         self.betases = betases
-        self.llForwards = llForwards
+        self.ll_forwards = ll_forwards
         self.llBackwards = llBackwards
 
         # self.save_for_backward(torch.Tensor(alphases))
         # self.save_for_backward(torch.Tensor(betases))
-        # self.save_for_backward(torch.Tensor(llForwards))
+        # self.save_for_backward(torch.Tensor(ll_forwards))
         # self.save_for_backward(torch.Tensor(llBackwards))
 
-        # res = [ -llForward for llForward in llForwards]
+        # res = [ -ll_forward for ll_forward in ll_forwards]
         #
         # return torch.Tensor(res)
 
@@ -155,7 +156,7 @@ class CTCLoss(torch.autograd.Function):
         seqs = self.seqs_np
         alphases = self.alphases
         betases = self.betases
-        llForwards = self.llForwards
+        ll_forwards = self.ll_forwards
         llBackwards = self.llBackwards
 
         grads = []
@@ -163,13 +164,13 @@ class CTCLoss(torch.autograd.Function):
             # get data for each sample
             alphas = alphases[i]
             betas = betases[i]
-            llForward = llForwards[i]
+            ll_forward = ll_forwards[i]
             llBackward = llBackwards[i]
             seq = seqs[i]
             params = input[i]
 
-            seqLen = seq.shape[0]  # Length of label sequence (# phones)
-            L = 2 * seqLen + 1  # Length of label sequence with blanks
+            seq_len = seq.shape[0]  # Length of label sequence (# phones)
+            L = 2 * seq_len + 1  # Length of label sequence with blanks
 
             # compute gradient of the loss function with respect to unnormalized input parameters
             grad = np.zeros(params.shape)
@@ -185,11 +186,11 @@ class CTCLoss(torch.autograd.Function):
             absum = np.sum(ab, axis=0)
 
             # heck for underflow or zeros in denominator of gradient
-            llDiff = np.abs(llForward - llBackward)
+            llDiff = np.abs(ll_forward - llBackward)
             if llDiff > 1e-5 or np.sum(absum == 0) > 0:
                 print "Diff in forward/backward LL : %f" % llDiff
                 print "Zeros found : (%d/%d)" % (np.sum(absum == 0), absum.shape[0])
-                # return -llForward, grad, True
+                # return -ll_forward, grad, True
 
             grad = params - grad / (params * absum)
 

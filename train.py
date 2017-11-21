@@ -94,3 +94,8 @@ for i in tqdm(range(epochs)):
     labels_batch = labels[i * batch_size: (i+1) * batch_size]
     train(data_batch, labels_batch)
 
+
+# show image
+plt.title(str(dataset_labels[1]))
+plt.imshow(dataset_data[1], cmap='gray')
+plt.show()
