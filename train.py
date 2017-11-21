@@ -3,10 +3,12 @@
 from model import *
 from CTCLoss import *
 
+import random
 import argparse
 import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--lr', type=float, default=0.01)
@@ -15,6 +17,13 @@ argparser.add_argument('--batch_size', type=int, default=100*20)
 argparser.add_argument('--cuda', type=bool, default=False)
 args = argparser.parse_args()
 args.cuda = False
+
+# deterministic
+manual_seed = 1234
+random.seed(manual_seed)
+np.random.seed(manual_seed)
+torch.manual_seed(manual_seed)
+torch.cuda.manual_seed(manual_seed)
 
 batch_size = args.batch_size
 lr = args.lr
