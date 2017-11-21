@@ -41,17 +41,19 @@ class CTCLoss(torch.autograd.Function):
         alphases = []
         ll_forwards = []
 
-        sum = 0.0
+        sum = 0.0 # the multi
 
-        for i in range(0, input.shape[0]):
+        for i in range(0, input.shape[0]): # iterate over each training sample
             params = input_np[i]
             seq = seqs_np[i]
 
             seq_len = seq.shape[0]  # length of label sequence (# expected digits)
-            L = 2 * seq_len + 1  # length of label sequence with blanks
+            L = 2 * seq_len + 1  # length of label sequence with blanks. e.g. abc -> _a_b_c_
             T = params.shape[1]  # length of input sequence (time) (m)
 
-            alphas = np.zeros((L, T))  # L * T
+            # forward dynamic table: L * T
+            # alphas[u, t] represent the sum of probability of all paths outputing l'u and time t
+            alphas = np.zeros((L, T))
 
             # initialize alphas and forward pass
             alphas[0, 0] = params[self.blank, 0]  # a(u, t)
@@ -62,14 +64,16 @@ class CTCLoss(torch.autograd.Function):
             # print "alphas: ", alphas
 
             alphas[:, 0] = alphas[:, 0] / c
-            ll_forward = np.log(c)
+            ll_forward = np.log(c) # log liklihood of forward
 
             for t in xrange(1, T):
+
+                # in most cases, start = 0, end = L
                 start = max(0, L - 2 * (T - t))
                 end = min(2 * t + 2, L)
 
-                for s in xrange(start, L):
-                    l = (s - 1) / 2
+                for s in xrange(start, L): # iterate at each position at l'
+                    l = (s - 1) / 2 # pisition in original target label
 
                     if s % 2 == 0:  # if s(u) is even, it must be blank
                         if s == 0:
@@ -78,7 +82,7 @@ class CTCLoss(torch.autograd.Function):
                             alphas[s, t] = (alphas[s, t - 1] + alphas[s - 1, t - 1]) * params[self.blank, t]
                     elif s == 1 or seq[l] == seq[l - 1]:  # same label twice
                         alphas[s, t] = (alphas[s, t - 1] + alphas[s - 1, t - 1]) * params[seq[l], t]
-                    else:
+                    else: # not same label
                         alphas[s, t] = (alphas[s, t - 1] + alphas[s - 1, t - 1] + alphas[s - 2, t - 1]) * params[seq[l], t]
 
                 # normalize at current time (prevent underflow)
@@ -113,7 +117,6 @@ class CTCLoss(torch.autograd.Function):
         seqs = self.seqs_np
         alphases = self.alphases
         ll_forwards = self.ll_forwards
-
 
         grads = []
         betases = []
@@ -174,7 +177,7 @@ class CTCLoss(torch.autograd.Function):
 
             absum = np.sum(ab, axis=0)
 
-            # heck for underflow or zeros in denominator of gradient
+            # check for underflow or zeros in denominator of gradient
             llDiff = np.abs(ll_forward - ll_backward)
             if llDiff > 1e-5 or np.sum(absum == 0) > 0:
                 print "Diff in forward/backward LL : %f" % llDiff
