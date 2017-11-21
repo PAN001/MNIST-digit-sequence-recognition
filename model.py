@@ -46,13 +46,15 @@ class Net(nn.Module):
         self.lstm_input_size = self.image_H * self.cnn_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 100
         self.lstm_num_layers = 1
-
         self.lstm_hidden = None
         self.lstm_cell = None
 
         self.reset_hidden()
         self.reset_cell()
         self.lstm = nn.LSTM(self.lstm_input_size, self.lstm_hidden_size, self.lstm_num_layers, batch_first = True)
+        # initialization
+        init.xavier_uniform(self.lstm.weight, gain=np.sqrt(2))
+        init.constant(self.lstm.bias, 0.1)
 
         # MLP: convert to 11-d probability vector
         self.mlp_output_size = self.classes
