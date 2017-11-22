@@ -9,6 +9,7 @@ import argparse
 import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import os
 
 
 argparser = argparse.ArgumentParser()
@@ -64,6 +65,11 @@ def progress(count, total, status=""):
     bar = '>' * filled_len + '-' * (bar_len - filled_len)
 
     print('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
+
+def save(filename):
+    savename = filename + '.pt'
+    torch.save(net, savename)
+    print('Model Saved as ', savename)
 
 def train(input, target):
     net.reset_hidden()
@@ -148,6 +154,7 @@ for i in range(epochs): # each epoch
         labels_batch = labels[j * batch_size: (j+1) * batch_size]
         train(data_batch, labels_batch)
 
+save()
 
 # # show image
 # plt.title(str(dataset_labels[1]))
