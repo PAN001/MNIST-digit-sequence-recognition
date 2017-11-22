@@ -153,6 +153,7 @@ def validate():
 
         out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
         target_np = target.data.cpu().numpy() if args.cuda else target.data.numpy()
+
         edit_dist, _, _, _, _ = decoder.edit_distance(target_np, out_np)
         validate_edit_dist += edit_dist
 
