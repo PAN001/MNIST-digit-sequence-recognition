@@ -206,7 +206,7 @@ class CTCLoss(torch.autograd.Function):
         """
 
         # Compute best path
-        input = input.cpu().numpy() if cuda else input.numpy()
+        input = input.data.cpu().numpy() if cuda else input.data.numpy()
         input = input.transpose(0, 2, 1)  # D = (batch_size, classes, seq_len)
         hyps = []
         for i in range(0, input.shape[0]):
