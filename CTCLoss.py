@@ -8,6 +8,7 @@ import math
 import collections
 
 NEG_INF = -float("inf")
+cuda = True
 
 # 继承torch.autograd.Function，拓展numpy
 class CTCLoss(torch.autograd.Function):
@@ -31,9 +32,10 @@ class CTCLoss(torch.autograd.Function):
 
         self.blank = 10
 
-        input_np = input.numpy()
+
+        input_np = input.cpu().numpy() if cuda else input.numpy()
         input_np = input_np.transpose(0, 2, 1) # D = (batch_size, classes, seq_len)
-        seqs_np = seqs.numpy()
+        seqs_np = seqs.cpu().numpy() if cuda else seqs.numpy()
 
         self.input_np = input_np
         self.seqs_np = seqs_np
