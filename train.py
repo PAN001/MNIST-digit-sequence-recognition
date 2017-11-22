@@ -31,7 +31,7 @@ epochs = args.epochs
 classes = 10 + 1
 cuda = args.cuda
 
-print cuda
+cuda = False
 
 # def random_training_set():
 #     input = torch.LongTensor(batch_size, chunk_size)
