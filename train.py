@@ -16,7 +16,6 @@ argparser.add_argument('--epochs', type=int, default=2000)
 argparser.add_argument('--batch_size', type=int, default=100*20)
 argparser.add_argument('--cuda', type=bool, default=False)
 args = argparser.parse_args()
-args.cuda = False
 
 # deterministic
 manual_seed = 1234
