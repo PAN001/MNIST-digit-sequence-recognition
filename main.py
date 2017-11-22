@@ -130,15 +130,15 @@ def train(epoch):
 def validate():
     model.eval()
 
-    # reset states
-    model.reset_hidden()
-    model.reset_cell()
-    model.zero_grad()
-
     validate_loss = 0
     validate_edit_dist = 0
 
     for data, target in validate_loader:
+        # reset states
+        model.reset_hidden()
+        model.reset_cell()
+        model.zero_grad()
+
         if args.cuda:
             data, target = data.cuda(), target.cuda()
 
