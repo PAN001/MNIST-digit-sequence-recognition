@@ -76,15 +76,18 @@ def train(input, target):
 
     out_np = out.data.cpu().numpy() if cuda else out.data.numpy()
     predictions = criterion.decode_best_path(out_np)
-    print "best_path_predictions[0]: ", predictions[0]
+    print "best_path_predictions[0]: "
+    print predictions[0]
     # print "best_path_predictions: "
-    print predictions
+    # print predictions
 
     # predictions_beam, scores_beam = criterion.decode_beam(out.data.numpy())
     # print "beam_predictions: "
     # print predictions_beam
 
-    print "label[0]: ", target.data.numpy()[0]
+
+    print "label[0]: "
+    print target.data.cpu().numpy()[0] if cuda else target.data.numpy()[0]
     # print "label:"
     print target.data.cpu().numpy() if cuda else target.data.numpy()
 
