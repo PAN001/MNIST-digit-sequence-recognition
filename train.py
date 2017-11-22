@@ -25,11 +25,11 @@ np.random.seed(manual_seed)
 torch.manual_seed(manual_seed)
 # torch.cuda.manual_seed(manual_seed)
 
-batch_size = args.batch_size
-lr = args.lr
-epochs = args.epochs
+batch_size = 50
+lr = 0.01
+epochs = 10
 classes = 10 + 1
-cuda = args.cuda
+# cuda = args.cuda
 
 cuda = True
 
@@ -111,7 +111,7 @@ labels = Variable(labels.cuda()) if cuda else Variable(labels)
 
 for i in tqdm(range(epochs)):
     print ""
-    i = 0 # fix training
+    # i = 0 # fix training
     data_batch = data[i * batch_size: (i+1) * batch_size]
     labels_batch = labels[i * batch_size: (i+1) * batch_size]
     train(data_batch, labels_batch)
