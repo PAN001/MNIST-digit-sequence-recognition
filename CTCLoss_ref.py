@@ -13,6 +13,7 @@ random.seed(manual_seed)
 np.random.seed(manual_seed)
 torch.manual_seed(manual_seed)
 torch.cuda.manual_seed(manual_seed)
+cuda = False
 
 class CTCLoss(torch.autograd.Function):
     # def __init__(self):
