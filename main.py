@@ -82,12 +82,12 @@ criterion = CTCLoss(args.cuda)
 def train(epoch):
     model.train()
 
-    # reset states
-    model.reset_hidden()
-    model.reset_cell()
-    model.zero_grad()
-
     for batch_idx, (data, target) in enumerate(train_loader):
+        # reset states
+        model.reset_hidden()
+        model.reset_cell()
+        model.zero_grad()
+
         if args.cuda:
             data, target = data.cuda(), target.cuda()
 
