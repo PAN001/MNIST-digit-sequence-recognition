@@ -31,7 +31,7 @@ epochs = 10
 classes = 10 + 1
 # cuda = args.cuda
 
-cuda = True
+cuda = False
 
 # def random_training_set():
 #     input = torch.LongTensor(batch_size, chunk_size)
@@ -46,6 +46,24 @@ cuda = True
 #     #     input[bi] = string2tensor(chunk[:-1])
 #     #     target[bi] = string2tensor(chunk[1:])
 #     # return (Variable(input.cuda()), Variable(target.cuda())) if args.cuda else (Variable(input), Variable(target))
+
+def progress(count, total, status=""):
+    """ Output the progress to the standard output
+
+    Args:
+        count (int): current progress
+        total (int): total work
+        status (string): extra information to output
+    """
+
+    total = total - 1
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '>' * filled_len + '-' * (bar_len - filled_len)
+
+    print('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
 
 def train(input, target):
     net.reset_hidden()
@@ -105,19 +123,31 @@ dataset_data = dataset_data / 255.0
 dataset_labels = np.load("./dataset/labels_5_10000.npy")
 dataset_labels = dataset_labels.astype(int)
 
-data = torch.Tensor(dataset_data)
-shape = data.shape
-data = data.view(dataset_data.shape[0], 1, dataset_data.shape[1], dataset_data.shape[2])
-data = Variable(data.cuda()) if cuda else Variable(data)
-labels = torch.IntTensor(dataset_labels)
-labels = Variable(labels.cuda()) if cuda else Variable(labels)
+dataset_size = dataset_data.shape[0]
 
-for i in tqdm(range(epochs)):
-    print ""
-    # i = 0 # fix training
-    data_batch = data[i * batch_size: (i+1) * batch_size]
-    labels_batch = labels[i * batch_size: (i+1) * batch_size]
-    train(data_batch, labels_batch)
+for i in range(epochs): # each epoch
+    print "epoch: ", i
+
+    # permute training dataset
+    permutation_index = np.random.permutation(range(0, dataset_size))
+    dataset_data = dataset_data[permutation_index]
+    dataset_labels = dataset_labels[permutation_index]
+
+    # convert to torch variables
+    data = torch.Tensor(dataset_data)
+    shape = data.shape
+    data = data.view(dataset_data.shape[0], 1, dataset_data.shape[1], dataset_data.shape[2])
+    data = Variable(data.cuda()) if cuda else Variable(data)
+    labels = torch.IntTensor(dataset_labels)
+    labels = Variable(labels.cuda()) if cuda else Variable(labels)
+
+    for j in tqdm(range(dataset_size / batch_size)): # each batch
+
+        print ""
+        # j = 0 # fix training
+        data_batch = data[j * batch_size: (j+1) * batch_size]
+        labels_batch = labels[j * batch_size: (j+1) * batch_size]
+        train(data_batch, labels_batch)
 
 
 # # show image
