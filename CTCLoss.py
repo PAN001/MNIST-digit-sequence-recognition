@@ -31,6 +31,7 @@ class CTCLoss(torch.autograd.Function):
         """
 
         self.blank = 10
+        self.batch_size = self.input.shape[0]
 
         input_np = input.cpu().numpy() if cuda else input.numpy()
         input_np = input_np.transpose(0, 2, 1) # D = (batch_size, classes, seq_len)
