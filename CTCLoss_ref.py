@@ -5,11 +5,7 @@ import numpy as np
 from torch.autograd import Variable
 
 from model import *
-import argparse
-import os
-import unidecode
 import random
-from tqdm import tqdm
 
 # deterministic
 manual_seed = 1234
