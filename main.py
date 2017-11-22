@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
 parser.add_argument('--batch-size', type=int, default=50, metavar='N',
                     help='input batch size for training (default: 50)')
 parser.add_argument('--test-batch-size', type=int, default=1, metavar='N',
-                    help='input batch size for testing (default: 1)')
+                    help='input batch size for testing (default: 5)')
 parser.add_argument('--epochs', type=int, default=100, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
