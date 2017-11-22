@@ -1,1 +1,1 @@
-python main.py --model-path model_2.pt --cuda --resume model_2.pt --epochs 2
+python main.py --model-path model_2.pt --cuda --epochs 2
