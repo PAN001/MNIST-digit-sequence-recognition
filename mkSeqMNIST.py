@@ -6,10 +6,11 @@ from random import randint as rint
 from scipy.misc import imsave
 from PIL import Image
 import os
+import datetime
 from matplotlib import pyplot as plt
 
 N = 5
-M = 10000
+M = 5
 space = 200
 overlap = 15
 
@@ -48,6 +49,7 @@ for i in range(M):
     Randomly adding spacing bettween the numbers and then saving the images.
     '''
     img = np.zeros((36, 0))
+    # probs = torch.Tensor(range(0, N + 1))
     dist = torch.multinomial(torch.ones(N+1), space, replacement=True)
     for j in range(N+1):
         img = np.append(img, np.zeros((36, (dist==j).sum())), axis=1)
@@ -58,6 +60,7 @@ for i in range(M):
     imsave(name, img.clip(0, 255))
 dataset_data = np.array(images)
 
-if not os.path.exists('./dataset'): os.makedirs('./dataset')
-np.save("./dataset/data_5_10000", dataset_data)
-np.save("./dataset/labels_5_10000", dataset_labels)
+# t = datetime.datetime.now().time()
+# if not os.path.exists('./dataset'): os.makedirs('./dataset')
+# np.save("./dataset/data_test_" + str(t), dataset_data)
+# np.save("./dataset/labels_test_" + str(t), dataset_labels)

@@ -86,6 +86,7 @@ def train(input, target):
     opt.step()
 
 net = Net(cuda, batch_size)
+net = net.cuda() if cuda else net
 opt = torch.optim.Adam(net.parameters(), lr = lr)
 # opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
 criterion = CTCLoss()
