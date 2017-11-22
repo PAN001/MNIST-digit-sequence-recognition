@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from model import *
-from CTCLoss import *
+# from CTCLoss import *
+from CTCLoss_ref import *
 
 import random
 import argparse
@@ -61,6 +62,8 @@ def train(input, target):
 
     out = net(input) # D(out) = (batch_size * seq_len, classes)
     out = out.view(batch_size, -1, classes) # D(out) = (batch_size, seq_len, classes)
+    out = out.permute(0, 2, 1) # D(out) = (batch_size, classes, seq_len)
+
     loss = criterion(out, target)
 
     # plt.title(str(predictions[0]))
