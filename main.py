@@ -55,13 +55,13 @@ test_labels_path = "./dataset/test_labels_5_10000.npy"
 
 # load data
 train_data = torch.Tensor(np.load(train_data_path))
-train_labels = torch.IntTensor(np.load(train_labels_path))
+train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
 train_dataset = data_utils.TensorDataset(train_data, train_labels)
 train_loader = torch.utils.data.DataLoader(train_dataset,
     batch_size=args.batch_size, shuffle=True, **kwargs)
 
 test_data = torch.Tensor(np.load(test_data_path))
-test_labels = torch.IntTensor(np.load(test_labels_path))
+test_labels = torch.IntTensor(np.load(test_labels_path).astype(int))
 test_dataset = data_utils.TensorDataset(test_data, test_labels)
 test_loader = torch.utils.data.DataLoader(test_dataset,
     batch_size=args.batch_size, shuffle=True, **kwargs)
