@@ -9,8 +9,8 @@ import os
 import datetime
 from matplotlib import pyplot as plt
 
-N = 5
-M = 5
+N = 5 # number of digits in the contiguous sequence
+M = 10000 # number of samples
 space = 200
 overlap = 15
 
@@ -60,7 +60,7 @@ for i in range(M):
     imsave(name, img.clip(0, 255))
 dataset_data = np.array(images)
 
-# t = datetime.datetime.now().time()
-# if not os.path.exists('./dataset'): os.makedirs('./dataset')
-# np.save("./dataset/data_test_" + str(t), dataset_data)
-# np.save("./dataset/labels_test_" + str(t), dataset_labels)
+t = datetime.datetime.now().time()
+if not os.path.exists('./dataset'): os.makedirs('./dataset')
+np.save("./dataset/test_data_5_10000.npy", dataset_data)
+np.save("./dataset/test_labels_5_10000.npy", dataset_labels)
