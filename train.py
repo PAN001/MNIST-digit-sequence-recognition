@@ -83,8 +83,8 @@ def train(input, target):
     # print "beam_predictions[0]: ", pred_0
 
     # print "label[0]: ", target.data.numpy()[0]
-    print "label:"
-    print target.data.cpu().numpy() if cuda else target.data.numpy()
+    # print "label:"
+    # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
     loss.backward()
     opt.step()
