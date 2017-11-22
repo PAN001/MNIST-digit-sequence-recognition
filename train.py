@@ -74,7 +74,7 @@ def train(input, target):
 
     print "loss: ", loss
 
-    predictions = criterion.decode_best_path(out)
+    # predictions = criterion.decode_best_path(out)
     # print "best_path_predictions[0]: ", predictions[0]
     print "best_path_predictions: "
     print predictions
