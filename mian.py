@@ -36,6 +36,8 @@ parser.add_argument('--model-path', type=str, default="model.pt", metavar='MP',
 args = parser.parse_args()
 args.cuda = args.cuda and torch.cuda.is_available()
 
+print(args)
+
 # set seed
 torch.manual_seed(args.seed)
 if args.cuda:
