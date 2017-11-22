@@ -79,7 +79,7 @@ def train(input, target):
 
     # print "label[0]: ", target.data.numpy()[0]
     print "label:"
-    print target.data.numpy()
+    print target.data.cpu.numpy() if cuda else target.data.numpy()
 
     loss.backward()
     opt.step()
