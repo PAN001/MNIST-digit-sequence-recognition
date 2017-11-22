@@ -79,7 +79,7 @@ class Net(nn.Module):
 
         # CNN
         out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
-        # out = self.conv_bn(out)
+        out = self.conv_bn(out)
         out = F.relu(out)
 
         # reshape
@@ -88,6 +88,7 @@ class Net(nn.Module):
         out = out.view(self.batch_size, -1, self.lstm_input_size) # D(out) = (batch_size, seq_len, lstm_input_size) where seq_len = W, lstm_input_size = H * cnn_output_chanel
 
         # LSTM
+        print out.size()
         out, self.lstm_hidden = self.lstm(out, (self.lstm_hidden, self.lstm_cell)) # D(out) = (batch_size, seq_len, hidden_size)
 
         # reshape
