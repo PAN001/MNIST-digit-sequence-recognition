@@ -192,7 +192,7 @@ class CTCLoss(torch.autograd.Function):
 
         # print grads
         # print "grads: ", grads
-        return torch.FloatTensor(grads).cuda if cuda else torch.FloatTensor(grads), None
+        return torch.FloatTensor(grads).cuda() if cuda else torch.FloatTensor(grads), None
 
     def decode_best_path(self, input):
         """
