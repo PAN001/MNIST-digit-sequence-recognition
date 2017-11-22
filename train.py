@@ -76,8 +76,8 @@ def train(input, target):
 
     # predictions = criterion.decode_best_path(out)
     # print "best_path_predictions[0]: ", predictions[0]
-    print "best_path_predictions: "
-    print predictions
+    # print "best_path_predictions: "
+    # print predictions
 
     # pred_0, score_0 = criterion.decode_beam(out.data.numpy()[0])
     # print "beam_predictions[0]: ", pred_0
