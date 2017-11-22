@@ -90,7 +90,7 @@ def train(input, target):
     # plt.imshow(dataset_data[0], cmap='gray')
     # plt.show()
 
-    print "loss: ", loss
+    print "loss: ", loss.data.numpy()[0]
 
     out_np = out.data.cpu().numpy() if cuda else out.data.numpy()
     predictions = criterion.decode_best_path(out_np)
@@ -135,7 +135,6 @@ for i in range(epochs): # each epoch
 
     # convert to torch variables
     data = torch.Tensor(dataset_data)
-    shape = data.shape
     data = data.view(dataset_data.shape[0], 1, dataset_data.shape[1], dataset_data.shape[2])
     data = Variable(data.cuda()) if cuda else Variable(data)
     labels = torch.IntTensor(dataset_labels)
