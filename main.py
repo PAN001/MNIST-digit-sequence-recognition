@@ -221,6 +221,6 @@ for epoch in range(1, args.epochs + 1):
             'best_edit_dist': best_edit_dist,
             'optimizer' : optimizer.state_dict(),
         }, is_best)
-
-if not args.eval:
-    save(args.model_path)
+#
+# if not args.eval:
+#     save(args.model_path)
