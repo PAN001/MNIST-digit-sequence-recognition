@@ -91,6 +91,7 @@ def train(epoch):
         if args.cuda:
             data, target = data.cuda(), target.cuda()
 
+        print data.shape
         data = data.view(data.shape[0], 1, data.shape[1], data.shape[2])
         data, target = Variable(data), Variable(target)
 
