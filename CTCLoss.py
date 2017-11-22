@@ -8,7 +8,7 @@ import math
 import collections
 
 NEG_INF = -float("inf")
-cuda = False
+cuda = True
 
 # 继承torch.autograd.Function，拓展numpy
 class CTCLoss(torch.autograd.Function):
