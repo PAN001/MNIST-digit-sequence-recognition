@@ -145,11 +145,17 @@ def validate():
         data = data.view(data.shape[0], 1, data.shape[1], data.shape[2])
         data, target = Variable(data, volatile=True), Variable(target)
         out = model(data)
+
+        out = out.view(args.batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
+        out = out.permute(0, 2, 1)  # D(out) = (batch_size, classes, seq_len)
+
         validate_loss += criterion(out, target).data[0] # sum up batch loss
-        edit_dist, _, _, _, _ = decoder.edit_distance(target, out_np)
-        validate_edit_dist += edit_dist
 
         out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
+        target_np = target.data.cpu().numpy() if args.cuda else target.data.numpy()
+        edit_dist, _, _, _, _ = decoder.edit_distance(target_np, out_np)
+        validate_edit_dist += edit_dist
+
         predictions = criterion.decode_best_path(out_np)
 
         print "best_path_predictions[0]: "

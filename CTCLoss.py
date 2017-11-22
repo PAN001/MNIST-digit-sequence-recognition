@@ -26,7 +26,6 @@ class CTCLoss(torch.autograd.Function):
 
         input - D = (batch_size, classes, seq_len): A tensor of network output
         seqs - D = (batch_size, seq_len)
-        params - D = (classes, seq_len): matrix of classes-D probability distributions over seq_len frames.
         seq - D = (seq_len): sequence of phone id's for given example.
 
         Returns objective and gradient.
@@ -47,7 +46,7 @@ class CTCLoss(torch.autograd.Function):
         sum = 0.0 # the multi
 
         for i in range(0, input.shape[0]): # iterate over each training sample
-            params = input_np[i]
+            params = input_np[i] # D = (classes, seq_len): matrix of classes-D probability distributions over seq_len frames.
             seq = seqs_np[i]
 
             seq_len = seq.shape[0]  # length of label sequence (# expected digits)
