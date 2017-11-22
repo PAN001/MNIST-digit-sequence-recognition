@@ -80,9 +80,9 @@ def train(input, target):
     print "best_path_predictions: "
     print predictions
 
-    predictions_beam, scores_beam = criterion.decode_beam(out.data.numpy())
-    print "beam_predictions: "
-    print predictions_beam
+    # predictions_beam, scores_beam = criterion.decode_beam(out.data.numpy())
+    # print "beam_predictions: "
+    # print predictions_beam
 
     # print "label[0]: ", target.data.numpy()[0]
     print "label:"
