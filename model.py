@@ -63,8 +63,8 @@ class Net(nn.Module):
         self.fc_output_size = self.classes
         self.fc = nn.Linear(self.lstm_hidden_size, self.fc_output_size)
         # initialization
-        init.xavier_uniform(self.mlp.weight, gain=np.sqrt(2))
-        init.constant(self.mlp.bias, 0.1)
+        init.xavier_uniform(self.fc.weight, gain=np.sqrt(2))
+        init.constant(self.fc.bias, 0.1)
 
         # softmax:
         self.softmax = nn.Softmax()
