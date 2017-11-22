@@ -1,1 +1,1 @@
-python model.py --cuda --eval
+python main.py --cuda --eval
