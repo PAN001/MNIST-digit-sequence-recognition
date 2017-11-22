@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from model import *
-# from CTCLoss import *
-from CTCLoss_ref import *
+from CTCLoss import *
+# from CTCLoss_ref import *
 
 import random
 import argparse
@@ -23,7 +23,7 @@ manual_seed = 1234
 random.seed(manual_seed)
 np.random.seed(manual_seed)
 torch.manual_seed(manual_seed)
-torch.cuda.manual_seed(manual_seed)
+# torch.cuda.manual_seed(manual_seed)
 
 batch_size = args.batch_size
 lr = args.lr
@@ -74,17 +74,19 @@ def train(input, target):
 
     print "loss: ", loss
 
-    # predictions = criterion.decode_best_path(out)
+    out_np = out.data.cpu().numpy() if cuda else out.data.numpy()
+    predictions = criterion.decode_best_path(out_np)
     # print "best_path_predictions[0]: ", predictions[0]
-    # print "best_path_predictions: "
-    # print predictions
+    print "best_path_predictions: "
+    print predictions
 
-    # pred_0, score_0 = criterion.decode_beam(out.data.numpy()[0])
-    # print "beam_predictions[0]: ", pred_0
+    predictions_beam, scores_beam = criterion.decode_beam(out.data.numpy())
+    print "beam_predictions: "
+    print predictions_beam
 
     # print "label[0]: ", target.data.numpy()[0]
-    # print "label:"
-    # print target.data.cpu().numpy() if cuda else target.data.numpy()
+    print "label:"
+    print target.data.cpu().numpy() if cuda else target.data.numpy()
 
     loss.backward()
     opt.step()

@@ -12,7 +12,7 @@ manual_seed = 1234
 random.seed(manual_seed)
 np.random.seed(manual_seed)
 torch.manual_seed(manual_seed)
-torch.cuda.manual_seed(manual_seed)
+# torch.cuda.manual_seed(manual_seed)
 cuda = False
 
 class CTCLoss(torch.autograd.Function):
@@ -89,8 +89,10 @@ class CTCLoss(torch.autograd.Function):
 
         hypList = self.decode_best_path(self.parameters)
         print("")
-        print("prediction:\n", hypList)
-        print("target label:   ", self.sequence)
+        print("prediction: ")
+        print(hypList)
+        print("target label:  ")
+        print(self.sequence)
         return torch.FloatTensor([loss])
 
     # # @staticmethod
@@ -266,6 +268,8 @@ class CTCLoss(torch.autograd.Function):
                     continue
                 else:
                     hyp.append(b)
+
+            hypList.append(hyp)
 
 
         return hypList

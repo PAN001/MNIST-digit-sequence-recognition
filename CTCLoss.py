@@ -22,19 +22,18 @@ class CTCLoss(torch.autograd.Function):
         """
         CTC loss function.
 
-        input - D = (batch_size, seq_len, classes):
-        seqs - batch_size * seq_len
-        params - classes * seq_len: matrix of classes-D probability distributions over seq_len frames.
-        seq - seq_len: sequence of phone id's for given example.
-        is_prob - whether params have already passed through a softmax
+        input - D = (batch_size, classes, seq_len): A tensor of network output
+        seqs - D = (batch_size, seq_len)
+        params - D = (classes, seq_len): matrix of classes-D probability distributions over seq_len frames.
+        seq - D = (seq_len): sequence of phone id's for given example.
+
         Returns objective and gradient.
         """
 
-        self.blank = 10
-        self.batch_size = self.input.shape[0]
+        self.blank = blank
+        self.batch_size = input.shape[0]
 
         input_np = input.cpu().numpy() if cuda else input.numpy()
-        input_np = input_np.transpose(0, 2, 1) # D = (batch_size, classes, seq_len)
         seqs_np = seqs.cpu().numpy() if cuda else seqs.numpy()
 
         self.input_np = input_np
@@ -93,14 +92,10 @@ class CTCLoss(torch.autograd.Function):
 
             # add to the list
             alphases.append(alphas)
-
             ll_forwards.append(ll_forward)
 
             sum = sum - ll_forward
 
-        # cache Tensors for use in the backward pass
-        # self.save_for_backward(input)
-        # self.save_for_backward(seqs)
 
         self.alphases = alphases
         self.ll_forwards = ll_forwards
@@ -190,8 +185,6 @@ class CTCLoss(torch.autograd.Function):
             # add to list
             grads.append(grad)
 
-        # print grads
-        # print "grads: ", grads
         return torch.FloatTensor(grads).cuda() if cuda else torch.FloatTensor(grads), None
 
     def decode_best_path(self, input):
@@ -206,8 +199,8 @@ class CTCLoss(torch.autograd.Function):
         """
 
         # Compute best path
-        input = input.data.cpu().numpy() if cuda else input.data.numpy()
-        input = input.transpose(0, 2, 1)  # D = (batch_size, classes, seq_len)
+        # input = input.data.cpu().numpy() if cuda else input.data.numpy()
+        # input = input.transpose(0, 2, 1)  # D = (batch_size, classes, seq_len)
         hyps = []
         for i in range(0, input.shape[0]):
             probs = input[i]
@@ -246,7 +239,7 @@ class CTCLoss(torch.autograd.Function):
                            for a in args))
         return a_max + lsp
 
-    def decode_beam(self, probs, beam_size=100):
+    def decode_beam(self, input, beam_size=100):
         """
         Performs inference for the given output probabilities.
 
@@ -260,71 +253,77 @@ class CTCLoss(torch.autograd.Function):
         Returns the output label sequence and the corresponding negative
         log-likelihood estimated by the decoder.
         """
-        probs = probs.transpose(0, 1) # D = (classes, seq_len)
 
-        T, S = probs.shape
-        probs = np.log(probs)
+        hyps = []
+        scores = []
+        for i in range(0, input.shape[0]):
+            probs = input[i]
 
-        # Elements in the beam are (prefix, (p_blank, p_no_blank))
-        # Initialize the beam with the empty sequence, a probability of
-        # 1 for ending in blank and zero for ending in non-blank
-        # (in log space).
-        beam = [(tuple(), (0.0, NEG_INF))]
+            T, S = probs.shape
+            probs = np.log(probs)
 
-        for t in range(T):  # Loop over time
+            # Elements in the beam are (prefix, (p_blank, p_no_blank))
+            # Initialize the beam with the empty sequence, a probability of
+            # 1 for ending in blank and zero for ending in non-blank
+            # (in log space).
+            beam = [(tuple(), (0.0, NEG_INF))]
 
-            # A default dictionary to store the next step candidates.
-            next_beam = self.make_new_beam()
+            for t in range(T):  # iterate over time
 
-            for s in range(S):  # Loop over vocab
-                p = probs[t, s]
+                # A default dictionary to store the next step candidates.
+                next_beam = self.make_new_beam()
 
-                # The variables p_b and p_nb are respectively the
-                # probabilities for the prefix given that it ends in a
-                # blank and does not end in a blank at this time step.
-                for prefix, (p_b, p_nb) in beam:  # Loop over beam
+                for s in range(S):  # Loop over vocab
+                    p = probs[t, s]
 
-                    # If we propose a blank the prefix doesn't change.
-                    # Only the probability of ending in blank gets updated.
-                    if s == self.blank:
-                        n_p_b, n_p_nb = next_beam[prefix]
-                        n_p_b = self.logsumexp(n_p_b, p_b + p, p_nb + p)
-                        next_beam[prefix] = (n_p_b, n_p_nb)
-                        continue
+                    # The variables p_b and p_nb are respectively the
+                    # probabilities for the prefix given that it ends in a
+                    # blank and does not end in a blank at this time step.
+                    for prefix, (p_b, p_nb) in beam:  # Loop over beam
 
-                    # Extend the prefix by the new character s and add it to
-                    # the beam. Only the probability of not ending in blank
-                    # gets updated.
-                    end_t = prefix[-1] if prefix else None
-                    n_prefix = prefix + (s,)
-                    n_p_b, n_p_nb = next_beam[n_prefix]
-                    if s != end_t:
-                        n_p_nb = self.logsumexp(n_p_nb, p_b + p, p_nb + p)
-                    else:
-                        # We don't include the previous probability of not ending
-                        # in blank (p_nb) if s is repeated at the end. The CTC
-                        # algorithm merges characters not separated by a blank.
-                        n_p_nb = self.logsumexp(n_p_nb, p_b + p)
+                        # If we propose a blank the prefix doesn't change.
+                        # Only the probability of ending in blank gets updated.
+                        if s == self.blank:
+                            n_p_b, n_p_nb = next_beam[prefix]
+                            n_p_b = self.logsumexp(n_p_b, p_b + p, p_nb + p)
+                            next_beam[prefix] = (n_p_b, n_p_nb)
+                            continue
 
-                    # *NB* this would be a good place to include an LM score.
-                    next_beam[n_prefix] = (n_p_b, n_p_nb)
+                        # Extend the prefix by the new character s and add it to
+                        # the beam. Only the probability of not ending in blank
+                        # gets updated.
+                        end_t = prefix[-1] if prefix else None
+                        n_prefix = prefix + (s,)
+                        n_p_b, n_p_nb = next_beam[n_prefix]
+                        if s != end_t:
+                            n_p_nb = self.logsumexp(n_p_nb, p_b + p, p_nb + p)
+                        else:
+                            # We don't include the previous probability of not ending
+                            # in blank (p_nb) if s is repeated at the end. The CTC
+                            # algorithm merges characters not separated by a blank.
+                            n_p_nb = self.logsumexp(n_p_nb, p_b + p)
 
-                    # If s is repeated at the end we also update the unchanged
-                    # prefix. This is the merging case.
-                    if s == end_t:
-                        n_p_b, n_p_nb = next_beam[prefix]
-                        n_p_nb = self.logsumexp(n_p_nb, p_nb + p)
-                        next_beam[prefix] = (n_p_b, n_p_nb)
+                        # *NB* this would be a good place to include an LM score.
+                        next_beam[n_prefix] = (n_p_b, n_p_nb)
 
-                # Sort and trim the beam before moving on to the
-                # next time-step.
-                beam = sorted(next_beam.items(),
-                              key=lambda x: self.logsumexp(*x[1]),
-                              reverse=True)
-                beam = beam[:beam_size]
+                        # If s is repeated at the end we also update the unchanged
+                        # prefix. This is the merging case.
+                        if s == end_t:
+                            n_p_b, n_p_nb = next_beam[prefix]
+                            n_p_nb = self.logsumexp(n_p_nb, p_nb + p)
+                            next_beam[prefix] = (n_p_b, n_p_nb)
 
-        best = beam[0]
-        return best[0], -self.logsumexp(*best[1])
+                    # Sort and trim the beam before moving on to the
+                    # next time-step.
+                    beam = sorted(next_beam.items(),
+                                  key=lambda x: self.logsumexp(*x[1]),
+                                  reverse=True)
+                    beam = beam[:beam_size]
+
+            best = beam[0]
+            hyps.append(best[0])
+            scores.append(-self.logsumexp(*best[1]))
+        return hyps, scores
 
 # # 拓展Module
 # class CTCLoss(torch.nn.Module):
