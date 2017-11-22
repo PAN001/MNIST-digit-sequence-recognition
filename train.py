@@ -89,7 +89,7 @@ def train(input, target):
     print "label[0]: "
     print target.data.cpu().numpy()[0] if cuda else target.data.numpy()[0]
     # print "label:"
-    print target.data.cpu().numpy() if cuda else target.data.numpy()
+    # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
     loss.backward()
     opt.step()
@@ -120,7 +120,7 @@ for i in tqdm(range(epochs)):
     train(data_batch, labels_batch)
 
 
-# show image
-plt.title(str(dataset_labels[1]))
-plt.imshow(dataset_data[1], cmap='gray')
-plt.show()
+# # show image
+# plt.title(str(dataset_labels[1]))
+# plt.imshow(dataset_data[1], cmap='gray')
+# plt.show()
