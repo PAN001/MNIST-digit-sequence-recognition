@@ -9,7 +9,6 @@ import collections
 
 NEG_INF = -float("inf")
 
-# 继承torch.autograd.Function，拓展numpy
 class CTCLoss(torch.autograd.Function):
     """
     We can implement our own custom autograd Functions by subclassing
