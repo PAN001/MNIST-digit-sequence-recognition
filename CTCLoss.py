@@ -88,7 +88,7 @@ class CTCLoss(torch.autograd.Function):
                 alphas[start:end, t] = alphas[start:end, t] / c
                 ll_forward += np.log(c)
 
-            print "ll_forward: ", ll_forward
+            # print "ll_forward: ", ll_forward
 
             # add to the list
             alphases.append(alphas)
