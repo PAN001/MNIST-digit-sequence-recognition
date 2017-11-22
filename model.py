@@ -79,7 +79,7 @@ class Net(nn.Module):
 
         # CNN
         out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
-        out = self.conv_bn(out)
+        # out = self.conv_bn(out)
         out = F.relu(out)
 
         # reshape
