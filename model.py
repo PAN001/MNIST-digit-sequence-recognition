@@ -71,6 +71,12 @@ class Net(nn.Module):
 
 
     def forward(self, x):
+        """
+        Arguments:
+            x: D
+
+        """
+
         # CNN
         out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
         out = self.conv_bn(out)

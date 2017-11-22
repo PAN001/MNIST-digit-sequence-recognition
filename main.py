@@ -90,7 +90,10 @@ def train(epoch):
     for batch_idx, (data, target) in enumerate(train_loader):
         if args.cuda:
             data, target = data.cuda(), target.cuda()
+
+        data = data.view(data.shape[0], 1, data.shape[1], data.shape[2])
         data, target = Variable(data), Variable(target)
+
         optimizer.zero_grad()
         out = model(data)
 
@@ -121,6 +124,8 @@ def test():
     for data, target in test_loader:
         if args.cuda:
             data, target = data.cuda(), target.cuda()
+            
+        data = data.view(data.shape[0], 1, data.shape[1], data.shape[2])
         data, target = Variable(data, volatile=True), Variable(target)
         out = model(data)
         test_loss += criterion(out, target).data[0] # sum up batch loss
