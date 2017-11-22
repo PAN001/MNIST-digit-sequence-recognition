@@ -30,7 +30,7 @@ class Net(nn.Module):
 
         # CNN
         self.cnn_input_chanel = 1
-        self.cnn_output_chanel = 16
+        self.cnn_output_chanel = 32
         self.cnn_conv_kernelsize = 5
         self.pool_kernelsize = 2
         # self.pool_stride = 2
