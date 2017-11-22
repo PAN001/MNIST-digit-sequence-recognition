@@ -110,6 +110,13 @@ def train(epoch):
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.data[0]))
+            out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
+            predictions = criterion.decode_best_path(out_np)
+            print "best_path_predictions[0]: "
+            print predictions[0]
+
+            print "label[0]: "
+            print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
 
 def test():
     model.eval()
