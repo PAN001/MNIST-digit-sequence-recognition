@@ -85,7 +85,7 @@ class CTCLoss(torch.autograd.Function):
             loss = loss - llForward
             print(self.llForwardList)
 
-        hypList, distList = self.decode_best_path(self.parameters)
+        hypList = self.decode_best_path(self.parameters)
         print("")
         print("prediction:\n", hypList)
         print("target label:   ", self.sequence)
