@@ -8,7 +8,6 @@ import math
 import collections
 
 NEG_INF = -float("inf")
-cuda = True
 
 # 继承torch.autograd.Function，拓展numpy
 class CTCLoss(torch.autograd.Function):
@@ -17,6 +16,10 @@ class CTCLoss(torch.autograd.Function):
     torch.autograd.Function and implementing the forward and backward passes
     which operate on Tensors.
     """
+
+    def __init__(self, cuda):
+        super(CTCLoss, self).__init__()
+        self.cuda = cuda
 
     def forward(self, input, seqs, blank = 10):
         """
@@ -33,8 +36,8 @@ class CTCLoss(torch.autograd.Function):
         self.blank = blank
         self.batch_size = input.shape[0]
 
-        input_np = input.cpu().numpy() if cuda else input.numpy()
-        seqs_np = seqs.cpu().numpy() if cuda else seqs.numpy()
+        input_np = input.cpu().numpy() if self.cuda else input.numpy()
+        seqs_np = seqs.cpu().numpy() if self.cuda else seqs.numpy()
 
         self.input_np = input_np
         self.seqs_np = seqs_np
@@ -185,7 +188,7 @@ class CTCLoss(torch.autograd.Function):
             # add to list
             grads.append(grad)
 
-        return torch.FloatTensor(grads).cuda() if cuda else torch.FloatTensor(grads), None
+        return torch.FloatTensor(grads).cuda() if self.cuda else torch.FloatTensor(grads), None
 
     def decode_best_path(self, input):
         """

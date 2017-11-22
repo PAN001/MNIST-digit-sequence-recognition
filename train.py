@@ -11,7 +11,6 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import os
 
-
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--lr', type=float, default=0.01)
 argparser.add_argument('--epochs', type=int, default=2000)
@@ -28,7 +27,7 @@ torch.manual_seed(manual_seed)
 
 batch_size = 50
 lr = 0.01
-epochs = 10
+epochs = 50
 classes = 10 + 1
 # cuda = args.cuda
 
@@ -122,7 +121,7 @@ net = Net(cuda, batch_size)
 net = net.cuda() if cuda else net
 opt = torch.optim.Adam(net.parameters(), lr = lr)
 # opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
-criterion = CTCLoss()
+criterion = CTCLoss(cuda)
 
 dataset_data = np.load("./dataset/data_5_10000.npy")
 dataset_data = dataset_data / 255.0
@@ -154,7 +153,7 @@ for i in range(epochs): # each epoch
         labels_batch = labels[j * batch_size: (j+1) * batch_size]
         train(data_batch, labels_batch)
 
-save()
+save("model_1")
 
 # # show image
 # plt.title(str(dataset_labels[1]))
