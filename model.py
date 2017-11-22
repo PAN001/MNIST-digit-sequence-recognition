@@ -32,7 +32,8 @@ class Net(nn.Module):
         self.cnn_input_chanel = 1
         self.cnn_output_chanel = 32
         self.cnn_conv_kernelsize = 5
-        self.pool_kernelsize = 2
+
+        # self.pool_kernelsize = 2
         # self.pool_stride = 2
 
         self.conv = nn.Conv2d(self.cnn_input_chanel, self.cnn_output_chanel, self.cnn_conv_kernelsize)
@@ -41,6 +42,8 @@ class Net(nn.Module):
         init.constant(self.conv.bias, 0.1)
 
         # self.pool = nn.MaxPool2d(self.pool_kernelsize, self.pool_stride)
+
+        self.conv_bn = nn.BatchNorm2d(self.cnn_output_chanel) # batch normalization
 
         # LSTM
         self.lstm_input_size = self.image_H * self.cnn_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
@@ -56,9 +59,9 @@ class Net(nn.Module):
         # init.xavier_uniform(self.lstm.weights, gain=np.sqrt(2))
         # init.constant(self.lstm.bias, 0.1)
 
-        # MLP: convert to 11-d probability vector
-        self.mlp_output_size = self.classes
-        self.mlp = nn.Linear(self.lstm_hidden_size, self.mlp_output_size)
+        # FC: convert to 11-d probability vector
+        self.fc_output_size = self.classes
+        self.fc = nn.Linear(self.lstm_hidden_size, self.fc_output_size)
         # initialization
         init.xavier_uniform(self.mlp.weight, gain=np.sqrt(2))
         init.constant(self.mlp.bias, 0.1)
@@ -68,22 +71,27 @@ class Net(nn.Module):
 
 
     def forward(self, x):
+        # CNN
         out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
+        out = self.conv_bn(out)
         out = F.relu(out)
 
-        # print "D(out) = (batch_size, cnn_output_chanel, H, W): ", out.size()
+        # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
         out.contiguous()
         out = out.view(self.batch_size, -1, self.lstm_input_size) # D(out) = (batch_size, seq_len, lstm_input_size) where seq_len = W, lstm_input_size = H * cnn_output_chanel
-        # print "D(out) = (batch_size, seq_len, lstm_input_size): ", out.size()
-        out, self.lstm_hidden = self.lstm(out, (self.lstm_hidden, self.lstm_cell)) # D(out) = (batch_size, seq_len, hidden_size)
-        # print "D(out) = (batch_size, seq_len, hidden_size): ", out.size()
 
+        # LSTM
+        out, self.lstm_hidden = self.lstm(out, (self.lstm_hidden, self.lstm_cell)) # D(out) = (batch_size, seq_len, hidden_size)
+
+        # reshape
         out.contiguous()
         out = out.view(-1, self.lstm_hidden_size) # D(out) = (batch_size * seq_len, hidden_size)
-        # print "D(out) = (batch_size * seq_len, hidden_size): ", out.size()
-        out = self.mlp(out) # D(out) = (batch_size * seq_len, classes)
+
+        # fc layer
+        out = self.fc(out) # D(out) = (batch_size * seq_len, classes)
         out = self.softmax(out)
+
         return out
 
     def reset_hidden(self):

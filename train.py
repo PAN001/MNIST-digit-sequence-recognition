@@ -8,14 +8,15 @@ import random
 import argparse
 import numpy as np
 from tqdm import tqdm
+from tqdm import trange
 import matplotlib.pyplot as plt
 import os
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--lr', type=float, default=0.01)
-argparser.add_argument('--epochs', type=int, default=2000)
-argparser.add_argument('--batch_size', type=int, default=100*20)
-argparser.add_argument('--cuda', type=bool, default=False)
+argparser.add_argument('--lr', dest="lr", type=float, default=0.01)
+argparser.add_argument('--epochs', dest="epochs" , type=int, default=2000)
+argparser.add_argument('--batch_size', dest="batch_size", type=int, default=100*20)
+argparser.add_argument('--cuda', dest="cuda", type=bool, default=False)
 args = argparser.parse_args()
 
 # deterministic
@@ -130,7 +131,7 @@ dataset_labels = dataset_labels.astype(int)
 
 dataset_size = dataset_data.shape[0]
 
-for i in range(epochs): # each epoch
+for i in trange(epochs, desc = "Epoch"): # each epoch
     print "epoch: ", i
 
     # permute training dataset
@@ -145,7 +146,7 @@ for i in range(epochs): # each epoch
     labels = torch.IntTensor(dataset_labels)
     labels = Variable(labels.cuda()) if cuda else Variable(labels)
 
-    for j in tqdm(range(dataset_size / batch_size)): # each batch
+    for j in trange(dataset_size / batch_size, desc = "Batch"): # each batch
 
         print ""
         # j = 0 # fix training
