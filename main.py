@@ -14,82 +14,6 @@ import os
 import shutil
 import sys
 
-# Training settings
-parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
-parser.add_argument('--batch-size', type=int, default=64, metavar='N',
-                    help='input batch size for training (default: 64)')
-parser.add_argument('--validate-batch-size', type=int, default=64, metavar='N',
-                    help='input batch size for validating (default: 64)')
-parser.add_argument('--epochs', type=int, default=100, metavar='N',
-                    help='number of epochs to train (default: 100)')
-parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
-                    help='learning rate (default: 0.01)')
-parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
-                    help='SGD momentum (default: 0.5)')
-parser.add_argument('--cuda', action='store_true', default=False,
-                    help='enables CUDA training')
-parser.add_argument('--seed', type=int, default=1, metavar='S',
-                    help='random seed (default: 1)')
-parser.add_argument('--log-interval', type=int, default=10, metavar='N',
-                    help='how many batches to wait before logging training status')
-parser.add_argument('--eval', action='store_true', default=False,
-                    help='evaluate a pretrained model')
-parser.add_argument('--model-path', type=str, default="model.pt", metavar='MP',
-                    help='the path to the model to evaluate/save')
-parser.add_argument('--resume', default='', type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: None)')
-
-
-args = parser.parse_args()
-args.cuda = args.cuda and torch.cuda.is_available()
-
-print(args)
-
-# set seed
-torch.manual_seed(args.seed)
-if args.cuda:
-    torch.cuda.manual_seed(args.seed)
-
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
-
-# global variables
-start_epoch = 1
-best_edit_dist = sys.maxint
-
-classes = 11
-train_data_path = "./dataset/data_5_10000.npy"
-train_labels_path = "./dataset/labels_5_10000.npy"
-
-validate_data_path = "./dataset/test_data_20_1000.npy"
-validate_labels_path = "./dataset/test_labels_20_1000.npy"
-
-# load data
-train_data = torch.Tensor(np.load(train_data_path))
-train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
-train_dataset = data_utils.TensorDataset(train_data, train_labels)
-train_loader = torch.utils.data.DataLoader(train_dataset,
-    batch_size=args.batch_size, shuffle=True, **kwargs)
-
-validate_data = torch.Tensor(np.load(validate_data_path)[0:512])
-validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:512])
-validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
-validate_loader = torch.utils.data.DataLoader(validate_dataset,
-    batch_size=args.validate_batch_size, shuffle=True, **kwargs)
-
-# initialize the model
-if args.eval:
-    model = torch.load(args.model_path)
-else:
-    model = Net(args.cuda)
-
-if args.cuda:
-    model.cuda()
-
-optimizer = torch.optim.Adam(model.parameters(), lr = args.lr)
-# opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
-criterion = CTCLoss(args.cuda)
-decoder = Decoder()
-
 def train(epoch):
     model.train()
 
@@ -201,26 +125,104 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
         print "Update best model"
         shutil.copyfile(filename, 'model_best.pt') # update the best model: copy from filename to "model_best.pt"
 
-# validte one test batch
-if args.eval:
-    validate()
-    exit()
 
-# train
-# optionally resume from a checkpoint
-if args.resume:
-    if os.path.isfile(args.resume):
-        print("=> loading checkpoint '{}'".format(args.resume))
-        checkpoint = torch.load(args.resume)
+# Training settings
+parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
+parser.add_argument('--batch-size', type=int, default=64, metavar='N',
+                    help='input batch size for training (default: 64)')
+parser.add_argument('--validate-batch-size', type=int, default=64, metavar='N',
+                    help='input batch size for validating (default: 64)')
+parser.add_argument('--epochs', type=int, default=100, metavar='N',
+                    help='number of epochs to train (default: 100)')
+parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
+                    help='learning rate (default: 0.01)')
+parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
+                    help='SGD momentum (default: 0.5)')
+parser.add_argument('--cuda', action='store_true', default=False,
+                    help='enables CUDA training')
+parser.add_argument('--seed', type=int, default=1, metavar='S',
+                    help='random seed (default: 1)')
+parser.add_argument('--log-interval', type=int, default=10, metavar='N',
+                    help='how many batches to wait before logging training status')
+parser.add_argument('--eval', action='store_true', default=False,
+                    help='evaluate a pretrained model')
+parser.add_argument('--model-path', type=str, default='', metavar='MP',
+                    help='path to the model to evaluate/resume')
+
+# parser.add_argument('--resume', default='', type=str, metavar='PATH',
+#                     help='path to latest checkpoint (default: None)')
+
+
+args = parser.parse_args()
+args.cuda = args.cuda and torch.cuda.is_available()
+
+print(args)
+
+# set seed
+torch.manual_seed(args.seed)
+if args.cuda:
+    torch.cuda.manual_seed(args.seed)
+
+kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
+
+# global variables
+start_epoch = 1
+best_edit_dist = sys.maxint
+
+classes = 11
+train_data_path = "./dataset/data_5_10000.npy"
+train_labels_path = "./dataset/labels_5_10000.npy"
+
+validate_data_path = "./dataset/test_data_20_1000.npy"
+validate_labels_path = "./dataset/test_labels_20_1000.npy"
+
+# load data
+train_data = torch.Tensor(np.load(train_data_path))
+train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
+train_dataset = data_utils.TensorDataset(train_data, train_labels)
+train_loader = torch.utils.data.DataLoader(train_dataset,
+    batch_size=args.batch_size, shuffle=True, **kwargs)
+
+validate_data = torch.Tensor(np.load(validate_data_path)[0:512])
+validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:512])
+validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
+validate_loader = torch.utils.data.DataLoader(validate_dataset,
+    batch_size=args.validate_batch_size, shuffle=True, **kwargs)
+
+# initialize the model
+if args.eval:
+    model = torch.load(args.model_path)
+else:
+    model = Net(args.cuda)
+
+if args.cuda:
+    model.cuda()
+
+optimizer = torch.optim.Adam(model.parameters(), lr = args.lr)
+# opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
+criterion = CTCLoss(args.cuda)
+decoder = Decoder()
+
+# reload the model
+if args.model_path:
+    if os.path.isfile(args.model_path):
+        print("=> loading checkpoint '{}'".format(args.model_path))
+        checkpoint = torch.load(args.model_path)
         start_epoch = checkpoint['epoch']
         best_edit_dist = checkpoint['best_edit_dist']
         model.load_state_dict(checkpoint['state_dict']) # load model weights from the checkpoint
         optimizer.load_state_dict(checkpoint['optimizer'])
         print("=> loaded checkpoint '{}' (epoch {})"
-              .format(args.resume, checkpoint['epoch']))
+              .format(args.model_path, checkpoint['epoch']))
     else:
-        print("=> no checkpoint found at '{}'".format(args.resume))
+        print("=> no checkpoint found at '{}'".format(args.model_path))
 
+# validate one test batch
+if args.eval:
+    validate()
+    exit()
+
+# train
 for epoch in range(start_epoch, args.epochs + 1):
     train(epoch)
 
