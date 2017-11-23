@@ -173,8 +173,8 @@ classes = 11
 train_data_path = "./dataset/data_5_10000.npy"
 train_labels_path = "./dataset/labels_5_10000.npy"
 
-validate_data_path = "./dataset/test_data_20_1000.npy"
-validate_labels_path = "./dataset/test_labels_20_1000.npy"
+validate_data_path = "./dataset/test_data_5_1000.npy"
+validate_labels_path = "./dataset/test_labels_5_1000.npy"
 
 # load data
 train_data = torch.Tensor(np.load(train_data_path))

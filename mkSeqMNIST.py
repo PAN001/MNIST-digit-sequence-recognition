@@ -9,7 +9,7 @@ import os
 import datetime
 from matplotlib import pyplot as plt
 
-N = 20 # number of digits in the contiguous sequence
+N = 5 # number of digits in the contiguous sequence
 M = 1000 # number of samples
 space = 200
 overlap = 15
@@ -50,7 +50,7 @@ for i in range(M):
     '''
     img = np.zeros((36, 0))
     # probs = torch.Tensor(range(0, N + 1))
-    
+
     dist = torch.multinomial(torch.ones(N+1), space, replacement=True)
     for j in range(N+1):
         img = np.append(img, np.zeros((36, (dist==j).sum())), axis=1)
@@ -63,5 +63,5 @@ dataset_data = np.array(images)
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-np.save("./dataset/test_data_20_1000.npy", dataset_data)
-np.save("./dataset/test_labels_20_1000.npy", dataset_labels)
+np.save("./dataset/test_data_5_1000.npy", dataset_data)
+np.save("./dataset/test_labels_5_1000.npy", dataset_labels)
