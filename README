@@ -54,7 +54,6 @@ Given the probability distribution $P(l|x)$, we can compute a label $l$ for an i
 $$ h(x) = \arg \max_{\ell \in L^{\le T}} P(\ell | x) $$
 
 Computing the most likely $l$ from the probability distribution $P(l|x)$ is known as decoding. However, given that the alphabet $L$ and the maximum sequence length $T$ may be quite large, it is computationally intractable to examing every possible $l \in L^{\leqslant T}$. There is no known algorithm to efficiently compute this $h(x)$ precisely; however, there are several ways to approximate decoding which work well enough in practice.
-
 Traditionally, decoding is done in one of following two ways.
 
 ### Best Path Decoding
