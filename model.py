@@ -48,7 +48,7 @@ class Net(nn.Module):
         init.constant(self.conv2.bias, 0.1)
 
         # batch norm (before activation)
-        self.conv_bn = nn.BatchNorm2d(self.cnn_output_chanel) # batch normalization
+        self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
 
         # drop out (after activation)
         self.conv2_drop = nn.Dropout2d()
@@ -92,7 +92,7 @@ class Net(nn.Module):
         out = F.relu(out)
 
         out = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(out)), 2))
-        out = self.conv_bn(out)
+        out = self.conv_bn2(out)
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
