@@ -46,9 +46,14 @@ def train(epoch):
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.data[0]))
+
             out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
-            predictions = criterion.decode_best_path(out_np)
-            print "best_path_predictions[0]: "
+            predictions, predictions_no_merge = decoder.decode_best_path(out_np)
+
+            print "best_path_predictions_no_merge[0]: "
+            print np.array(predictions_no_merge[0])
+
+            print "best_path_predictions_merge[0]: "
             print np.array(predictions[0])
 
             print "label[0]: "
@@ -83,16 +88,17 @@ def validate():
         out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
         target_np = target.data.cpu().numpy() if args.cuda else target.data.numpy()
 
-        predictions = criterion.decode_best_path(out_np)
+        predictions, predictions_no_merge = decoder.decode_best_path(out_np)
 
         edit_dists, _, _, _, _ = decoder.edit_distance(target_np, predictions)
         # decoder.display_edit_diff(target_np, predictions)
         validate_edit_dist += sum(edit_dists)
 
-        print "best_path_predictions[0]: "
+        print "best_path_predictions_no_merge[0]: "
+        print np.array(predictions_no_merge[0])
+
+        print "best_path_predictions_merge[0]: "
         print np.array(predictions[0])
-        # print "best_path_predictions: "
-        # print predictions
 
         # predictions_beam, scores_beam = criterion.decode_beam(out.data.numpy())
         # print "beam_predictions: "
@@ -226,7 +232,7 @@ for epoch in range(start_epoch, args.epochs + 1):
     validate_edit_dist = validate()
 
     # remember best validate_edit_dist and save checkpoint
-    is_best = validate_edit_dist < best_edit_dist
+    is_best = validate_edit_dist <= best_edit_dist
     best_edit_dist = min(validate_edit_dist, best_edit_dist)
     save_checkpoint({
         'epoch': epoch + 1,

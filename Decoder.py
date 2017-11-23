@@ -19,11 +19,12 @@ class Decoder():
         """
 
         hyps = []
+        hyps_no_merge = []
         for i in range(0, input.shape[0]):
             probs = input[i]
             best_path = np.argmax(probs, axis=0).tolist()
+            hyps_no_merge.append(best_path)
 
-            # print best_path
 
             # collapse string
             hyp = []
@@ -39,7 +40,7 @@ class Decoder():
 
             hyps.append(hyp)
 
-        return hyps
+        return hyps, hyps_no_merge
 
     def make_new_beam(self):
         fn = lambda: (NEG_INF, NEG_INF)
