@@ -52,6 +52,7 @@ if args.cuda:
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 
 # global variables
+start_epoch = 1
 best_edit_dist = sys.maxint
 
 classes = 11
@@ -129,6 +130,7 @@ def train(epoch):
             print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
 
 def validate():
+    print "----------------------------------------Validation--------------------------------------------------"
     model.eval()
 
     validate_loss = 0
@@ -181,6 +183,7 @@ def validate():
     print('\nValidation set: Average loss: {:.4f}, Average edit dist: {:.4f}\n'.format(
         validate_loss, validate_edit_dist))
 
+    print "----------------------------------------------------------------------------------------------------"
     return validate_edit_dist
 
 def save(filename):
@@ -204,7 +207,7 @@ if args.resume:
     if os.path.isfile(args.resume):
         print("=> loading checkpoint '{}'".format(args.resume))
         checkpoint = torch.load(args.resume)
-        args.start_epoch = checkpoint['epoch']
+        start_epoch = checkpoint['epoch']
         best_edit_dist = checkpoint['best_edit_dist']
         model.load_state_dict(checkpoint['state_dict']) # load model weights from the checkpoint
         optimizer.load_state_dict(checkpoint['optimizer'])
@@ -213,7 +216,7 @@ if args.resume:
     else:
         print("=> no checkpoint found at '{}'".format(args.resume))
 
-for epoch in range(1, args.epochs + 1):
+for epoch in range(start_epoch, args.epochs + 1):
     train(epoch)
 
     # evaluate on validation set
