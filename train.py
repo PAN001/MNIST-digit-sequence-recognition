@@ -101,7 +101,7 @@ def train(input, target):
     out_np = out.data.cpu().numpy() if cuda else out.data.numpy()
     predictions = criterion.decode_best_path(out_np)
     print "best_path_predictions[0]: "
-    print predictions[0]
+    print np.array(predictions[0])
     # print "best_path_predictions: "
     # print predictions
 

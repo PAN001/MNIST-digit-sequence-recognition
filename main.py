@@ -49,7 +49,7 @@ def train(epoch):
             out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
             predictions = criterion.decode_best_path(out_np)
             print "best_path_predictions[0]: "
-            print predictions[0]
+            print np.array(predictions[0])
 
             print "label[0]: "
             print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
@@ -90,7 +90,7 @@ def validate():
         validate_edit_dist += sum(edit_dists)
 
         print "best_path_predictions[0]: "
-        print predictions[0]
+        print np.array(predictions[0])
         # print "best_path_predictions: "
         # print predictions
 
