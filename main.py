@@ -133,7 +133,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
 
 def log(epoch, validate_edit_dist, validate_loss):
     with open(log_path, "a") as file:
-        file.write(epoch + "," + validate_edit_dist + "," + validate_loss)
+        file.write(str(epoch) + "," + str(validate_edit_dist) + "," + str(validate_loss))
 
 
 # Training settings
