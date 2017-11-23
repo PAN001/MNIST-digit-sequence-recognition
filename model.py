@@ -51,8 +51,6 @@ class Net(nn.Module):
         self.lstm_hidden = None
         self.lstm_cell = None
 
-        self.reset_hidden()
-        self.reset_cell()
         self.lstm = nn.LSTM(self.lstm_input_size, self.lstm_hidden_size, self.lstm_num_layers, batch_first = True)
         # # initialization
         # init.xavier_uniform(self.lstm.weights, gain=np.sqrt(2))
