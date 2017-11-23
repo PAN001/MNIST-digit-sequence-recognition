@@ -59,6 +59,8 @@ def train(epoch):
             print "label[0]: "
             print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
 
+            print ""
+
 def validate():
     print "----------------------------------------Validation--------------------------------------------------"
     model.eval()
