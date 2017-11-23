@@ -119,7 +119,7 @@ def validate():
         validate_loss, validate_edit_dist))
 
     print "----------------------------------------------------------------------------------------------------"
-    return validate_edit_dist
+    return validate_edit_dist, validate_loss
 
 def save(filename):
     torch.save(model, filename)
@@ -130,6 +130,10 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     if is_best:
         print "Update best model"
         shutil.copyfile(filename, 'model_best.pt') # update the best model: copy from filename to "model_best.pt"
+
+def log(epoch, validate_edit_dist, validate_loss):
+    with open(log_path, "a") as file:
+        file.write(epoch + "," + validate_edit_dist + "," + validate_loss)
 
 
 # Training settings
@@ -174,8 +178,12 @@ kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 # global variables
 start_epoch = 1
 best_edit_dist = sys.maxint
+validate_edit_dists = [] # for each epoch
+validate_losses = [] # for each epoch
 
 classes = 11
+
+log_path = "./log.txt"
 train_data_path = "./dataset/train_data_5_10000.npy"
 train_labels_path = "./dataset/train_labels_5_10000.npy"
 
@@ -229,7 +237,9 @@ for epoch in range(start_epoch, args.epochs + 1):
     train(epoch)
 
     # evaluate on validation set
-    validate_edit_dist = validate()
+    validate_edit_dist, validate_loss = validate()
+    validate_edit_dists.append(validate_edit_dist)
+    validate_losses.append(validate_loss)
 
     # remember best validate_edit_dist and save checkpoint
     is_best = validate_edit_dist <= best_edit_dist
@@ -240,6 +250,9 @@ for epoch in range(start_epoch, args.epochs + 1):
         'best_edit_dist': best_edit_dist,
         'optimizer' : optimizer.state_dict(),
     }, is_best)
+
+    # log
+    log(epoch, validate_edit_dist, validate_loss)
 #
 # if not args.eval:
 #     save(args.model_path)
