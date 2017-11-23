@@ -53,9 +53,10 @@ class Net(nn.Module):
         # drop out (after activation)
         self.conv2_drop = nn.Dropout2d()
 
+        self.conv2_H = 6 # height of feature map after conv2
 
         # LSTM
-        self.lstm_input_size = self.image_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
+        self.lstm_input_size = self.conv2_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
         self.lstm_num_layers = 1
         self.lstm_hidden = None
