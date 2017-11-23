@@ -1,1 +1,1 @@
-python main.py --model-path model_2.pt --cuda --epochs 2 --resume model_best.pt
+python main.py --cuda
