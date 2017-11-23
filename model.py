@@ -92,7 +92,7 @@ class Net(nn.Module):
         out = F.relu(out)
 
         out = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(out)), 2))
-        out = self.conv_bn2(out)
+        out = self.conv2_bn(out)
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
