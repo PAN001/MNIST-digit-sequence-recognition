@@ -16,10 +16,10 @@ import sys
 
 # Training settings
 parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
-parser.add_argument('--batch-size', type=int, default=50, metavar='N',
-                    help='input batch size for training (default: 50)')
-parser.add_argument('--validate-batch-size', type=int, default=50, metavar='N',
-                    help='input batch size for validating (default: 50)')
+parser.add_argument('--batch-size', type=int, default=32, metavar='N',
+                    help='input batch size for training (default: 32)')
+parser.add_argument('--validate-batch-size', type=int, default=32, metavar='N',
+                    help='input batch size for validating (default: 32)')
 parser.add_argument('--epochs', type=int, default=100, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
@@ -62,8 +62,8 @@ validate_data_path = "./dataset/test_data_5_10000.npy"
 validate_labels_path = "./dataset/test_labels_5_10000.npy"
 
 # load data
-train_data = torch.Tensor(np.load(train_data_path))
-train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
+train_data = torch.Tensor(np.load(train_data_path)[0:512])
+train_labels = torch.IntTensor(np.load(train_labels_path).astype(int)[0:512])
 train_dataset = data_utils.TensorDataset(train_data, train_labels)
 train_loader = torch.utils.data.DataLoader(train_dataset,
     batch_size=args.batch_size, shuffle=True, **kwargs)
@@ -198,7 +198,7 @@ if args.resume:
         print("=> loading checkpoint '{}'".format(args.resume))
         checkpoint = torch.load(args.resume)
         args.start_epoch = checkpoint['epoch']
-        best_prec1 = checkpoint['best_prec1']
+        best_edit_dist = checkpoint['best_edit_dist']
         model.load_state_dict(checkpoint['state_dict']) # load model weights from the checkpoint
         optimizer.load_state_dict(checkpoint['optimizer'])
         print("=> loaded checkpoint '{}' (epoch {})"
@@ -217,7 +217,7 @@ for epoch in range(1, args.epochs + 1):
 
         # remember best validate_edit_dist and save checkpoint
         is_best = validate_edit_dist < best_edit_dist
-        best_edit_dist = max(validate_edit_dist, best_prec1)
+        best_edit_dist = max(validate_edit_dist, best_edit_dist)
         save_checkpoint({
             'epoch': epoch + 1,
             'state_dict': model.state_dict(),
