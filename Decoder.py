@@ -157,7 +157,7 @@ class Decoder():
         subses = []
         corrses = []
 
-        for i in range(0, input.shape[0]):
+        for i in range(0, refs.shape[0]):
             ref = refs[i]
             hyp = hyps[i]
 
