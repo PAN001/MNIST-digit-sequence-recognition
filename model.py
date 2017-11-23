@@ -17,7 +17,6 @@ import torch.nn.init as init
 #         m.weight.data.normal_(1.0, 0.02)
 #         m.bias.data.fill_(0)
 
-
 class Net(nn.Module):
 
     def __init__(self, use_cuda):
