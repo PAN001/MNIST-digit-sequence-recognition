@@ -138,8 +138,8 @@ parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--validate-batch-size', type=int, default=64, metavar='N',
                     help='input batch size for validating (default: 64)')
-parser.add_argument('--epochs', type=int, default=100, metavar='N',
-                    help='number of epochs to train (default: 100)')
+parser.add_argument('--epochs', type=int, default=10, metavar='N',
+                    help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
 parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
@@ -176,11 +176,11 @@ start_epoch = 1
 best_edit_dist = sys.maxint
 
 classes = 11
-train_data_path = "./dataset/train_data_20_10000.npy"
-train_labels_path = "./dataset/train_labels_20_10000.npy"
+train_data_path = "./dataset/train_data_5_10000.npy"
+train_labels_path = "./dataset/train_labels_5_10000.npy"
 
-validate_data_path = "./dataset/test_data_20_1000.npy"
-validate_labels_path = "./dataset/test_labels_20_1000.npy"
+validate_data_path = "./dataset/test_data_5_1000.npy"
+validate_labels_path = "./dataset/test_labels_5_1000.npy"
 
 # load data
 train_data = torch.Tensor(np.load(train_data_path) / 255.0)
