@@ -177,13 +177,13 @@ validate_data_path = "./dataset/test_data_20_1000.npy"
 validate_labels_path = "./dataset/test_labels_20_1000.npy"
 
 # load data
-train_data = torch.Tensor(np.load(train_data_path))
+train_data = torch.Tensor(np.load(train_data_path) / 255.0)
 train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
 train_dataset = data_utils.TensorDataset(train_data, train_labels)
 train_loader = torch.utils.data.DataLoader(train_dataset,
     batch_size=args.batch_size, shuffle=True, **kwargs)
 
-validate_data = torch.Tensor(np.load(validate_data_path)[0:512])
+validate_data = torch.Tensor(np.load(validate_data_path)[0:512] / 255.0)
 validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:512])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
