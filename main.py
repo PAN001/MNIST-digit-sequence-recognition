@@ -110,8 +110,6 @@ def validate():
         # print "label:"
         # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
-
-
     validate_loss /= len(validate_loader.dataset) # average loss
     print "validate_edit_dist before averaging: ", validate_edit_dist
     validate_edit_dist /= float(len(validate_loader.dataset)) # average edit dist
@@ -133,7 +131,9 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
 
 def log(epoch, validate_edit_dist, validate_loss):
     with open(log_path, "a") as file:
-        file.write(str(epoch) + "," + str(validate_edit_dist) + "," + str(validate_loss))
+        file.write(str(epoch) + "," + str(validate_edit_dist) + "," + str(validate_loss) + "\n")
+
+    print "Logged"
 
 
 # Training settings
