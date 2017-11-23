@@ -5,6 +5,9 @@ import collections
 NEG_INF = -float("inf")
 
 class Decoder():
+    def __init__(self, blank = 10):
+        self.blank = blank
+
     def decode_best_path(self, input):
         """
         Computes best path given sequence of probability distributions per frame.
