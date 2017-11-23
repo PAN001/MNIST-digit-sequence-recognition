@@ -18,8 +18,8 @@ import sys
 parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
 parser.add_argument('--batch-size', type=int, default=50, metavar='N',
                     help='input batch size for training (default: 50)')
-parser.add_argument('--test-batch-size', type=int, default=5, metavar='N',
-                    help='input batch size for testing (default: 5)')
+parser.add_argument('--validate-batch-size', type=int, default=50, metavar='N',
+                    help='input batch size for validating (default: 50)')
 parser.add_argument('--epochs', type=int, default=100, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
@@ -72,13 +72,13 @@ validate_data = torch.Tensor(np.load(validate_data_path)[0:512])
 validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:512])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
-    batch_size=args.batch_size, shuffle=True, **kwargs)
+    batch_size=args.validate_batch_size, shuffle=True, **kwargs)
 
 # initialize the model
 if args.eval:
     model = torch.load(args.model_path)
 else:
-    model = Net(args.cuda, args.batch_size)
+    model = Net(args.cuda)
 
 if args.cuda:
     model.cuda()
@@ -93,8 +93,9 @@ def train(epoch):
 
     for batch_idx, (data, target) in enumerate(train_loader):
         # reset states
-        model.reset_hidden()
-        model.reset_cell()
+        batch_size = data.shape[0]
+        model.reset_hidden(batch_size)
+        model.reset_cell(batch_size)
         model.zero_grad()
 
         if args.cuda:
@@ -105,7 +106,7 @@ def train(epoch):
 
         out = model(data)
 
-        out = out.view(args.batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
+        out = out.view(batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
         out = out.permute(0, 2, 1)  # D(out) = (batch_size, classes, seq_len)
 
         loss = criterion(out, target)
@@ -135,8 +136,9 @@ def validate():
 
     for data, target in validate_loader:
         # reset states
-        model.reset_hidden()
-        model.reset_cell()
+        batch_size = data.shape[0]
+        model.reset_hidden(batch_size)
+        model.reset_cell(batch_size)
         model.zero_grad()
 
         if args.cuda:
@@ -146,7 +148,7 @@ def validate():
         data, target = Variable(data, volatile=True), Variable(target)
         out = model(data)
 
-        out = out.view(args.batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
+        out = out.view(batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
         out = out.permute(0, 2, 1)  # D(out) = (batch_size, classes, seq_len)
 
         validate_loss += criterion(out, target).data[0] # sum up batch loss

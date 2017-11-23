@@ -20,11 +20,10 @@ import torch.nn.init as init
 
 class Net(nn.Module):
 
-    def __init__(self, use_cuda, batch_size):
+    def __init__(self, use_cuda):
         super(Net, self).__init__()
 
         self.classes = 10 + 1
-        self.batch_size = batch_size
         self.use_cuda = use_cuda
         self.image_H = 32
 
@@ -79,6 +78,7 @@ class Net(nn.Module):
 
         # CNN
         print "input size: ", x.size()
+        batch_size = int(x.size()[0])
         out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
         out = self.conv_bn(out)
         out = F.relu(out)
@@ -87,7 +87,7 @@ class Net(nn.Module):
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
         out.contiguous()
         print "after CNN: ", out.size()
-        out = out.view(self.batch_size, -1, self.lstm_input_size) # D(out) = (batch_size, seq_len, lstm_input_size) where seq_len = W, lstm_input_size = H * cnn_output_chanel
+        out = out.view(batch_size, -1, self.lstm_input_size) # D(out) = (batch_size, seq_len, lstm_input_size) where seq_len = W, lstm_input_size = H * cnn_output_chanel
 
         print "before LSTM: ", out.size()
         # LSTM
@@ -103,14 +103,14 @@ class Net(nn.Module):
 
         return out
 
-    def reset_hidden(self):
+    def reset_hidden(self, batch_size):
         # reset hidden state for time 0
-        h0 = torch.zeros(self.lstm_num_layers, self.batch_size, self.lstm_hidden_size) # random init
+        h0 = torch.zeros(self.lstm_num_layers, batch_size, self.lstm_hidden_size) # random init
         h0 = h0.cuda() if self.use_cuda else h0
         self.lstm_hidden = Variable(h0)
 
-    def reset_cell(self):
+    def reset_cell(self, batch_size):
         # reset cell state for time 0
-        c0 = torch.zeros(self.lstm_num_layers, self.batch_size, self.lstm_hidden_size) # random init
+        c0 = torch.zeros(self.lstm_num_layers, batch_size, self.lstm_hidden_size) # random init
         c0 = c0.cuda() if self.use_cuda else c0
         self.lstm_cell = Variable(c0)
