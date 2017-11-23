@@ -178,6 +178,8 @@ def validate():
         # print "label:"
         # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
+        print edit_dist
+
     validate_loss /= len(validate_loader.dataset) # average loss
     print "validate_edit_dist before averaging: ", validate_edit_dist
     validate_edit_dist /= float(len(validate_loader.dataset)) # average edit dist
