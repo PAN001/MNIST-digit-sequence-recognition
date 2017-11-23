@@ -160,9 +160,10 @@ def validate():
 
         predictions = criterion.decode_best_path(out_np)
 
-        edit_dist, _, _, _, _ = decoder.edit_distance(target_np, predictions)
-        decoder.display_edit_diff(target_np, predictions)
-        validate_edit_dist += edit_dist
+        edit_dists, _, _, _, _ = decoder.edit_distance(target_np, predictions)
+        print edit_dists
+        # decoder.display_edit_diff(target_np, predictions)
+        validate_edit_dist += sum(edit_dists)
 
         print "best_path_predictions[0]: "
         print predictions[0]
@@ -179,7 +180,7 @@ def validate():
         # print "label:"
         # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
-        print edit_dist
+
 
     validate_loss /= len(validate_loader.dataset) # average loss
     print "validate_edit_dist before averaging: ", validate_edit_dist
