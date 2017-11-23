@@ -37,7 +37,7 @@ parser.add_argument('--eval', action='store_true', default=False,
 parser.add_argument('--model-path', type=str, default="model.pt", metavar='MP',
                     help='the path to the model to evaluate/save')
 parser.add_argument('--resume', default='', type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: model_best.pt)')
+                    help='path to latest checkpoint (default: None)')
 
 args = parser.parse_args()
 args.cuda = args.cuda and torch.cuda.is_available()
