@@ -190,6 +190,7 @@ def save(filename):
 def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
     if is_best:
+        print "Update best model"
         shutil.copyfile(filename, 'model_best.pt') # update the best model: copy from filename to "model_best.pt"
 
 # validte one test batch
