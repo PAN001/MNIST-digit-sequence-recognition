@@ -27,21 +27,32 @@ class Net(nn.Module):
         self.image_H = 32
 
         # CNN
-        self.cnn_input_chanel = 1
-        self.cnn_output_chanel = 32
-        self.cnn_conv_kernelsize = 5
+        # conv1
+        self.conv1_input_chanel = 1
+        self.conv1_output_chanel = 10
+        self.onv1_kernelsize = 5
+        self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.onv1_kernelsize)
 
-        # self.pool_kernelsize = 2
-        # self.pool_stride = 2
-
-        self.conv = nn.Conv2d(self.cnn_input_chanel, self.cnn_output_chanel, self.cnn_conv_kernelsize)
         # initialization
-        init.xavier_uniform(self.conv.weight, gain=np.sqrt(2))
-        init.constant(self.conv.bias, 0.1)
+        init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
+        init.constant(self.conv1.bias, 0.1)
 
-        # self.pool = nn.MaxPool2d(self.pool_kernelsize, self.pool_stride)
+        # conv2
+        self.conv2_input_chanel = 10
+        self.conv2_output_chanel = 20
+        self.onv2_kernelsize = 5
+        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.onv2_kernelsize)
 
+        # initialization
+        init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
+        init.constant(self.conv2.bias, 0.1)
+
+        # batch norm (before activation)
         self.conv_bn = nn.BatchNorm2d(self.cnn_output_chanel) # batch normalization
+
+        # drop out (after activation)
+        self.conv2_drop = nn.Dropout2d()
+
 
         # LSTM
         self.lstm_input_size = self.image_H * self.cnn_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
@@ -76,9 +87,12 @@ class Net(nn.Module):
         # CNN
         # print "input size: ", x.size()
         batch_size = int(x.size()[0])
-        out = self.conv(x) # D(out) = (batch_size, cnn_output_chanel, H, W)
-        out = self.conv_bn(out)
+        out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
+        out = F.max_pool2d(out, 2) # D(out) = (batch_size, cov1_output_chanel, H, W)
         out = F.relu(out)
+
+        out = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(out)), 2))
+        out = self.conv_bn(out)
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
