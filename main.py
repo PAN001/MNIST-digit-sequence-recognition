@@ -158,11 +158,11 @@ def validate():
         out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
         target_np = target.data.cpu().numpy() if args.cuda else target.data.numpy()
 
-        edit_dist, _, _, _, _ = decoder.edit_distance(target_np, out_np)
-        decoder.display_edit_diff(target_np, out_np)
-        validate_edit_dist += edit_dist
-
         predictions = criterion.decode_best_path(out_np)
+
+        edit_dist, _, _, _, _ = decoder.edit_distance(target_np, predictions)
+        decoder.display_edit_diff(target_np, predictions)
+        validate_edit_dist += edit_dist
 
         print "best_path_predictions[0]: "
         print predictions[0]
