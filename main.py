@@ -161,7 +161,6 @@ def validate():
         predictions = criterion.decode_best_path(out_np)
 
         edit_dists, _, _, _, _ = decoder.edit_distance(target_np, predictions)
-        print edit_dists
         # decoder.display_edit_diff(target_np, predictions)
         validate_edit_dist += sum(edit_dists)
 
@@ -229,7 +228,7 @@ for epoch in range(start_epoch, args.epochs + 1):
 
     # remember best validate_edit_dist and save checkpoint
     is_best = validate_edit_dist < best_edit_dist
-    best_edit_dist = max(validate_edit_dist, best_edit_dist)
+    best_edit_dist = min(validate_edit_dist, best_edit_dist)
     save_checkpoint({
         'epoch': epoch + 1,
         'state_dict': model.state_dict(),
