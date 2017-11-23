@@ -21,7 +21,7 @@ parser.add_argument('--batch-size', type=int, default=32, metavar='N',
 parser.add_argument('--validate-batch-size', type=int, default=32, metavar='N',
                     help='input batch size for validating (default: 32)')
 parser.add_argument('--epochs', type=int, default=100, metavar='N',
-                    help='number of epochs to train (default: 10)')
+                    help='number of epochs to train (default: 100)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
 parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
@@ -37,7 +37,7 @@ parser.add_argument('--eval', action='store_true', default=False,
 parser.add_argument('--model-path', type=str, default="model.pt", metavar='MP',
                     help='the path to the model to evaluate/save')
 parser.add_argument('--resume', default='', type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: none)')
+                    help='path to latest checkpoint (default: model_best.pt)')
 
 args = parser.parse_args()
 args.cuda = args.cuda and torch.cuda.is_available()
@@ -192,6 +192,12 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     if is_best:
         shutil.copyfile(filename, 'model_best.pt') # update the best model: copy from filename to "model_best.pt"
 
+# validte one test batch
+if args.eval:
+    validate()
+    exit()
+
+# train
 # optionally resume from a checkpoint
 if args.resume:
     if os.path.isfile(args.resume):
@@ -207,23 +213,20 @@ if args.resume:
         print("=> no checkpoint found at '{}'".format(args.resume))
 
 for epoch in range(1, args.epochs + 1):
-    if args.eval:
-        validate()
-    else:
-        train(epoch)
+    train(epoch)
 
-        # evaluate on validation set
-        validate_edit_dist = validate()
+    # evaluate on validation set
+    validate_edit_dist = validate()
 
-        # remember best validate_edit_dist and save checkpoint
-        is_best = validate_edit_dist < best_edit_dist
-        best_edit_dist = max(validate_edit_dist, best_edit_dist)
-        save_checkpoint({
-            'epoch': epoch + 1,
-            'state_dict': model.state_dict(),
-            'best_edit_dist': best_edit_dist,
-            'optimizer' : optimizer.state_dict(),
-        }, is_best)
+    # remember best validate_edit_dist and save checkpoint
+    is_best = validate_edit_dist < best_edit_dist
+    best_edit_dist = max(validate_edit_dist, best_edit_dist)
+    save_checkpoint({
+        'epoch': epoch + 1,
+        'state_dict': model.state_dict(),
+        'best_edit_dist': best_edit_dist,
+        'optimizer' : optimizer.state_dict(),
+    }, is_best)
 #
 # if not args.eval:
 #     save(args.model_path)
