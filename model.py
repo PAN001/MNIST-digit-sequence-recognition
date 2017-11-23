@@ -90,14 +90,15 @@ class Net(nn.Module):
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
         out = F.max_pool2d(out, 2) # D(out) = (batch_size, cov1_output_chanel, H, W)
         out = F.relu(out)
+        print "after conv1: ", out.size()
 
         out = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(out)), 2))
         out = self.conv2_bn(out)
+        print "after conv2: ", out.size()
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
         out.contiguous()
-        # print "after CNN: ", out.size()
         out = out.view(batch_size, -1, self.lstm_input_size) # D(out) = (batch_size, seq_len, lstm_input_size) where seq_len = W, lstm_input_size = H * cnn_output_chanel
 
         # print "before LSTM: ", out.size()
