@@ -9,8 +9,8 @@ import os
 import datetime
 from matplotlib import pyplot as plt
 
-N = 5 # number of digits in the contiguous sequence
-M = 10000 # number of samples
+N = 20 # number of digits in the contiguous sequence
+M = 1000 # number of samples
 space = 200
 overlap = 15
 
@@ -35,7 +35,7 @@ for i in range(N):
     else:
         oq = rint(0, overlap-9) + 9
         dd = np.append(np.zeros((M, 36, dataset_data.shape[2]-oq)), d, axis=2)
-        dataset_data =   np.append(dataset_data, np.zeros((M,36,28-oq)), axis=2)
+        dataset_data = np.append(dataset_data, np.zeros((M,36,28-oq)), axis=2)
         dataset_data += dd
     dataset_labels = np.append(dataset_labels, p[:,:,0:1], axis=2)
 
@@ -50,6 +50,7 @@ for i in range(M):
     '''
     img = np.zeros((36, 0))
     # probs = torch.Tensor(range(0, N + 1))
+    
     dist = torch.multinomial(torch.ones(N+1), space, replacement=True)
     for j in range(N+1):
         img = np.append(img, np.zeros((36, (dist==j).sum())), axis=1)
@@ -62,5 +63,5 @@ dataset_data = np.array(images)
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-np.save("./dataset/test_data_5_10000.npy", dataset_data)
-np.save("./dataset/test_labels_5_10000.npy", dataset_labels)
+np.save("./dataset/test_data_20_1000.npy", dataset_data)
+np.save("./dataset/test_labels_20_1000.npy", dataset_labels)
