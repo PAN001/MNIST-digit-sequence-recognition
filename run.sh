@@ -1,1 +1,1 @@
-python main.py --cuda
+python main.py --cuda --resume model_best.pt

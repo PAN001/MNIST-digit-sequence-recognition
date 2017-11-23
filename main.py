@@ -177,7 +177,7 @@ def validate():
         # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
     validate_loss /= len(validate_loader.dataset) # average loss
-    validate_edit_dist /= len(validate_loader.dataset) # average edit dist
+    validate_edit_dist /= float(len(validate_loader.dataset)) # average edit dist
     print('\nValidation set: Average loss: {:.4f}, Average edit dist: {:.4f}\n'.format(
         validate_loss, validate_edit_dist))
 
