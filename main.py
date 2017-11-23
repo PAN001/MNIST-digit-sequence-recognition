@@ -133,8 +133,8 @@ def validate():
     print "----------------------------------------Validation--------------------------------------------------"
     model.eval()
 
-    validate_loss = 0
-    validate_edit_dist = 0
+    validate_loss = 0.0
+    validate_edit_dist = 0.0
 
     for data, target in validate_loader:
         # reset states
@@ -179,6 +179,7 @@ def validate():
         # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
     validate_loss /= len(validate_loader.dataset) # average loss
+    print "validate_edit_dist before averaging: ", validate_edit_dist
     validate_edit_dist /= float(len(validate_loader.dataset)) # average edit dist
     print('\nValidation set: Average loss: {:.4f}, Average edit dist: {:.4f}\n'.format(
         validate_loss, validate_edit_dist))
