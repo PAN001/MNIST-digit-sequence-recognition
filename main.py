@@ -190,14 +190,7 @@ validate_loader = torch.utils.data.DataLoader(validate_dataset,
     batch_size=args.validate_batch_size, shuffle=True, **kwargs)
 
 # initialize the model
-if args.eval:
-    model = torch.load(args.model_path)
-else:
-    model = Net(args.cuda)
-
-if args.cuda:
-    model.cuda()
-
+model = Net(args.cuda)
 optimizer = torch.optim.Adam(model.parameters(), lr = args.lr)
 # opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
 criterion = CTCLoss(args.cuda)
@@ -216,6 +209,9 @@ if args.model_path:
               .format(args.model_path, checkpoint['epoch']))
     else:
         print("=> no checkpoint found at '{}'".format(args.model_path))
+
+if args.cuda:
+    model.cuda()
 
 # validate one test batch
 if args.eval:
