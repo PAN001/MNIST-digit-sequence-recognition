@@ -215,9 +215,9 @@ validate_losses = [] # for each epoch
 classes = 11
 
 log_path = "./log.txt"
-train_data_path = "./dataset/train_data_5_10000.npy"
+train_data_path = "./dataset/train_data_100_10000.npy"
 print train_data_path
-train_labels_path = "./dataset/train_labels_5_10000.npy"
+train_labels_path = "./dataset/train_labels_100_10000.npy"
 
 validate_data_path = "./dataset/test_data_100_1000.npy"
 validate_labels_path = "./dataset/test_labels_100_1000.npy"
