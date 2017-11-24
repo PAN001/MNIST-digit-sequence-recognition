@@ -13,10 +13,15 @@ from Decoder import *
 import os
 import shutil
 import sys
+import time
 
 def train(epoch):
     model.train()
 
+    batch_time = AverageMeter()
+    losses = AverageMeter()
+
+    end = time.time()
     for batch_idx, (data, target) in enumerate(train_loader):
         # reset states
         batch_size = data.shape[0]
@@ -36,16 +41,23 @@ def train(epoch):
         out = out.permute(0, 2, 1)  # D(out) = (batch_size, classes, seq_len)
 
         loss = criterion(out, target)
+        losses.update(loss.data[0])
 
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
+        # measure elapsed time
+        batch_time.update(time.time() - end)
+        end = time.time()
+
         # log
         if batch_idx % args.log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\t'
+                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.data[0]))
+                100. * batch_idx / len(train_loader), loss = losses, batch_time = batch_time))
 
             out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
             predictions, predictions_no_merge = decoder.decode_best_path(out_np)
@@ -137,6 +149,23 @@ def log(epoch, validate_edit_dist, validate_loss):
 
     print "Logged"
 
+class AverageMeter(object):
+    """Computes and stores the average and current value"""
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
+
 
 # Training settings
 parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
@@ -186,8 +215,9 @@ validate_losses = [] # for each epoch
 classes = 11
 
 log_path = "./log.txt"
-train_data_path = "./dataset/train_data_100_10000.npy"
-train_labels_path = "./dataset/train_labels_100_10000.npy"
+train_data_path = "./dataset/train_data_5_10000.npy"
+print train_data_path
+train_labels_path = "./dataset/train_labels_5_10000.npy"
 
 validate_data_path = "./dataset/test_data_100_1000.npy"
 validate_labels_path = "./dataset/test_labels_100_1000.npy"
