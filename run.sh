@@ -1,1 +1,1 @@
-python main.py --cuda --model-path model_best.pt
+python main.py --cuda -model-path model_best.pt --eval
