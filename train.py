@@ -124,9 +124,9 @@ opt = torch.optim.Adam(net.parameters(), lr = lr)
 # opt = optim.SGD(net.parameters(), lr = lr, momentum=0.9)
 criterion = CTCLoss(cuda)
 
-dataset_data = np.load("./dataset/data_5_10000.npy")
+dataset_data = np.load("./dataset/train_data_100_10000.npy")
 dataset_data = dataset_data / 255.0
-dataset_labels = np.load("./dataset/labels_5_10000.npy")
+dataset_labels = np.load("./dataset/labels_100_10000.npy")
 dataset_labels = dataset_labels.astype(int)
 
 dataset_size = dataset_data.shape[0]

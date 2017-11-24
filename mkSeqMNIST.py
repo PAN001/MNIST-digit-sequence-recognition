@@ -59,6 +59,10 @@ for i in range(M):
     images.append(img)
     # name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
     # imsave(name, img.clip(0, 255))
+
+    if i % 10 == 0:
+        print ".",
+print ""
 dataset_data = np.array(images)
 
 t = datetime.datetime.now().time()
