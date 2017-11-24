@@ -235,7 +235,7 @@ if args.eval:
     exit()
 
 # train
-for epoch in range(start_epoch, args.epochs + 1):
+for epoch in range(start_epoch, args.epoch + 1):
     train(epoch)
 
     # evaluate on validation set
