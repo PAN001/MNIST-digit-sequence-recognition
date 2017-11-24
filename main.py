@@ -55,7 +55,7 @@ def train(epoch):
         if batch_idx % args.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t'
                   'Loss {loss.val:.4f} (avg: {loss.avg:.4f})\t'
-                  'Time {batch_time.val:.3f} (avg: {batch_time.avg:.3f})\t'.format(
+                  'Time {batch_time.val:.3f} (avg: {batch_time.avg:.3f}, sum: {batch_time.sum:.3f})\t'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss = losses, batch_time = batch_time))
 
