@@ -57,8 +57,8 @@ for i in range(M):
         img = np.append(img, dataset_data[i,:,28*j:28*(j+1)], axis=1)
     img = dataset_data[i,:,:]
     images.append(img)
-    name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
-    imsave(name, img.clip(0, 255))
+    # name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
+    # imsave(name, img.clip(0, 255))
 dataset_data = np.array(images)
 
 t = datetime.datetime.now().time()

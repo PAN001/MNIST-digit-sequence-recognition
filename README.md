@@ -64,3 +64,14 @@ The first traditional decoding strategy is best path decoding, which assumes tha
 Best path decoding is fairly simple to compute; simply look at the most active output at every timestep, concatenate them, and convert them to a label (via removing blanks and duplicates). Since at each step we choose the most active output, the resulting path is the most likely one.
 
 # Experiments
+- training(20)/test(5)
+
+    Validation set: Average loss: 0.4893, Average edit dist: 0.1348
+
+- training(20)/test(20)
+
+    Validation set: Average loss: 1.6601, Average edit dist: 0.4023
+
+- training(20)/test(100)
+
+    Validation set: Average loss: 16.9200, Average edit dist: 4.4844
