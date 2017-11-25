@@ -9,7 +9,7 @@ import os
 import datetime
 from matplotlib import pyplot as plt
 
-N = 20 # number of digits in the contiguous sequence
+N = 5 # number of digits in the contiguous sequence
 M = 1000 # number of samples
 space = 200
 overlap = 15

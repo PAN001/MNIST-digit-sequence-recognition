@@ -30,8 +30,8 @@ class Net(nn.Module):
         # conv1
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 10
-        self.onv1_kernelsize = (self.image_H, 5)
-        self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.onv1_kernelsize)
+        self.conv1_kernelsize = (self.image_H, 5)
+        self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
@@ -105,7 +105,6 @@ class Net(nn.Module):
         out = self.maxpool2(out)
         out = self.conv2_bn(out) # bn before activation
         out = F.relu(out)
-
         out = self.conv2_drop(out) # drop after activation
         # print "after conv2: ", out.size()
 
