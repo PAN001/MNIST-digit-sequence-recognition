@@ -9,8 +9,8 @@ import os
 import datetime
 from matplotlib import pyplot as plt
 
-N = 100 # number of digits in the contiguous sequence
-M = 5 # number of samples
+N = 20 # number of digits in the contiguous sequence
+M = 10000 # number of samples
 space = 200
 overlap = 15
 
