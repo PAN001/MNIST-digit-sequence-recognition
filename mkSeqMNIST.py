@@ -10,7 +10,7 @@ import datetime
 from matplotlib import pyplot as plt
 
 N = 5 # number of digits in the contiguous sequence
-M = 10000 # number of samples
+M = 1000 # number of samples
 space = 200
 overlap = 15
 
@@ -67,9 +67,9 @@ dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-data_path = "./dataset/train_data_5_10000.npy"
+data_path = "./dataset/test_data_5_1000.npy"
 np.save(data_path, dataset_data)
 print "Saved: ", data_path
-label_path = "./dataset/train_labels_5_10000.npy"
+label_path = "./dataset/test_labels_5_1000.npy"
 np.save(label_path, dataset_labels)
 print "Saved: ", label_path
