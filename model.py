@@ -93,8 +93,10 @@ class Net(nn.Module):
         out = F.relu(out)
         # print "after conv1: ", out.size()
 
-        out = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(out)), 2))
-        out = self.conv2_bn(out)
+        out = F.max_pool2d(self.conv2(out), 2)
+        out = self.conv2_bn(out) # bn before activation
+        out = F.relu(out)
+        out = self.conv2_drop(out) # drop after activation
         # print "after conv2: ", out.size()
 
         # reshape

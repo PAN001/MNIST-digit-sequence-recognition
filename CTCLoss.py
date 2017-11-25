@@ -24,9 +24,9 @@ class CTCLoss(torch.autograd.Function):
         """
         CTC loss function.
 
-        input - D = (batch_size, classes, seq_len): A tensor of network output
-        seqs - D = (batch_size, seq_len)
-        seq - D = (seq_len): sequence of phone id's for given example.
+        Args:
+            input: D = (batch_size, classes, seq_len): A tensor of network output
+            seqs: D = (batch_size, seq_len)
 
         Returns objective and gradient.
         """
@@ -43,11 +43,11 @@ class CTCLoss(torch.autograd.Function):
         alphases = []
         ll_forwards = []
 
-        sum = 0.0 # the multi
+        sum = 0.0
 
         for i in range(0, input.shape[0]): # iterate over each training sample
-            params = input_np[i] # D = (classes, seq_len): matrix of classes-D probability distributions over seq_len frames.
-            seq = seqs_np[i]
+            params = input_np[i] # D = (classes, seq_len): matrix of classes-D probability distributions over seq_len frames
+            seq = seqs_np[i] # D = (seq_len): sequence of features for given sample
 
             seq_len = seq.shape[0]  # length of label sequence (# expected digits)
             L = 2 * seq_len + 1  # length of label sequence with blanks. e.g. abc -> _a_b_c_
