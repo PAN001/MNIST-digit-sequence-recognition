@@ -171,8 +171,8 @@ class AverageMeter(object):
 parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
 parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
-parser.add_argument('--validate-batch-size', type=int, default=64, metavar='N',
-                    help='input batch size for validating (default: 64)')
+parser.add_argument('--validate-batch-size', type=int, default=512, metavar='N',
+                    help='input batch size for validating (default: 512)')
 parser.add_argument('--epoch', type=int, default=20, metavar='N',
                     help='number of epochs to train (default: 20)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
@@ -223,14 +223,15 @@ validate_data_path = "./dataset/test_data_20_sun.npy"
 validate_labels_path = "./dataset/test_labels_20_sun.npy"
 
 # load data
-train_data = torch.Tensor(np.load(train_data_path) / 255.0)
-train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
-train_dataset = data_utils.TensorDataset(train_data, train_labels)
-train_loader = torch.utils.data.DataLoader(train_dataset,
-    batch_size=args.batch_size, shuffle=True, **kwargs)
+if not args.eval:
+    train_data = torch.Tensor(np.load(train_data_path) / 255.0)
+    train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
+    train_dataset = data_utils.TensorDataset(train_data, train_labels)
+    train_loader = torch.utils.data.DataLoader(train_dataset,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
 
-validate_data = torch.Tensor(np.load(validate_data_path)[0:2000] / 255.0)
-validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:2000])
+validate_data = torch.Tensor(np.load(validate_data_path)[0:512] / 255.0)
+validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:512])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
     batch_size=args.validate_batch_size, shuffle=True, **kwargs)
