@@ -24,36 +24,28 @@ class Net(nn.Module):
 
         self.classes = 10 + 1
         self.use_cuda = use_cuda
-        self.image_H = 36
+        self.image_H = 32
 
         # CNN
         # conv1
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 10
-        self.onv1_kernelsize = (self.image_H, 5)
+        self.onv1_kernelsize = 5
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.onv1_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
         init.constant(self.conv1.bias, 0.1)
 
-        # maxpool1
-        self.maxpool1_kernelsize = (1,2)
-        self.maxpool1 = nn.MaxPool2d(self.maxpool1_kernelsize, stride=1)
-
         # conv2
         self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
-        self.conv2_kernelsize = (1, 5)
-        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
+        self.onv2_kernelsize = 5
+        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.onv2_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
         init.constant(self.conv2.bias, 0.1)
-
-        # maxpool2
-        self.maxpool2_kernelsize = (1,2)
-        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride=1)
 
         # batch norm (before activation)
         self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
@@ -61,7 +53,7 @@ class Net(nn.Module):
         # drop out (after activation)
         self.conv2_drop = nn.Dropout2d()
 
-        self.conv2_H = 1 # height of feature map after conv2
+        self.conv2_H = 6 # height of feature map after conv2
 
         # LSTM
         self.lstm_input_size = self.conv2_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
@@ -97,15 +89,13 @@ class Net(nn.Module):
         # print "input size: ", x.size()
         batch_size = int(x.size()[0])
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
-        out = self.maxpool1(out)
+        out = F.max_pool2d(out, 2) # D(out) = (batch_size, cov1_output_chanel, H, W)
         out = F.relu(out)
         # print "after conv1: ", out.size()
 
-        out = self.conv2(out)
-        out = self.maxpool2(out)
+        out = F.max_pool2d(self.conv2(out), 2)
         out = self.conv2_bn(out) # bn before activation
         out = F.relu(out)
-
         out = self.conv2_drop(out) # drop after activation
         # print "after conv2: ", out.size()
 
