@@ -218,8 +218,8 @@ log_path = "./log.txt"
 train_data_path = "./dataset/train_data_100_10000.npy"
 train_labels_path = "./dataset/train_labels_100_10000.npy"
 
-validate_data_path = "./dataset/test_data_100_1000.npy"
-validate_labels_path = "./dataset/test_labels_100_1000.npy"
+validate_data_path = "./dataset/test_data_20_sun.npy"
+validate_labels_path = "./dataset/test_labels_20_sun.npy"
 
 # load data
 if not args.eval:
@@ -231,8 +231,8 @@ if not args.eval:
         batch_size=args.batch_size, shuffle=True, **kwargs)
 
 print "Load validation data: ", validate_data_path
-validate_data = torch.Tensor(np.load(validate_data_path)[0:512] / 255.0)
-validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:512])
+validate_data = torch.Tensor(np.load(validate_data_path)[0:args.validate_batch_size] / 255.0)
+validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:args.validate_batch_size])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
     batch_size=args.validate_batch_size, shuffle=True, **kwargs)
