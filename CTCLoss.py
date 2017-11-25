@@ -6,6 +6,7 @@ dtype = torch.FloatTensor
 import torch.nn.functional as F
 import math
 import collections
+import time
 
 NEG_INF = -float("inf")
 
@@ -45,6 +46,7 @@ class CTCLoss(torch.autograd.Function):
 
         sum = 0.0
 
+        end = time.time()
         for i in range(0, input.shape[0]): # iterate over each training sample
             params = input_np[i] # D = (classes, seq_len): matrix of classes-D probability distributions over seq_len frames
             seq = seqs_np[i] # D = (seq_len): sequence of features for given sample
@@ -100,6 +102,8 @@ class CTCLoss(torch.autograd.Function):
 
         self.alphases = alphases
         self.ll_forwards = ll_forwards
+
+        print "time for CTC per batch: ", end - time.time()
 
         return torch.FloatTensor([sum])
 

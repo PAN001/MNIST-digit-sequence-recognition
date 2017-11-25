@@ -10,7 +10,7 @@ import datetime
 from matplotlib import pyplot as plt
 
 N = 100 # number of digits in the contiguous sequence
-M = 10000 # number of samples
+M = 5 # number of samples
 space = 200
 overlap = 15
 
@@ -57,8 +57,8 @@ for i in range(M):
         img = np.append(img, dataset_data[i,:,28*j:28*(j+1)], axis=1)
     img = dataset_data[i,:,:]
     images.append(img)
-    # name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
-    # imsave(name, img.clip(0, 255))
+    name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
+    imsave(name, img.clip(0, 255))
 
     if i % 10 == 0:
         print ".",

@@ -219,8 +219,8 @@ train_data_path = "./dataset/train_data_100_10000.npy"
 print train_data_path
 train_labels_path = "./dataset/train_labels_100_10000.npy"
 
-validate_data_path = "./dataset/test_data_100_1000.npy"
-validate_labels_path = "./dataset/test_labels_100_1000.npy"
+validate_data_path = "./dataset/test_data_20_sun.npy"
+validate_labels_path = "./dataset/test_labels_20_sun.npy"
 
 # load data
 train_data = torch.Tensor(np.load(train_data_path) / 255.0)
@@ -229,8 +229,8 @@ train_dataset = data_utils.TensorDataset(train_data, train_labels)
 train_loader = torch.utils.data.DataLoader(train_dataset,
     batch_size=args.batch_size, shuffle=True, **kwargs)
 
-validate_data = torch.Tensor(np.load(validate_data_path)[0:512] / 255.0)
-validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:512])
+validate_data = torch.Tensor(np.load(validate_data_path)[0:2000] / 255.0)
+validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:2000])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
     batch_size=args.validate_batch_size, shuffle=True, **kwargs)
