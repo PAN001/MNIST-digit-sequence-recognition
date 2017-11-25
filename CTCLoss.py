@@ -103,8 +103,6 @@ class CTCLoss(torch.autograd.Function):
         self.alphases = alphases
         self.ll_forwards = ll_forwards
 
-        print "time for CTC per batch: ", (time.time() - end)
-
         return torch.FloatTensor([sum])
 
     def backward(self, grad_output):
