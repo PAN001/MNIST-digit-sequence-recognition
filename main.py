@@ -141,7 +141,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
     if is_best:
         print "Update best model"
-        shutil.copyfile(filename, 'model_best_20.pt') # update the best model: copy from filename to "model_best.pt"
+        shutil.copyfile(filename, 'model_best.pt') # update the best model: copy from filename to "model_best.pt"
 
 def log(epoch, validate_edit_dist, validate_loss):
     with open(log_path, "a") as file:
@@ -218,8 +218,8 @@ log_path = "./log.txt"
 train_data_path = "./dataset/train_data_100_10000.npy"
 train_labels_path = "./dataset/train_labels_100_10000.npy"
 
-validate_data_path = "./dataset/test_data_20_1000.npy"
-validate_labels_path = "./dataset/test_labels_20_1000.npy"
+validate_data_path = "./dataset/test_data_100_1000.npy"
+validate_labels_path = "./dataset/test_labels_100_1000.npy"
 
 # load data
 if not args.eval:
