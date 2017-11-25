@@ -30,7 +30,7 @@ class Net(nn.Module):
         # conv1
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 10
-        self.conv1_kernelsize = (self.image_H, 5)
+        self.conv1_kernelsize = (self.image_H, 2)
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize)
 
         # initialization
@@ -44,7 +44,7 @@ class Net(nn.Module):
         # conv2
         self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
-        self.conv2_kernelsize = (1, 5)
+        self.conv2_kernelsize = (1, 2)
         self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
         # initialization
