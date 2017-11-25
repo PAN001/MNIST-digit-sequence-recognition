@@ -63,9 +63,9 @@ for i in range(M):
     if i % 10 == 0:
         print ".",
 print ""
-dataset_data = np.array(images)
+dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-np.save("./dataset/train_data_100_10000.npy", dataset_data)
-np.save("./dataset/train_labels_100_10000.npy", dataset_labels)
+np.save("./dataset/train_data_20_10000.npy", dataset_data)
+np.save("./dataset/train_labels_20_10000.npy", dataset_labels)
