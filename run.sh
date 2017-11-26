@@ -1,1 +1,1 @@
-python main.py --cuda --epoch 40 --model-path model_best.pt
+python main.py --cuda --epoch 40
