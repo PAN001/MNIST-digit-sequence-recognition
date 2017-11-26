@@ -144,7 +144,7 @@ def save(filename):
 
 def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
-    if is_best or state["epoch"] < 12:
+    if is_best or state["epoch"] < 30:
         print "=> Update best model to: ", best_model_path
         shutil.copyfile(filename, best_model_path) # update the best model: copy from filename to "model_best.pt"
 
