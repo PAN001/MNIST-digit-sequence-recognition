@@ -227,17 +227,16 @@ validate_losses = [] # for each epoch
 best_model_path = "./" + args.id + "_best_model.pt"
 print "best_model_path: ", best_model_path
 
-
 classes = 11
 
 train_log_path = "./" + args.id + "_train_log.txt"
 validation_log_path = "./" + args.id + "_validation_log.txt"
 
-train_data_path = "./dataset/train_data_20_10000.npy"
-train_labels_path = "./dataset/train_labels_20_10000.npy"
+train_data_path = "./dataset/train_data_100_10000.npy"
+train_labels_path = "./dataset/train_labels_100_10000.npy"
 
-validate_data_path = "./dataset/test_data_20_1000.npy"
-validate_labels_path = "./dataset/test_labels_20_1000.npy"
+validate_data_path = "./dataset/test_data_100_1000.npy"
+validate_labels_path = "./dataset/test_labels_100_1000.npy"
 
 # load data
 if not args.eval:
