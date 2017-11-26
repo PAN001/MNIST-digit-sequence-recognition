@@ -45,7 +45,7 @@ class Net(nn.Module):
         self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride=1)
 
         # batch norm (before activation)
-        self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
+        self.conv2_bn = nn.BatchNorm2d(self.conv1_output_chanel) # batch normalization
 
         # drop out (after activation)
         self.conv2_drop = nn.Dropout2d()
