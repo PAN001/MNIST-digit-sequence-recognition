@@ -42,7 +42,7 @@ class Net(nn.Module):
 
         # maxpool2
         self.maxpool2_kernelsize = (1,2)
-        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride = 1)
+        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride=1)
 
         # batch norm (before activation)
         self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
@@ -73,8 +73,6 @@ class Net(nn.Module):
 
         # softmax:
         self.softmax = nn.Softmax()
-
-
 
     def forward(self, x):
         """
