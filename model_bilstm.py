@@ -53,7 +53,7 @@ class Net(nn.Module):
         # LSTM
         self.lstm_input_size = self.conv2_H * self.conv1_output_chanel  # number of features = H * cnn_output_chanel
         self.lstm_hidden_size = 32
-        self.lstm_num_layers = 3
+        self.lstm_num_layers = 1
         self.lstm_hidden = None
         self.lstm_cell = None
 
