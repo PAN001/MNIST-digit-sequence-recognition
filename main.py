@@ -123,7 +123,6 @@ def validate():
         # print "beam_predictions: "
         # print predictions_beam
 
-
         print "label[0]: "
         print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
         # print "label:"
@@ -145,14 +144,14 @@ def save(filename):
 def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
     if is_best or state["epoch"] < 12:
-        print "Update best model"
-        shutil.copyfile(filename, 'model_best_single_LSTM.pt') # update the best model: copy from filename to "model_best.pt"
+        print "=> Update best model to: ", best_model_path
+        shutil.copyfile(filename, best_model_path) # update the best model: copy from filename to "model_best.pt"
 
 def log(epoch, validate_edit_dist, validate_loss):
     with open(log_path, "a") as file:
         file.write(str(epoch) + "," + str(validate_edit_dist) + "," + str(validate_loss) + "\n")
 
-    print "Logged"
+    print "=> Logged"
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -216,6 +215,7 @@ start_epoch = 1
 best_edit_dist = sys.maxint
 validate_edit_dists = [] # for each epoch
 validate_losses = [] # for each epoch
+best_model_path = 'model_best_single_LSTM.pt'
 
 classes = 11
 
