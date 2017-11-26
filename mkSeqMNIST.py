@@ -39,6 +39,10 @@ for i in range(N):
         dataset_data += dd
     dataset_labels = np.append(dataset_labels, p[:,:,0:1], axis=2)
 
+    if i % 10 == 0:
+        print ".",
+print ""
+
 dataset_labels = dataset_labels[:,0,:]
 # Creates a dataset of 60000 (28*N + (N-1)*overlap) * 36 images
 # containing N numbers in sequence and their labels
@@ -60,9 +64,6 @@ for i in range(M):
     name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
     imsave(name, img.clip(0, 255))
 
-    if i % 10 == 0:
-        print ".",
-print ""
 dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
