@@ -1,21 +1,10 @@
-import argparse
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
 from torch.autograd import Variable
-import argparse
 import torch.nn.init as init
 
-# # custom weights initialization
-# def weights_init(m):
-#     classname = m.__class__.__name__
-#     if classname.find('Conv') != -1:
-#         m.weight.data.normal_(0.0, 0.02)
-#     elif classname.find('BatchNorm') != -1:
-#         m.weight.data.normal_(1.0, 0.02)
-#         m.bias.data.fill_(0)
 
 class Net(nn.Module):
 
@@ -30,7 +19,7 @@ class Net(nn.Module):
         # conv1
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 32
-        self.conv1_kernelsize = (self.image_H, 5)
+        self.conv1_kernelsize = (self.image_H, 2)
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize)
 
         # initialization
@@ -53,7 +42,7 @@ class Net(nn.Module):
 
         # maxpool2
         self.maxpool2_kernelsize = (1,2)
-        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride = 2)
+        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride = 1)
 
         # batch norm (before activation)
         self.conv2_bn = nn.BatchNorm2d(self.conv1_output_chanel) # batch normalization
@@ -106,7 +95,7 @@ class Net(nn.Module):
         # out = self.maxpool2(out)
         out = self.conv2_bn(out) # bn before activation
         out = F.relu(out)
-        out = self.conv2_drop(out) # drop after activation
+        # out = self.conv2_drop(out) # drop after activation
         # print "after conv2: ", out.size()
 
         # reshape

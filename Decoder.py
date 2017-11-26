@@ -10,15 +10,13 @@ class Decoder():
 
     def decode_best_path(self, input):
         """
-        Computes best path given sequence of probability distributions per frame.
-        Simply chooses most likely label at each timestep then collapses result to
-        remove blanks and repeats.
+        Computes best path given sequence of probability distributions per timestamp by chosing the label with the
+        highest probability.
 
         Args:
-            input( array D = (batch_size, seq_len, classes)): An array of probabilities with dimenssion
+            input: An array of probabilities with dimenssion D = (batch_size, seq_len, classes)
 
-        Returns:
-            A list of predictions
+        Returns the best path for each samples in a batch.
         """
 
         hyps = []
@@ -71,8 +69,7 @@ class Decoder():
 
             blank (int): Index of the CTC blank label.
 
-        Returns the output label sequence and the corresponding negative
-        log-likelihood estimated by the decoder.
+        Returns the output label sequence and the corresponding negative log-likelihood estimated by the decoder.
         """
 
         hyps = []
