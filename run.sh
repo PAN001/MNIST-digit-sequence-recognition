@@ -1,1 +1,1 @@
-python main.py --cuda --epoch 1000 --lr 0.01 --log-interval 1 --id 3lstm_1cnn_100
+python main.py --cuda --epoch 1000 --lr 0.01 --log-interval 1 --id 3lstm_1cnn_100 --batch-size 8
