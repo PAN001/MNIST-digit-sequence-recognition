@@ -7,7 +7,8 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import torch.utils.data as data_utils
 import numpy as np
-from model import *
+# from model import *
+from model_org import *
 from CTCLoss import *
 from Decoder import *
 import os
@@ -141,7 +142,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
     if is_best:
         print "Update best model"
-        shutil.copyfile(filename, 'model_best.pt') # update the best model: copy from filename to "model_best.pt"
+        shutil.copyfile(filename, 'model_best_100_org.pt') # update the best model: copy from filename to "model_best.pt"
 
 def log(epoch, validate_edit_dist, validate_loss):
     with open(log_path, "a") as file:
@@ -215,11 +216,11 @@ validate_losses = [] # for each epoch
 classes = 11
 
 log_path = "./log.txt"
-train_data_path = "./dataset/train_data_5_10000.npy"
-train_labels_path = "./dataset/train_labels_5_10000.npy"
+train_data_path = "./dataset/train_data_100_10000.npy"
+train_labels_path = "./dataset/train_labels_100_10000.npy"
 
-validate_data_path = "./dataset/test_data_5_1000.npy"
-validate_labels_path = "./dataset/test_labels_5_1000.npy"
+validate_data_path = "./dataset/test_data_100_1000.npy"
+validate_labels_path = "./dataset/test_labels_100_1000.npy"
 
 # load data
 if not args.eval:
