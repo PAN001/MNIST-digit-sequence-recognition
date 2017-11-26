@@ -1,1 +1,1 @@
-python main.py --cuda --epoch 1000 --lr 0.01 --model-path model_bilstm_20_10000_20epoch.pt --eval --validate-batch-size 10
+python main.py --cuda --epoch 1000 --lr 0.01 --model-path model_bilstm_20_10000_20epoch.pt
