@@ -44,7 +44,7 @@ class Net(nn.Module):
         # conv2
         self.conv2_input_chanel = 32
         self.conv2_output_chanel = 64
-        self.conv2_kernelsize = (1, 2)
+        self.conv2_kernelsize = (1, 3)
         self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
         # initialization
@@ -53,7 +53,7 @@ class Net(nn.Module):
 
         # maxpool2
         self.maxpool2_kernelsize = (1,2)
-        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride=1)
+        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride = 2)
 
         # batch norm (before activation)
         self.conv2_bn = nn.BatchNorm2d(self.conv1_output_chanel) # batch normalization
