@@ -19,12 +19,12 @@ class Decoder():
         Returns the best path for each samples in a batch.
         """
 
-        hyps = []
-        hyps_no_merge = []
+        predictions = []
+        predictions_no_merge = []
         for i in range(0, input.shape[0]):
             probs = input[i]
             best_path = np.argmax(probs, axis=0).tolist()
-            hyps_no_merge.append(best_path)
+            predictions_no_merge.append(best_path)
 
 
             # collapse string
@@ -39,9 +39,9 @@ class Decoder():
                 else:
                     hyp.append(b)
 
-            hyps.append(hyp)
+            predictions.append(hyp)
 
-        return hyps, hyps_no_merge
+        return predictions, predictions_no_merge
 
     def make_new_beam(self):
         fn = lambda: (NEG_INF, NEG_INF)
@@ -72,7 +72,7 @@ class Decoder():
         Returns the output label sequence and the corresponding negative log-likelihood estimated by the decoder.
         """
 
-        hyps = []
+        predictions = []
         scores = []
         for i in range(0, input.shape[0]):
             probs = input[i]
@@ -139,17 +139,16 @@ class Decoder():
                     beam = beam[:beam_size]
 
             best = beam[0]
-            hyps.append(best[0])
+            predictions.append(best[0])
             scores.append(-self.logsumexp(*best[1]))
 
-        return hyps, scores
+        return predictions, scores
 
-    def edit_distance(self, refs, hyps):
+    def edit_distance(self, targets, predictions):
         """
         Edit distance between two sequences reference (ref) and hypothesis (hyp).
 
-        Returns edit distance, number of insertions, deletions and substitutions to
-        transform hyp to ref, and number of correct matches.
+        Returns edit distance, number of insertions, deletions and substitutions to transform hyp to ref, and number of correct matches.
         """
 
         dists = []
@@ -158,9 +157,9 @@ class Decoder():
         subses = []
         corrses = []
 
-        for i in range(0, refs.shape[0]):
-            ref = refs[i]
-            hyp = hyps[i]
+        for i in range(0, targets.shape[0]):
+            ref = targets[i]
+            hyp = predictions[i]
 
             n = len(ref)
             m = len(hyp)
@@ -205,9 +204,3 @@ class Decoder():
             corrses.append(corrs)
 
         return dists, inses, delses, subses, corrses
-
-    # def display_edit_diff(self, ref, hyp):
-    #     dist, ins, dels, subs, corr = self.edit_distance(ref, hyp)
-    #     print "Reference : %s, Hypothesis : %s" % (str(ref), str(hyp))
-    #     print "Distance : %d" % dist
-    #     print "Ins : %d, Dels : %d, Subs : %d, Corr : %d" % (ins, dels, subs, corr)

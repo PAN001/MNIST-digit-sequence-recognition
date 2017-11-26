@@ -45,7 +45,7 @@ class Net(nn.Module):
         self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride=1)
 
         # batch norm (before activation)
-        self.conv2_bn = nn.BatchNorm2d(self.conv1_output_chanel) # batch normalization
+        self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
 
         # drop out (after activation)
         self.conv2_drop = nn.Dropout2d()
@@ -53,9 +53,9 @@ class Net(nn.Module):
         self.conv_H = 1 # height of feature map after cnn
 
         # LSTM
-        self.lstm_input_size = self.conv_H * self.conv1_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
+        self.lstm_input_size = self.conv_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
-        self.lstm_num_layers = 3
+        self.lstm_num_layers = 2
         self.lstm_hidden = None
         self.lstm_cell = None
 
@@ -89,8 +89,8 @@ class Net(nn.Module):
         out = F.relu(out)
         # print "after conv1: ", out.size()
 
-        # out = self.conv2(out)
-        # out = self.maxpool2(out)
+        out = self.conv2(out)
+        out = self.maxpool2(out)
         out = self.conv2_bn(out) # bn before activation
         out = F.relu(out)
         # out = self.conv2_drop(out) # drop after activation
