@@ -100,10 +100,10 @@ class Net(nn.Module):
         out.contiguous()
         out = out.view(batch_size, -1, self.lstm_input_size) # D(out) = (batch_size, seq_len, lstm_input_size) where seq_len = W, lstm_input_size = H * cnn_output_chanel
 
-        print "before LSTM: ", out.size()
+        # print "before LSTM: ", out.size()
         # LSTM
         out, self.lstm_hidden = self.lstm(out, (self.lstm_hidden, self.lstm_cell)) # D(out) = (batch_size, seq_len, hidden_size * 2)
-        print "after LSTM: ", out.size()
+        # print "after LSTM: ", out.size()
 
         # reshape
         out.contiguous()
