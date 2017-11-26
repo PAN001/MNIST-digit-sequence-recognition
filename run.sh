@@ -1,1 +1,1 @@
-python main.py --cuda --epoch 100 --lr 0.05
+python main.py --cuda --epoch 100 --lr 0.05 --model-path model_best.pt
