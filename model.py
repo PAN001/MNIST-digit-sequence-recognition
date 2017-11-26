@@ -84,6 +84,7 @@ class Net(nn.Module):
 
         # softmax:
         self.softmax = nn.Softmax()
+        
 
 
     def forward(self, x):
