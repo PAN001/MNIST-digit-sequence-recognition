@@ -65,7 +65,8 @@ def train(epoch):
                 100. * batch_idx / len(train_loader), loss = losses, batch_time = batch_time))
 
             out_np = out.data.cpu().numpy() if args.cuda else out.data.numpy()
-            predictions, predictions_no_merge = decoder.decode_best_path(out_np[0])
+            test_out_np = out_np[0].reshape(1,1)
+            predictions, predictions_no_merge = decoder.decode_best_path(test_out_np)
 
             print "best_path_predictions_no_merge[0]: "
             print np.array(predictions_no_merge[0])
