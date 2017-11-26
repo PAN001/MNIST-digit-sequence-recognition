@@ -8,8 +8,8 @@ from torch.autograd import Variable
 import torch.utils.data as data_utils
 import numpy as np
 # from model import *
-from model_bilstm import *
-# from model_org import *
+# from model_bilstm import *
+from model_org import *
 from CTCLoss import *
 from Decoder import *
 import os
@@ -56,7 +56,7 @@ def train(epoch):
         batch_time.update(time.time() - end)
         end = time.time()
 
-        # log
+        # standard output
         if batch_idx % args.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t'
                   'Loss {loss.val:.4f} (avg: {loss.avg:.4f})\t'
@@ -78,6 +78,9 @@ def train(epoch):
             print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
 
             print ""
+
+        # log
+        log(epoch * args.batch_size + batch_idx, losses.val, train_log_path)
 
 def validate():
     print "----------------------------------------Validation--------------------------------------------------"
@@ -148,9 +151,12 @@ def save_checkpoint(state, is_best, filename='checkpoint.pt'):
         print "=> Update best model to: ", best_model_path
         shutil.copyfile(filename, best_model_path) # update the best model: copy from filename to "model_best.pt"
 
-def log(epoch, validate_edit_dist, validate_loss):
+def log(epoch, validate_loss, log_path, validate_edit_dist = None):
     with open(log_path, "a") as file:
-        file.write(str(epoch) + "," + str(validate_edit_dist) + "," + str(validate_loss) + "\n")
+        if validate_edit_dist != None:
+            file.write(str(epoch) + "," + str(validate_edit_dist) + "," + str(validate_loss) + "\n")
+        else:
+            file.write(str(epoch) + "," + str(validate_loss) + "\n")
 
     print "=> Logged"
 
@@ -194,6 +200,8 @@ parser.add_argument('--eval', action='store_true', default=False,
                     help='evaluate a pretrained model')
 parser.add_argument('--model-path', type=str, default='', metavar='MP',
                     help='path to the model to evaluate/resume')
+parser.add_argument('--id', type=str, default='null', metavar='ID',
+                    help='id of each training instance')
 
 # parser.add_argument('--resume', default='', type=str, metavar='PATH',
 #                     help='path to latest checkpoint (default: None)')
@@ -216,32 +224,38 @@ start_epoch = 1
 best_edit_dist = sys.maxint
 validate_edit_dists = [] # for each epoch
 validate_losses = [] # for each epoch
-best_model_path = 'model_best_biLSTM_1layer_100.pt'
+best_model_path = "./" + args.id + "_best_model.pt"
+print "best_model_path: ", best_model_path
+
 
 classes = 11
 
-log_path = "./log_biLSTM_1layer_100.txt"
-train_data_path = "./dataset/train_data_100_10000.npy"
-train_labels_path = "./dataset/train_labels_100_10000.npy"
+train_log_path = "./" + args.id + "_train_log.txt"
+validation_log_path = "./" + args.id + "_validation_log.txt"
 
-validate_data_path = "./dataset/test_data_100_1000.npy"
-validate_labels_path = "./dataset/test_labels_100_1000.npy"
+train_data_path = "./dataset/train_data_20_10000.npy"
+train_labels_path = "./dataset/train_labels_20_10000.npy"
+
+validate_data_path = "./dataset/test_data_20_1000.npy"
+validate_labels_path = "./dataset/test_labels_20_1000.npy"
 
 # load data
 if not args.eval:
-    print "Load train data: ", train_data_path
+    print "=> Loading train data: ", train_data_path
     train_data = torch.Tensor(np.load(train_data_path))
     train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
     train_dataset = data_utils.TensorDataset(train_data, train_labels)
     train_loader = torch.utils.data.DataLoader(train_dataset,
         batch_size=args.batch_size, shuffle=True, **kwargs)
+    print "=> Loaded train data: ", train_data_path
 
-print "Load validation data: ", validate_data_path
+print "=> Loading validation data: ", validate_data_path
 validate_data = torch.Tensor(np.load(validate_data_path)[0:args.validate_batch_size])
 validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:args.validate_batch_size])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
     batch_size=args.validate_batch_size, shuffle=True, **kwargs)
+print "=> Loaded validation data: ", validate_data_path
 
 # initialize the model
 model = Net(args.cuda)
@@ -292,7 +306,7 @@ for epoch in range(start_epoch, args.epoch + 1):
     }, is_best)
 
     # log
-    log(epoch, validate_edit_dist, validate_loss)
+    log(epoch, validate_loss, validation_log_path, validate_edit_dist)
 #
 # if not args.eval:
 #     save(args.model_path)
