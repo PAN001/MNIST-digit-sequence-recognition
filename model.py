@@ -32,7 +32,7 @@ class Net(nn.Module):
 
         # conv2
         self.conv2_input_chanel = 10
-        self.conv2_output_chanel = 20
+        self.conv2_output_chanel = 32
         self.conv2_kernelsize = (1, 2)
         self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
@@ -90,10 +90,10 @@ class Net(nn.Module):
         # print "after conv1: ", out.size()
 
         out = self.conv2(out)
-        out = self.maxpool2(out)
+        # out = self.maxpool2(out)
         out = self.conv2_bn(out) # bn before activation
         out = F.relu(out)
-        out = self.conv2_drop(out) # drop after activation
+        # out = self.conv2_drop(out) # drop after activation
         # print "after conv2: ", out.size()
 
         # reshape
