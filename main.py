@@ -219,7 +219,7 @@ best_model_path = 'model_best_biLSTM_1layer_100.pt'
 
 classes = 11
 
-log_path = "./log_biLSTM.txt"
+log_path = "./log_biLSTM_1layer_100.txt"
 train_data_path = "./dataset/train_data_100_10000.npy"
 train_labels_path = "./dataset/train_labels_100_10000.npy"
 
