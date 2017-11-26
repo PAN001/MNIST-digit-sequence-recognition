@@ -35,8 +35,8 @@ class Net(nn.Module):
         # conv2
         self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
-        self.onv2_kernelsize = 5
-        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.onv2_kernelsize)
+        self.conv2_kernelsize = (1, 2)
+        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
@@ -53,7 +53,7 @@ class Net(nn.Module):
         # LSTM
         self.lstm_input_size = self.conv2_H * self.conv1_output_chanel  # number of features = H * cnn_output_chanel
         self.lstm_hidden_size = 32
-        self.lstm_num_layers = 1
+        self.lstm_num_layers = 3
         self.lstm_hidden = None
         self.lstm_cell = None
 
