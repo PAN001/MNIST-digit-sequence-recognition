@@ -215,7 +215,7 @@ start_epoch = 1
 best_edit_dist = sys.maxint
 validate_edit_dists = [] # for each epoch
 validate_losses = [] # for each epoch
-best_model_path = 'model_best_single_LSTM.pt'
+best_model_path = 'model_best_biLSTM_1layer_100.pt'
 
 classes = 11
 
