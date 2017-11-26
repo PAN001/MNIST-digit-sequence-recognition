@@ -63,8 +63,9 @@ class Net(nn.Module):
         # init.constant(self.lstm.bias, 0.1)
 
         # FC: convert to 11-d probability vector
+        self.fc_input_size = self.lstm_hidden_size * 2
         self.fc_output_size = self.classes
-        self.fc = nn.Linear(self.lstm_hidden_size * 2, self.fc_output_size)
+        self.fc = nn.Linear(self.fc_input_size, self.fc_output_size)
         # initialization
         init.xavier_uniform(self.fc.weight, gain=np.sqrt(2))
         init.constant(self.fc.bias, 0.1)
@@ -106,7 +107,7 @@ class Net(nn.Module):
 
         # reshape
         out.contiguous()
-        out = out.view(-1, self.lstm_hidden_size) # D(out) = (batch_size * seq_len, hidden_size)
+        out = out.view(-1, self.fc_input_size) # D(out) = (batch_size * seq_len, hidden_size)
 
         # fc layer
         out = self.fc(out) # D(out) = (batch_size * seq_len, classes)
