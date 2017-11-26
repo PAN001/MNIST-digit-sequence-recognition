@@ -36,6 +36,8 @@ def train(epoch):
         data = data.view(data.shape[0], 1, data.shape[1], data.shape[2])
         data, target = Variable(data), Variable(target)
 
+        print "data shape: ", data.size()
+
         out = model(data)
 
         out = out.view(batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
