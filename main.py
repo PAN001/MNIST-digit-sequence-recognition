@@ -282,6 +282,9 @@ if args.model_path:
 if args.cuda:
     model.cuda()
 
+# print the model architecture
+print model
+
 # validate one test batch
 if args.eval:
     validate()

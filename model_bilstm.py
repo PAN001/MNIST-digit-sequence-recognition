@@ -36,17 +36,17 @@ class Net(nn.Module):
         self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
         self.conv2_kernelsize = 5
-        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
+        # self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
         # initialization
-        init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
-        init.constant(self.conv2.bias, 0.1)
+        # init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
+        # init.constant(self.conv2.bias, 0.1)
 
         # batch norm (before activation)
         self.conv2_bn = nn.BatchNorm2d(self.conv1_output_chanel) # batch normalization
 
         # drop out (after activation)
-        self.conv2_drop = nn.Dropout2d()
+        # self.conv2_drop = nn.Dropout2d()
 
         self.conv2_H = 1 # height of feature map after conv2
 
