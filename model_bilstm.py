@@ -35,8 +35,8 @@ class Net(nn.Module):
         # conv2
         self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
-        self.onv2_kernelsize = 5
-        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.onv2_kernelsize)
+        self.conv2_kernelsize = (1,5)
+        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
