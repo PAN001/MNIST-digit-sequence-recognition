@@ -39,6 +39,7 @@ def train(epoch):
         out = model(data)
 
         out = out.view(batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
+        print out.size()
         out = out.permute(0, 2, 1)  # D(out) = (batch_size, classes, seq_len)
 
         loss = criterion(out, target)

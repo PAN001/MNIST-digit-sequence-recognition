@@ -53,7 +53,7 @@ class Net(nn.Module):
         # LSTM
         self.lstm_input_size = self.conv2_H * self.conv1_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
-        self.lstm_num_layers = 2
+        self.lstm_num_layers = 1
         self.lstm_hidden = None
         self.lstm_cell = None
 
@@ -111,6 +111,7 @@ class Net(nn.Module):
         # fc layer
         out = self.fc(out) # D(out) = (batch_size * seq_len, classes)
         out = self.softmax(out)
+        # print "after softmax: ", out.size()
 
         return out
 
