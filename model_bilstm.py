@@ -87,7 +87,7 @@ class Net(nn.Module):
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
         out = self.maxpool1(out)
         # out = F.relu(out)
-        print "after conv1: ", out.size()
+        # print "after conv1: ", out.size()
 
         # out = self.conv2(out)
         # out = self.maxpool2(out)

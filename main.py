@@ -41,7 +41,7 @@ def train(epoch):
         out = model(data)
 
         out = out.view(batch_size, -1, classes)  # D(out) = (batch_size, seq_len, classes)
-        print out.size()
+        # print out.size()
         out = out.permute(0, 2, 1)  # D(out) = (batch_size, classes, seq_len)
 
         loss = criterion(out, target)
@@ -143,7 +143,7 @@ def save(filename):
 
 def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
-    if is_best:
+    if is_best or state["epoch"] < 20:
         print "Update best model"
         shutil.copyfile(filename, 'model_best.pt') # update the best model: copy from filename to "model_best.pt"
 
