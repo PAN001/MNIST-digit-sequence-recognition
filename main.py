@@ -173,8 +173,8 @@ class AverageMeter(object):
 
 # Training settings
 parser = argparse.ArgumentParser(description='Sequence MNIST Recognition')
-parser.add_argument('--batch-size', type=int, default=64, metavar='N',
-                    help='input batch size for training (default: 64)')
+parser.add_argument('--batch-size', type=int, default=32, metavar='N',
+                    help='input batch size for training (default: 32)')
 parser.add_argument('--validate-batch-size', type=int, default=512, metavar='N',
                     help='input batch size for validating (default: 512)')
 parser.add_argument('--epoch', type=int, default=20, metavar='N',
