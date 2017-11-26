@@ -31,7 +31,7 @@ class Net(nn.Module):
         self.maxpool1 = nn.MaxPool2d(self.maxpool1_kernelsize, stride=1)
 
         # conv2
-        self.conv2_input_chanel = 32
+        self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
         self.conv2_kernelsize = (1, 2)
         self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
