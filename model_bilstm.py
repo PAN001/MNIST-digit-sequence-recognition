@@ -102,6 +102,7 @@ class Net(nn.Module):
         # print "before LSTM: ", out.size()
         # LSTM
         out, self.lstm_hidden = self.lstm(out, (self.lstm_hidden, self.lstm_cell)) # D(out) = (batch_size, seq_len, hidden_size)
+        print "after LSTM: ", out.size()
 
         # reshape
         out.contiguous()
