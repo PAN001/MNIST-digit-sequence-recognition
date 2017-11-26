@@ -80,7 +80,7 @@ def train(epoch):
             print ""
 
         # log
-        log((epoch - 1) * args.batch_size + batch_idx, losses.val, train_log_path)
+        log((epoch - 1) * (training_num / args.batch_size) + batch_idx, losses.val, train_log_path)
 
 def validate():
     print "----------------------------------------Validation--------------------------------------------------"
@@ -241,7 +241,9 @@ validate_labels_path = "./dataset/test_labels_100_1000.npy"
 # load data
 if not args.eval:
     print "=> Loading train data: ", train_data_path
-    train_data = torch.Tensor(np.load(train_data_path))
+    train_data = np.load(train_data_path)
+    training_num = train_data.shape[0]
+    train_data = torch.Tensor(train_data)
     train_labels = torch.IntTensor(np.load(train_labels_path).astype(int))
     train_dataset = data_utils.TensorDataset(train_data, train_labels)
     train_loader = torch.utils.data.DataLoader(train_dataset,
