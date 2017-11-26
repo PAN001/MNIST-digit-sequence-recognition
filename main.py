@@ -202,6 +202,8 @@ parser.add_argument('--model-path', type=str, default='', metavar='MP',
                     help='path to the model to evaluate/resume')
 parser.add_argument('--id', type=str, default='null', metavar='ID',
                     help='id of each training instance')
+parser.add_argument('--id', type=str, default='null', metavar='ID',
+                    help='id of each training instance')
 
 # parser.add_argument('--resume', default='', type=str, metavar='PATH',
 #                     help='path to latest checkpoint (default: None)')

@@ -53,7 +53,7 @@ class Net(nn.Module):
         self.conv_H = 1 # height of feature map after cnn
 
         # LSTM
-        self.lstm_input_size = self.conv_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
+        self.lstm_input_size = self.conv_H * self.conv1_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
         self.lstm_num_layers = 3
         self.lstm_hidden = None
