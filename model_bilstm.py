@@ -15,7 +15,7 @@ class Net(nn.Module):
 
         self.classes = 10 + 1
         self.use_cuda = use_cuda
-        self.image_H = 32
+        self.image_H = 36
 
         # CNN
         # conv1
