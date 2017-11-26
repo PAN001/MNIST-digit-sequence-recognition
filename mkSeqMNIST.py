@@ -39,8 +39,7 @@ for i in range(N):
         dataset_data += dd
     dataset_labels = np.append(dataset_labels, p[:,:,0:1], axis=2)
 
-    if i % 10 == 0:
-        print ".",
+    print ".",
 print ""
 
 dataset_labels = dataset_labels[:,0,:]
