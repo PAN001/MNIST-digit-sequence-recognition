@@ -1,1 +1,1 @@
-python main.py --cuda --epoch 1000 --lr 0.01 --model-path model_best_single_LSTM.pt
+python main.py --cuda --epoch 1000 --lr 0.01 --model-path model_best_single_LSTM.pt --eval
