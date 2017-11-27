@@ -9,7 +9,7 @@ import os
 import datetime
 from matplotlib import pyplot as plt
 
-N = 5 # number of digits in the contiguous sequence
+N = 20 # number of digits in the contiguous sequence
 M = 1000 # number of samples
 space = 200
 overlap = 15
@@ -39,6 +39,9 @@ for i in range(N):
         dataset_data += dd
     dataset_labels = np.append(dataset_labels, p[:,:,0:1], axis=2)
 
+    print ".",
+print ""
+
 dataset_labels = dataset_labels[:,0,:]
 # Creates a dataset of 60000 (28*N + (N-1)*overlap) * 36 images
 # containing N numbers in sequence and their labels
@@ -57,19 +60,16 @@ for i in range(M):
         img = np.append(img, dataset_data[i,:,28*j:28*(j+1)], axis=1)
     img = dataset_data[i,:,:]
     images.append(img)
-    name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
-    imsave(name, img.clip(0, 255))
+    # name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
+    # imsave(name, img.clip(0, 255))
 
-    if i % 10 == 0:
-        print ".",
-print ""
 dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-data_path = "./dataset/test_data_5_1000.npy"
+data_path = "./dataset/test_data_20_1000.npy"
 np.save(data_path, dataset_data)
 print "Saved: ", data_path
-label_path = "./dataset/test_labels_5_1000.npy"
+label_path = "./dataset/test_labels_20_1000.npy"
 np.save(label_path, dataset_labels)
 print "Saved: ", label_path

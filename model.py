@@ -30,33 +30,25 @@ class Net(nn.Module):
         # conv1
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 10
-        self.conv1_kernelsize = (self.image_H, 5)
+        self.conv1_kernelsize = (self.image_H, 2)
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
         init.constant(self.conv1.bias, 0.1)
 
-        # maxpool1
-        self.maxpool1_kernelsize = (1,2)
-        self.maxpool1 = nn.MaxPool2d(self.maxpool1_kernelsize, stride=1)
-
         # conv2
         self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
-        self.conv2_kernelsize = (1, 5)
+        self.conv2_kernelsize = (1, 2)
         self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
         init.constant(self.conv2.bias, 0.1)
 
-        # maxpool2
-        self.maxpool2_kernelsize = (1,2)
-        self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride=1)
-
         # batch norm (before activation)
-        self.conv2_bn = nn.BatchNorm2d(self.conv1_output_chanel) # batch normalization
+        self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
 
         # drop out (after activation)
         self.conv2_drop = nn.Dropout2d()
@@ -97,15 +89,14 @@ class Net(nn.Module):
         # print "input size: ", x.size()
         batch_size = int(x.size()[0])
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
-        out = self.maxpool1(out)
-        # out = F.relu(out)
+        out = F.max_pool2d(out, (1,2)) # D(out) = (batch_size, cov1_output_chanel, H, W)
+        out = F.relu(out)
         # print "after conv1: ", out.size()
 
-        # out = self.conv2(out)
-        # out = self.maxpool2(out)
+        out = F.max_pool2d(self.conv2(out), (1,2))
         out = self.conv2_bn(out) # bn before activation
         out = F.relu(out)
-        out = self.conv2_drop(out) # drop after activation
+        # out = self.conv2_drop(out) # drop after activation
         # print "after conv2: ", out.size()
 
         # reshape
