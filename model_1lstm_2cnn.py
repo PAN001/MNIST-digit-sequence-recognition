@@ -50,8 +50,8 @@ class Net(nn.Module):
         # batch norm (before activation)
         self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
 
-        # drop out (after activation)
-        self.conv2_drop = nn.Dropout2d()
+        # # drop out (after activation)
+        # self.conv2_drop = nn.Dropout2d()
 
         self.conv2_H = 1 # height of feature map after conv2
 
