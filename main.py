@@ -7,16 +7,15 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import torch.utils.data as data_utils
 import numpy as np
-# from model_1lstm_2cnn import *
-# from model_bilstm import *
-# from model_org import *
-from model_2bilstm import *
 from CTCLoss import *
 from Decoder import *
 import os
 import shutil
 import sys
 import time
+
+# import model
+from model_2scnn_2bilstm import *
 
 def train(epoch):
     model.train()
@@ -249,8 +248,8 @@ print "validation_log_path: ", validation_log_path
 train_data_path = "./dataset/train_data_" + args.train_len + "_10000.npy"
 train_labels_path = "./dataset/train_labels_" + args.train_len + "_10000.npy"
 
-validate_data_path = "./dataset/test_data_" + args.test_len + "_sun.npy"
-validate_labels_path = "./dataset/test_labels_" + args.test_len + "_sun.npy"
+validate_data_path = "./dataset/test_data_" + args.test_len + "_1000.npy"
+validate_labels_path = "./dataset/test_labels_" + args.test_len + "_1000.npy"
 
 # load data
 if not args.eval:
@@ -265,7 +264,7 @@ if not args.eval:
     print "=> Loaded train data: ", train_data_path
 
 print "=> Loading validation data: ", validate_data_path
-validate_data = torch.Tensor(np.load(validate_data_path)[0:args.validate_batch_size] / 255.0)
+validate_data = torch.Tensor(np.load(validate_data_path)[0:args.validate_batch_size])
 validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:args.validate_batch_size])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,

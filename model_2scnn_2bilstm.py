@@ -58,18 +58,19 @@ class Net(nn.Module):
         # LSTM
         self.lstm_input_size = self.conv2_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
-        self.lstm_num_layers = 1
+        self.lstm_num_layers = 2
         self.lstm_hidden = None
         self.lstm_cell = None
 
-        self.lstm = nn.LSTM(self.lstm_input_size, self.lstm_hidden_size, self.lstm_num_layers, batch_first = True)
+        self.lstm = nn.LSTM(self.lstm_input_size, self.lstm_hidden_size, self.lstm_num_layers, batch_first = True, bidirectional = True)
         # # initialization
         # init.xavier_uniform(self.lstm.weights, gain=np.sqrt(2))
         # init.constant(self.lstm.bias, 0.1)
 
         # FC: convert to 11-d probability vector
+        self.fc_input_size = self.lstm_hidden_size * 2
         self.fc_output_size = self.classes
-        self.fc = nn.Linear(self.lstm_hidden_size, self.fc_output_size)
+        self.fc = nn.Linear(self.fc_input_size, self.fc_output_size)
         # initialization
         init.xavier_uniform(self.fc.weight, gain=np.sqrt(2))
         init.constant(self.fc.bias, 0.1)
@@ -110,7 +111,7 @@ class Net(nn.Module):
 
         # reshape
         out.contiguous()
-        out = out.view(-1, self.lstm_hidden_size) # D(out) = (batch_size * seq_len, hidden_size)
+        out = out.view(-1, self.fc_input_size) # D(out) = (batch_size * seq_len, hidden_size)
 
         # fc layer
         out = self.fc(out) # D(out) = (batch_size * seq_len, classes)
@@ -120,12 +121,12 @@ class Net(nn.Module):
 
     def reset_hidden(self, batch_size):
         # reset hidden state for time 0
-        h0 = torch.zeros(self.lstm_num_layers, batch_size, self.lstm_hidden_size) # random init
+        h0 = torch.zeros(self.lstm_num_layers * 2, batch_size, self.lstm_hidden_size) # random init
         h0 = h0.cuda() if self.use_cuda else h0
         self.lstm_hidden = Variable(h0)
 
     def reset_cell(self, batch_size):
         # reset cell state for time 0
-        c0 = torch.zeros(self.lstm_num_layers, batch_size, self.lstm_hidden_size) # random init
+        c0 = torch.zeros(self.lstm_num_layers * 2, batch_size, self.lstm_hidden_size) # random init
         c0 = c0.cuda() if self.use_cuda else c0
         self.lstm_cell = Variable(c0)
