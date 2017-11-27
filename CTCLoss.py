@@ -169,7 +169,7 @@ class CTCLoss(torch.autograd.Function):
 
             # check for underflow or zeros in denominator of the gradient
             llDiff = np.abs(ll_forward - ll_backward)
-            if llDiff > 1e-5 or np.sum(absum == 0) > 0:
+            if llDiff > 1e-6 or np.sum(absum == 0) > 0:
                 print "There is diff in forward/backward LL : %f" % llDiff
                 print "Zeros found : (%d/%d)" % (np.sum(absum == 0), absum.shape[0])
                 torch.FloatTensor(grads).cuda() if self.cuda else torch.FloatTensor(grads), None
