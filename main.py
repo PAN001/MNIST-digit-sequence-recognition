@@ -79,7 +79,7 @@ def train(epoch):
             print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
 
             target_np = target.data.cpu().numpy() if args.cuda else target.data.numpy()
-            test_target_np = target_np[0].reshpe(1, -1)
+            test_target_np = target_np[0].reshape(1, -1)
 
             edit_dists, _, _, _, _ = decoder.edit_distance(test_target_np, predictions)
             print "Edit distance is: ", edit_dists[0]

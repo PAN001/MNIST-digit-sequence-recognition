@@ -79,12 +79,6 @@ class Net(nn.Module):
 
 
     def forward(self, x):
-        """
-        Arguments:
-            x: D
-
-        """
-
         # CNN
         # print "input size: ", x.size()
         batch_size = int(x.size()[0])
