@@ -37,6 +37,12 @@ pip install -r requirements.txt
 
 ## Code Description
 
+Different models are encapsulated as subclasses of Pytorch `nn.Module`, with forward function implemented. To change the model to train, only need to import different model modules in `main.py`. E.g.:
+
+```python
+from model_bilstm import *
+```
+
 
 
 # Connectionist Temporal Classification (CTC)
