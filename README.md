@@ -124,3 +124,16 @@ The third model uses a kernel size with the same height as the image. Rather tha
 | BLSTM      	| 32 hidden size, 1 hidden layer                                	|
 | Softmax   	| =>11                                                          	|
 | CTC       	|                                                               	|
+
+## Model-4: lCNN (CNN with large kernei size) + BLSTM (2 layer) + CTC
+
+|           	| Model-1: lCNN (CNN with large kernei size) + BLSTM + CTC       	|
+|-----------	|---------------------------------------------------------------	|
+| Conv1     	| 1 input channel, 36*2 kernel size, 10 feature map, stride = 1 	|
+| Maxpool1  	| 10 input channel, 1*2 kernel size, stride = 1                 	|
+| Conv2     	| 10 input channel, 1*2 kernel size, 20 feature map, stride = 1 	|
+| Maxpool2  	| 20 input channel, 1*2 kernel size, stride = 1                 	|
+| Batchnorm 	|                                                               	|
+| BLSTM      	| 32 hidden size, 2 hidden layer                                	|
+| Softmax   	| =>11                                                          	|
+| CTC       	|                                                               	|
