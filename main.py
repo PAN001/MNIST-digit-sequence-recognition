@@ -265,7 +265,7 @@ if not args.eval:
     print "=> Loaded train data: ", train_data_path
 
 print "=> Loading validation data: ", validate_data_path
-validate_data = torch.Tensor(np.load(validate_data_path)[0:args.validate_batch_size])
+validate_data = torch.Tensor(np.load(validate_data_path)[0:args.validate_batch_size] / 255.0)
 validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int)[0:args.validate_batch_size])
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
