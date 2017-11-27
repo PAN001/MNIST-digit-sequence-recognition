@@ -209,6 +209,10 @@ parser.add_argument('--model-path', type=str, default='', metavar='MP',
                     help='path to the model to evaluate/resume')
 parser.add_argument('--id', type=str, default='null', metavar='ID',
                     help='id of each training instance')
+parser.add_argument('--train-len', type=str, default='100', metavar='TRLEN',
+                    help='number of digits in each sequence image (training)')
+parser.add_argument('--test-len', type=str, default='100', metavar='TELEN',
+                    help='number of digits in each sequence image (testing)')
 
 # parser.add_argument('--resume', default='', type=str, metavar='PATH',
 #                     help='path to latest checkpoint (default: None)')
@@ -231,19 +235,19 @@ start_epoch = 1
 best_edit_dist = sys.maxint
 validate_edit_dists = [] # for each epoch
 validate_losses = [] # for each epoch
-best_model_path = "./" + args.id + "_best_model.pt"
+best_model_path = "./" + args.id  + "_" + args.train_len +  "_best_model.pt"
 print "best_model_path: ", best_model_path
 
 classes = 11
 
-train_log_path = "./" + args.id + "_train_log.txt"
-validation_log_path = "./" + args.id + "_validation_log.txt"
+train_log_path = "./" + args.id + "_" + args.train_len + "_train_log.txt"
+validation_log_path = "./" + args.id + "_" + args.train_len + "_validation_log.txt"
 
-train_data_path = "./dataset/train_data_100_10000.npy"
-train_labels_path = "./dataset/train_labels_100_10000.npy"
+train_data_path = "./dataset/train_data_" + args.train_len + "_10000.npy"
+train_labels_path = "./dataset/train_labels_" + args.train_len + "_10000.npy"
 
-validate_data_path = "./dataset/test_data_100_1000.npy"
-validate_labels_path = "./dataset/test_labels_100_1000.npy"
+validate_data_path = "./dataset/test_data_" + args.test_len + "_1000.npy"
+validate_labels_path = "./dataset/test_labels_" + args.test_len + "_1000.npy"
 
 # load data
 if not args.eval:

@@ -37,17 +37,11 @@ pip install -r requirements.txt
 
 ## Code Description
 
-## Network Architecture
+# Connectionist Temporal Classification (CTC)
 
-The images are first processed by a CNN to extract features, then these extracted features are fed into a LSTM for character recognition.
+## Forward & Backward
 
-The architecture of CNN is just Convolution + Batch Normalization + Leaky Relu + Max Pooling for simplicity, and the LSTM is a 2 layers stacked LSTM, you can also try out Bidirectional LSTM.
-
-## Connectionist Temporal Classification (CTC)
-
-### Forward & Backward
-
-### Decoding
+# Decoding
 
 Given the probability distribution $P(l|x)$, we can compute a label $l$ for an input sequence $x$ by taking the most likely label. Thus, given that $L^{\leqslant T}$ is the set of sequences of length less than or equal to $T$ with letters drawn from the alphabet $L$, we can express our desired classifier h(x) as follows:
 
@@ -57,11 +51,34 @@ Computing the most likely $l$ from the probability distribution $P(l|x)$ is know
 
 Traditionally, decoding is done in one of following two ways.
 
-### Best Path Decoding
+## Best Path Decoding
 
 The first traditional decoding strategy is best path decoding, which assumes that the most likely path corresponds to the most likely label. This is not necessarily true: suppose we have one path with probability $0.1$ corresponding to label A, and ten paths with probability $0.05$ each corresponding to label B. Clearly, label B is preferable overall, since it has an overall probability of $0.5$; however, best path decoding would select label A, which has a higher probability than any path for label B.
 
 Best path decoding is fairly simple to compute; simply look at the most active output at every timestep, concatenate them, and convert them to a label (via removing blanks and duplicates). Since at each step we choose the most active output, the resulting path is the most likely one.
+
+# Network Architecture
+
+Basically, the images are first processed by a CNN to extract features, then these extracted features are fed into a RNN. Then, the output from RNN are fed into a softmax layer to convert each output to a probability distribution over 11 classes (i.e. 10 digits and 1 blank). Finally, the probability distribution is the input to the final CTC layer.
+
+The architecture of CNN is just Convolution + Batch Normalization + Relu activation + Max Pooling for simplicity and specifically LSTM is used as RNN units.
+
+## Model-1: sCNN (CNN with samll kernei size) + LSTM + CTC
+
+The first model has the following architecture:
+
+|           | Model-1: sCNN (CNN with samll kernei size) + LSTM + CTC       |
+|-----------|---------------------------------------------------------------|
+| Conv1     | 1 input channel, 5*5 kernel size, 10 feature map, stride = 1  |
+| Maxpool1  | 10 input channel, 2*2 kernel size, stride = 1                 |
+| Conv2     | 10 input channel, 5*5 kernel size, 20 feature map, stride = 1 |
+| Maxpool2  | 20 input channel, 2*2 kernel size, stride = 1                 |
+| Batchnorm |                                                               |
+| Dropout   | p = 0.5                                                       |
+| LSTM      | 32 hidden size, 1 hidden layer                                |
+| Softmax   | =>11                                                          |
+| CTC       |                                                               |
+
 
 # Experiments
 - training(20)/test(5)
