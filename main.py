@@ -7,10 +7,10 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import torch.utils.data as data_utils
 import numpy as np
-from model_1lstm_2cnn import *
+# from model_1lstm_2cnn import *
 # from model_bilstm import *
 # from model_org import *
-# from model_2bilstm import *
+from model_2bilstm import *
 from CTCLoss import *
 from Decoder import *
 import os
@@ -249,8 +249,8 @@ print "validation_log_path: ", validation_log_path
 train_data_path = "./dataset/train_data_" + args.train_len + "_10000.npy"
 train_labels_path = "./dataset/train_labels_" + args.train_len + "_10000.npy"
 
-validate_data_path = "./dataset/test_data_" + args.test_len + "_1000.npy"
-validate_labels_path = "./dataset/test_labels_" + args.test_len + "_1000.npy"
+validate_data_path = "./dataset/test_data_" + args.test_len + "_sun.npy"
+validate_labels_path = "./dataset/test_labels_" + args.test_len + "_sun.npy"
 
 # load data
 if not args.eval:
