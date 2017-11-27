@@ -58,6 +58,7 @@ def train(epoch):
 
         # standard output
         if batch_idx % args.log_interval == 0:
+            print args.id
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t'
                   'Loss {loss.val:.4f} (avg: {loss.avg:.4f})\t'
                   'Time {batch_time.val:.3f} (avg: {batch_time.avg:.3f}, sum: {batch_time.sum:.3f})\t'.format(
@@ -76,6 +77,12 @@ def train(epoch):
 
             print "label[0]: "
             print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
+
+            target_np = target.data.cpu().numpy() if args.cuda else target.data.numpy()
+            test_target_np = target_np[0].reshpe(1, -1)
+
+            edit_dists, _, _, _, _ = decoder.edit_distance(test_target_np, predictions)
+            print "Edit distance is: ", edit_dists[0]
 
             print ""
 
