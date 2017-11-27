@@ -235,13 +235,13 @@ start_epoch = 1
 best_edit_dist = sys.maxint
 validate_edit_dists = [] # for each epoch
 validate_losses = [] # for each epoch
-best_model_path = "./" + args.id  + "_" + args.train_len +  "_best_model.pt"
+best_model_path = "./" + args.id +  "_best_model.pt"
 print "best_model_path: ", best_model_path
 
 classes = 11
 
-train_log_path = "./" + args.id + "_" + args.train_len + "_train_log.txt"
-validation_log_path = "./" + args.id + "_" + args.train_len + "_validation_log.txt"
+train_log_path = "./" + args.id + "_train_log.txt"
+validation_log_path = "./" + args.id + "_validation_log.txt"
 
 train_data_path = "./dataset/train_data_" + args.train_len + "_10000.npy"
 train_labels_path = "./dataset/train_labels_" + args.train_len + "_10000.npy"
