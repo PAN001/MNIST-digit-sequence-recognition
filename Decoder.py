@@ -204,3 +204,5 @@ class Decoder():
             corrses.append(corrs)
 
         return dists, inses, delses, subses, corrses
+
+    # def calculate_LER(self, dists, seq_len=100):

@@ -242,7 +242,9 @@ print "best_model_path: ", best_model_path
 classes = 11
 
 train_log_path = "./" + args.id + "_train_log.txt"
+print "train_log_path: ", train_log_path
 validation_log_path = "./" + args.id + "_validation_log.txt"
+print "validation_log_path: ", validation_log_path
 
 train_data_path = "./dataset/train_data_" + args.train_len + "_10000.npy"
 train_labels_path = "./dataset/train_labels_" + args.train_len + "_10000.npy"
