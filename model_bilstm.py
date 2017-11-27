@@ -114,12 +114,12 @@ class Net(nn.Module):
 
     def reset_hidden(self, batch_size):
         # reset hidden state for time 0
-        h0 = torch.zeros(self.lstm_num_layers, batch_size, self.lstm_hidden_size * 2) # random init
+        h0 = torch.zeros(self.lstm_num_layers * 2, batch_size, self.lstm_hidden_size) # random init
         h0 = h0.cuda() if self.use_cuda else h0
         self.lstm_hidden = Variable(h0)
 
     def reset_cell(self, batch_size):
         # reset cell state for time 0
-        c0 = torch.zeros(self.lstm_num_layers, batch_size, self.lstm_hidden_size * 2) # random init
+        c0 = torch.zeros(self.lstm_num_layers * 2, batch_size, self.lstm_hidden_size) # random init
         c0 = c0.cuda() if self.use_cuda else c0
         self.lstm_cell = Variable(c0)
