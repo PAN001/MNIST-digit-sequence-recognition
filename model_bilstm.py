@@ -68,8 +68,9 @@ class Net(nn.Module):
         # init.constant(self.lstm.bias, 0.1)
 
         # FC: convert to 11-d probability vector
+        self.fc_input_size = self.lstm_hidden_size * 2
         self.fc_output_size = self.classes
-        self.fc = nn.Linear(self.lstm_hidden_size, self.fc_output_size)
+        self.fc = nn.Linear(self.fc_input_size, self.fc_output_size)
         # initialization
         init.xavier_uniform(self.fc.weight, gain=np.sqrt(2))
         init.constant(self.fc.bias, 0.1)
