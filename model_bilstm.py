@@ -104,7 +104,7 @@ class Net(nn.Module):
 
         # reshape
         out.contiguous()
-        out = out.view(-1, self.lstm_hidden_size) # D(out) = (batch_size * seq_len, hidden_size)
+        out = out.view(-1, self.fc_input_size) # D(out) = (batch_size * seq_len, hidden_size)
 
         # fc layer
         out = self.fc(out) # D(out) = (batch_size * seq_len, classes)
