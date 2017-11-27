@@ -89,11 +89,11 @@ class Net(nn.Module):
         # print "input size: ", x.size()
         batch_size = int(x.size()[0])
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
-        out = F.max_pool2d(out, 2) # D(out) = (batch_size, cov1_output_chanel, H, W)
+        out = F.max_pool2d(out, (1,2)) # D(out) = (batch_size, cov1_output_chanel, H, W)
         out = F.relu(out)
         # print "after conv1: ", out.size()
 
-        out = F.max_pool2d(self.conv2(out), 2)
+        out = F.max_pool2d(self.conv2(out), (1,2))
         out = self.conv2_bn(out) # bn before activation
         out = F.relu(out)
         # out = self.conv2_drop(out) # drop after activation
