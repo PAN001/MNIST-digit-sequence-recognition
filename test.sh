@@ -1,0 +1,1 @@
+python main.py --cuda --model-path 2bilstm_2cnn_100_best_model.pt --eval --validate-batch-size 1000

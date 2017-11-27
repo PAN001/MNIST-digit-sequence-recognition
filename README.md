@@ -43,7 +43,61 @@ Different models are encapsulated as subclasses of Pytorch `nn.Module`, with for
 from model_bilstm import *
 ```
 
+The scrip `main.py` allows to train the model from the beginning or pretrained model, fit the samples based on pretrained model, and plot figures. The detailed usage is as follows:
 
+```shell
+(virtual_env)bash-3.2$ python main.py -h
+usage: main.py [-h] [--batch-size N] [--validate-batch-size N] [--epoch N]
+               [--lr LR] [--momentum M] [--cuda] [--seed S] [--log-interval N]
+               [--eval] [--model-path MP] [--id ID] [--train-len TRLEN]
+               [--test-len TELEN]
+
+Sequence MNIST Recognition
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --batch-size N        input batch size for training (default: 32)
+  --validate-batch-size N
+                        input batch size for validating (default: 10)
+  --epoch N             number of epochs to train (default: 20)
+  --lr LR               learning rate (default: 0.01)
+  --momentum M          SGD momentum (default: 0.5)
+  --cuda                enables CUDA training
+  --seed S              random seed (default: 1)
+  --log-interval N      how many batches to wait before logging training
+                        status
+  --eval                evaluate a pretrained model
+  --model-path MP       path to the model to evaluate/resume
+  --id ID               id of each training instance
+  --train-len TRLEN     number of digits in each sequence image (training)
+  --test-len TELEN      number of digits in each sequence image (testing)
+```
+
+The `main.py` script also supports checkpoint mechanism (which saves the best model after each epoch) and log function (logs loss and edit distance on training set after each batch and those on validation set after each epoch).
+
+## Run the Code: Test Model
+
+The best model with 90.88% accuracy on Cifar10 test set at epoch 339 with loss of 0.4994 are stored as all_cnn_weights_0.9088_0.4994.hdf5. The following code loads the pretrained model and then fits the test data:
+
+```shell
+
+python main.py --
+
+```
+
+# Evaluation Metrics
+
+Due to the nature of the sequence recognition, accuracy is not appropriate here as evaluation metric since for example only one different digit in one hundred digits will result in accuracy 0 even if all the other 99 are matched with the target. In this case,  label error rate (LER) combined with edit distance is used.
+
+## Edit Distance
+
+Edit distance is a way of quantifying how dissimilar two strings (e.g., words) are to one another by counting the minimum number of operations required to transform one string into the other. Different definitions of an edit distance use different sets of string operations. The Levenshtein distance operations are the removal, insertion, or substitution of a character in the string. Being the most common metric, the Levenshtein distance is usually what is meant by "edit distance". In our experiments, Levenshtein distance is used.
+
+## Label Error Rate (LER)
+
+Given a test set $S' \subset{D_{X \times Z}}$ disjoint from S, define the label error rate (LER) of a temporal clas- sifier h as the mean normalised edit distance between its classifications and the targets on S 0 , i.e
+
+This is a natural measure for tasks (such as speech or handwriting recognition) where the aim is to minimise the rate of transcription mistakes.
 
 # Connectionist Temporal Classification (CTC)
 
