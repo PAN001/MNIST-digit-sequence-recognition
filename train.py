@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from model import *
+from model_1lstm_2cnn import *
 from CTCLoss import *
 # from CTCLoss_ref import *
 

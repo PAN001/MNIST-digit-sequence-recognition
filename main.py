@@ -7,7 +7,7 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import torch.utils.data as data_utils
 import numpy as np
-from model import *
+from model_1lstm_2cnn import *
 # from model_bilstm import *
 # from model_org import *
 from CTCLoss import *
