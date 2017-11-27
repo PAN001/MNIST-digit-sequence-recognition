@@ -80,7 +80,7 @@ The first model has the following architecture:
 | CTC       |                                                               |
 
 
-# Experiments
+### Experiment Result
 - training(20)/test(5)
 
     Validation set: Average loss: 0.4893, Average edit dist: 0.1348
@@ -92,3 +92,33 @@ The first model has the following architecture:
 - training(20)/test(100)
 
     Validation set: Average loss: 16.9200, Average edit dist: 4.4844
+
+## Model-2: lCNN (CNN with large kernei size) + LSTM + CTC
+
+The second model uses a kernel size with the same height as the image. This is required by the write-up.
+
+|           	| Model-1: lCNN (CNN with large kernei size) + LSTM + CTC       	|
+|-----------	|---------------------------------------------------------------	|
+| Conv1     	| 1 input channel, 36*2 kernel size, 10 feature map, stride = 1 	|
+| Maxpool1  	| 10 input channel, 1*2 kernel size, stride = 1                 	|
+| Conv2     	| 10 input channel, 1*2 kernel size, 20 feature map, stride = 1 	|
+| Maxpool2  	| 20 input channel, 1*2 kernel size, stride = 1                 	|
+| Batchnorm 	|                                                               	|
+| LSTM      	| 32 hidden size, 1 hidden layer                                	|
+| Softmax   	| =>11                                                          	|
+| CTC       	|                                                               	|
+
+## Model-3: lCNN (CNN with large kernei size) + BLSTM + CTC
+
+The third model uses a kernel size with the same height as the image. Rather than the typical LSTM, it also uses bidirectional LSTM. 
+
+|           	| Model-1: lCNN (CNN with large kernei size) + LSTM + CTC       	|
+|-----------	|---------------------------------------------------------------	|
+| Conv1     	| 1 input channel, 36*2 kernel size, 10 feature map, stride = 1 	|
+| Maxpool1  	| 10 input channel, 1*2 kernel size, stride = 1                 	|
+| Conv2     	| 10 input channel, 1*2 kernel size, 20 feature map, stride = 1 	|
+| Maxpool2  	| 20 input channel, 1*2 kernel size, stride = 1                 	|
+| Batchnorm 	|                                                               	|
+| LSTM      	| 32 hidden size, 1 hidden layer                                	|
+| Softmax   	| =>11                                                          	|
+| CTC       	|                                                               	|

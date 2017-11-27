@@ -8,8 +8,9 @@ from torch.autograd import Variable
 import torch.utils.data as data_utils
 import numpy as np
 # from model_1lstm_2cnn import *
-from model_bilstm import *
+# from model_bilstm import *
 # from model_org import *
+from model_2bilstm import *
 from CTCLoss import *
 from Decoder import *
 import os
