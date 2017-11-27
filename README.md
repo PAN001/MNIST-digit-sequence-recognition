@@ -37,6 +37,8 @@ pip install -r requirements.txt
 
 ## Code Description
 
+
+
 # Connectionist Temporal Classification (CTC)
 
 ## Forward & Backward
@@ -110,15 +112,15 @@ The second model uses a kernel size with the same height as the image. This is r
 
 ## Model-3: lCNN (CNN with large kernei size) + BLSTM + CTC
 
-The third model uses a kernel size with the same height as the image. Rather than the typical LSTM, it also uses bidirectional LSTM. 
+The third model uses a kernel size with the same height as the image. Rather than the typical LSTM, it uses bidirectional LSTM. Standard LSTM can only use past contextual information in one direction. However, in terms of the contiguous hand-written digit sequence recognition, bidirectional contextual knowledge may be neeeded. Bidirectional LSTM (BLSTM) can learn long-range context dynamics in both input directions and significantly outperform unidirectional networks.
 
-|           	| Model-1: lCNN (CNN with large kernei size) + LSTM + CTC       	|
+|           	| Model-1: lCNN (CNN with large kernei size) + BLSTM + CTC       	|
 |-----------	|---------------------------------------------------------------	|
 | Conv1     	| 1 input channel, 36*2 kernel size, 10 feature map, stride = 1 	|
 | Maxpool1  	| 10 input channel, 1*2 kernel size, stride = 1                 	|
 | Conv2     	| 10 input channel, 1*2 kernel size, 20 feature map, stride = 1 	|
 | Maxpool2  	| 20 input channel, 1*2 kernel size, stride = 1                 	|
 | Batchnorm 	|                                                               	|
-| LSTM      	| 32 hidden size, 1 hidden layer                                	|
+| BLSTM      	| 32 hidden size, 1 hidden layer                                	|
 | Softmax   	| =>11                                                          	|
 | CTC       	|                                                               	|
