@@ -24,14 +24,14 @@ class Net(nn.Module):
 
         self.classes = 10 + 1
         self.use_cuda = use_cuda
-        self.image_H = 32
+        self.image_H = 36
 
         # CNN
         # conv1
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 10
-        self.onv1_kernelsize = 5
-        self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.onv1_kernelsize)
+        self.conv1_kernelsize = 5
+        self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
@@ -40,8 +40,8 @@ class Net(nn.Module):
         # conv2
         self.conv2_input_chanel = 10
         self.conv2_output_chanel = 20
-        self.onv2_kernelsize = 5
-        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.onv2_kernelsize)
+        self.conv2_kernelsize = 5
+        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
         # initialization
         init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))

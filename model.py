@@ -1,10 +1,21 @@
+import argparse
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
 from torch.autograd import Variable
+import argparse
 import torch.nn.init as init
 
+# # custom weights initialization
+# def weights_init(m):
+#     classname = m.__class__.__name__
+#     if classname.find('Conv') != -1:
+#         m.weight.data.normal_(0.0, 0.02)
+#     elif classname.find('BatchNorm') != -1:
+#         m.weight.data.normal_(1.0, 0.02)
+#         m.bias.data.fill_(0)
 
 class Net(nn.Module):
 
@@ -18,7 +29,7 @@ class Net(nn.Module):
         # CNN
         # conv1
         self.conv1_input_chanel = 1
-        self.conv1_output_chanel = 32
+        self.conv1_output_chanel = 10
         self.conv1_kernelsize = (self.image_H, 2)
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize)
 
@@ -26,34 +37,26 @@ class Net(nn.Module):
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
         init.constant(self.conv1.bias, 0.1)
 
-        # maxpool1
-        self.maxpool1_kernelsize = (1,2)
-        self.maxpool1 = nn.MaxPool2d(self.maxpool1_kernelsize, stride=1)
+        # conv2
+        self.conv2_input_chanel = 10
+        self.conv2_output_chanel = 20
+        self.conv2_kernelsize = (1, 2)
+        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
 
-        # # conv2
-        # self.conv2_input_chanel = 10
-        # self.conv2_output_chanel = 32
-        # self.conv2_kernelsize = (1, 2)
-        # self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize)
-        #
-        # # initialization
-        # init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
-        # init.constant(self.conv2.bias, 0.1)
-        #
-        # # maxpool2
-        # self.maxpool2_kernelsize = (1,2)
-        # self.maxpool2 = nn.MaxPool2d(self.maxpool2_kernelsize, stride=1)
+        # initialization
+        init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
+        init.constant(self.conv2.bias, 0.1)
 
         # batch norm (before activation)
-        self.conv2_bn = nn.BatchNorm2d(self.conv1_output_chanel) # batch normalization
+        self.conv2_bn = nn.BatchNorm2d(self.conv2_output_chanel) # batch normalization
 
-        # # drop out (after activation)
-        # self.conv2_drop = nn.Dropout2d()
+        # drop out (after activation)
+        self.conv2_drop = nn.Dropout2d()
 
-        self.conv_H = 1 # height of feature map after cnn
+        self.conv2_H = 1 # height of feature map after conv2
 
         # LSTM
-        self.lstm_input_size = self.conv_H * self.conv1_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
+        self.lstm_input_size = self.conv2_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
         self.lstm_num_layers = 1
         self.lstm_hidden = None
@@ -74,6 +77,7 @@ class Net(nn.Module):
         # softmax:
         self.softmax = nn.Softmax()
 
+
     def forward(self, x):
         """
         Arguments:
@@ -85,14 +89,13 @@ class Net(nn.Module):
         # print "input size: ", x.size()
         batch_size = int(x.size()[0])
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
-        out = self.maxpool1(out)
+        out = F.max_pool2d(out, 2) # D(out) = (batch_size, cov1_output_chanel, H, W)
         out = F.relu(out)
         # print "after conv1: ", out.size()
 
-        # out = self.conv2(out)
-        # out = self.maxpool2(out)
-        # out = self.conv2_bn(out) # bn before activation
-        # out = F.relu(out)
+        out = F.max_pool2d(self.conv2(out), 2)
+        out = self.conv2_bn(out) # bn before activation
+        out = F.relu(out)
         # out = self.conv2_drop(out) # drop after activation
         # print "after conv2: ", out.size()
 
