@@ -154,7 +154,7 @@ def save(filename):
 
 def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
-    if is_best or state["epoch"] < 30:
+    if is_best or state["epoch"] < 20:
         print "=> Update best model to: ", best_model_path
         shutil.copyfile(filename, best_model_path) # update the best model: copy from filename to "model_best.pt"
 
@@ -248,8 +248,8 @@ print "validation_log_path: ", validation_log_path
 train_data_path = "./dataset/train_data_" + args.train_len + "_10000.npy"
 train_labels_path = "./dataset/train_labels_" + args.train_len + "_10000.npy"
 
-validate_data_path = "./dataset/test_data_" + args.test_len + "_1000.npy"
-validate_labels_path = "./dataset/test_labels_" + args.test_len + "_1000.npy"
+validate_data_path = "./dataset/test_data_" + args.test_len + "_sun.npy"
+validate_labels_path = "./dataset/test_labels_" + args.test_len + "_sun.npy"
 
 # load data
 if not args.eval:
