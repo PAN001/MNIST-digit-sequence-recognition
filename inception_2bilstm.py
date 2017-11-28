@@ -20,7 +20,7 @@ class Net(nn.Module):
         # CNN
         # conv1
         self.conv1_input_chanel = 1
-        self.conv1_output_chanel = 10
+        self.conv1_output_chanel = 32
         self.conv1_kernelsize = (3, 3)
         self.conv1_stride = (2, 2)
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize, self.conv1_stride)
@@ -33,14 +33,14 @@ class Net(nn.Module):
         self.conv_H = 10
 
         # conv2
-        self.conv2_input_chanel = 128
-        self.conv2_output_chanel = 64
+        self.conv2_input_chanel = 16
+        self.conv2_output_chanel = 32
         self.conv2_kernelsize = (3, 3)
         self.conv2_stride = (2, 2)
         self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize, self.conv2_stride)
 
         # LSTM
-        self.lstm_input_size = self.conv_H * 32  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
+        self.lstm_input_size = self.conv_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
         self.lstm_num_layers = 2
         self.lstm_hidden = None
@@ -115,14 +115,14 @@ class InceptionA(nn.Module):
 
     def __init__(self, in_channels, pool_features):
         super(InceptionA, self).__init__()
-        self.branch1x1 = BasicConv2d(in_channels, 64, kernel_size=1)
+        self.branch1x1 = BasicConv2d(in_channels, 16, kernel_size=1)
 
-        self.branch5x5_1 = BasicConv2d(in_channels, 48, kernel_size=1)
-        self.branch5x5_2 = BasicConv2d(48, 64, kernel_size=5, padding=2)
+        self.branch5x5_1 = BasicConv2d(in_channels, 8, kernel_size=1)
+        self.branch5x5_2 = BasicConv2d(8, 16, kernel_size=5, padding=2)
 
-        self.branch3x3dbl_1 = BasicConv2d(in_channels, 64, kernel_size=1)
-        self.branch3x3dbl_2 = BasicConv2d(64, 96, kernel_size=3, padding=1)
-        self.branch3x3dbl_3 = BasicConv2d(96, 96, kernel_size=3, padding=1)
+        self.branch3x3dbl_1 = BasicConv2d(in_channels, 24, kernel_size=1)
+        self.branch3x3dbl_2 = BasicConv2d(24, 16, kernel_size=3, padding=1)
+        self.branch3x3dbl_3 = BasicConv2d(16, 16, kernel_size=3, padding=1)
 
         self.branch_pool = BasicConv2d(in_channels, pool_features, kernel_size=1)
 
