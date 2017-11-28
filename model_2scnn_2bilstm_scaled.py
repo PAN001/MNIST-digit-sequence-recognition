@@ -52,7 +52,7 @@ class Net(nn.Module):
         # maxpooling
         self.maxpooling_kernelsize = (3, 3)
         self.maxpooling_stride = (3, 3)
-        self.maxpooling = F.max_pool2d(self.maxpooling_kernelsize, self.maxpooling_stride)
+        self.maxpooling = nn.MaxPool2d(self.maxpooling_kernelsize, self.maxpooling_stride)
 
         # conv3
         self.conv3_input_chanel = 20
