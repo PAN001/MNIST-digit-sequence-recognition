@@ -100,18 +100,18 @@ class Net(nn.Module):
 
         """
         # CNN
-        print "input size: ", x.size()
+        # print "input size: ", x.size()
         batch_size = int(x.size()[0])
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
-        print "after conv1: ", out.size()
+        # print "after conv1: ", out.size()
         out = F.relu(out)
         out = self.conv2(out) # D(out) = (batch_size, cov2_output_chanel, H, W)
-        print "after conv2: ", out.size()
+        # print "after conv2: ", out.size()
         out = F.relu(out)
         out = self.maxpooling(out)
-        print "after maxpooling: ", out.size()
+        # print "after maxpooling: ", out.size()
         out = self.conv3(out)
-        print "after conv3: ", out.size()
+        # print "after conv3: ", out.size()
         out = self.conv_bn(out) # bn before activation
         out = F.relu(out)
         out = self.conv_drop(out) # drop after activation
