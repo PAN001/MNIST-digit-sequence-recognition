@@ -88,7 +88,7 @@ class Net(nn.Module):
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
         print "after conv1: ", out.size()
         out = F.relu(out)
-        out = self.conv2(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
+        out = self.conv2(out) # D(out) = (batch_size, cov1_output_chanel, H, W)
         print "after conv2: ", out.size()
         out = self.mixed(out)
         print "after inception: ", out.size()
