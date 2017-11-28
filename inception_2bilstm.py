@@ -66,9 +66,10 @@ class Net(nn.Module):
         # print "input size: ", x.size()
         batch_size = int(x.size()[0])
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
-        # print "after conv1: ", out.size()
+        print "after conv1: ", out.size()
         out = F.relu(out)
         out = self.mixed(out)
+        print "after inception: ", out.size()
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
