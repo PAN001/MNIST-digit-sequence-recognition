@@ -72,7 +72,7 @@ class Net(nn.Module):
 
         """
         # CNN
-        # print "input size: ", x.size()
+        print "input size: ", x.size()
         batch_size = int(x.size()[0])
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
         print "after conv1: ", out.size()
