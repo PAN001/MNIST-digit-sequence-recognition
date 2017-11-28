@@ -22,15 +22,22 @@ class Net(nn.Module):
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 10
         self.conv1_kernelsize = (3, 3)
-        self.conv1_stride = (1, 1)
+        self.conv1_stride = (2, 2)
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize, self.conv1_stride)
 
         # initialization
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
         init.constant(self.conv1.bias, 0.1)
 
-        self.mixed = InceptionA(10, pool_features=32)
+        self.mixed = InceptionA(10, pool_features=16)
         self.conv_H = 10
+
+        # conv2
+        self.conv2_input_chanel = 128
+        self.conv2_output_chanel = 64
+        self.conv2_kernelsize = (3, 3)
+        self.conv2_stride = (2, 2)
+        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize, self.conv2_stride)
 
         # LSTM
         self.lstm_input_size = self.conv_H * 32  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
@@ -70,6 +77,8 @@ class Net(nn.Module):
         out = F.relu(out)
         out = self.mixed(out)
         print "after inception: ", out.size()
+        out = self.conv2(out);
+        print "after conv2: ", out.size()
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
