@@ -114,7 +114,7 @@ class Net(nn.Module):
         print "after conv3: ", out.size()
         out = self.conv_bn(out) # bn before activation
         out = F.relu(out)
-        out = self.conv2_drop(out) # drop after activation
+        out = self.conv_drop(out) # drop after activation
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
