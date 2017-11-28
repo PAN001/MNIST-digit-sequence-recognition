@@ -8,15 +8,6 @@ from torch.autograd import Variable
 import argparse
 import torch.nn.init as init
 
-# # custom weights initialization
-# def weights_init(m):
-#     classname = m.__class__.__name__
-#     if classname.find('Conv') != -1:
-#         m.weight.data.normal_(0.0, 0.02)
-#     elif classname.find('BatchNorm') != -1:
-#         m.weight.data.normal_(1.0, 0.02)
-#         m.bias.data.fill_(0)
-
 class Net(nn.Module):
 
     def __init__(self, use_cuda):
@@ -38,39 +29,11 @@ class Net(nn.Module):
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
         init.constant(self.conv1.bias, 0.1)
 
-        # conv2
-        self.conv2_input_chanel = 10
-        self.conv2_output_chanel = 20
-        self.conv2_kernelsize = (3, 3)
-        self.conv2_stride = (1, 1)
-        self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize, self.conv2_stride)
-
-        # initialization
-        init.xavier_uniform(self.conv2.weight, gain=np.sqrt(2))
-        init.constant(self.conv2.bias, 0.1)
-
-        # maxpooling
-        self.maxpooling_kernelsize = (3, 3)
-        self.maxpooling_stride = (3, 3)
-        self.maxpooling = nn.MaxPool2d(self.maxpooling_kernelsize, self.maxpooling_stride)
-
-        # conv3
-        self.conv3_input_chanel = 20
-        self.conv3_output_chanel = 25
-        self.conv3_kernelsize = (2, 2)
-        self.conv3_stride = (2, 2)
-        self.conv3 = nn.Conv2d(self.conv3_input_chanel, self.conv3_output_chanel, self.conv3_kernelsize, self.conv3_stride)
-
-        # batch norm (before activation)
-        self.conv_bn = nn.BatchNorm2d(self.conv3_output_chanel) # batch normalization
-
-        # drop out (after activation)
-        self.conv_drop = nn.Dropout2d()
-
-        self.conv_H = 5 # height of feature map after conv2
+        self.mixed = InceptionA(10, pool_features=32)
+        self.conv_H = 10
 
         # LSTM
-        self.lstm_input_size = self.conv_H * self.conv3_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
+        self.lstm_input_size = self.conv_H * 32  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
         self.lstm_num_layers = 2
         self.lstm_hidden = None
@@ -105,16 +68,7 @@ class Net(nn.Module):
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
         # print "after conv1: ", out.size()
         out = F.relu(out)
-        out = self.conv2(out) # D(out) = (batch_size, cov2_output_chanel, H, W)
-        # print "after conv2: ", out.size()
-        out = F.relu(out)
-        out = self.maxpooling(out)
-        # print "after maxpooling: ", out.size()
-        out = self.conv3(out)
-        # print "after conv3: ", out.size()
-        out = self.conv_bn(out) # bn before activation
-        out = F.relu(out)
-        out = self.conv_drop(out) # drop after activation
+        out = self.mixed(out)
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
@@ -146,3 +100,46 @@ class Net(nn.Module):
         c0 = torch.zeros(self.lstm_num_layers * 2, batch_size, self.lstm_hidden_size) # random init
         c0 = c0.cuda() if self.use_cuda else c0
         self.lstm_cell = Variable(c0)
+
+class InceptionA(nn.Module):
+
+    def __init__(self, in_channels, pool_features):
+        super(InceptionA, self).__init__()
+        self.branch1x1 = BasicConv2d(in_channels, 64, kernel_size=1)
+
+        self.branch5x5_1 = BasicConv2d(in_channels, 48, kernel_size=1)
+        self.branch5x5_2 = BasicConv2d(48, 64, kernel_size=5, padding=2)
+
+        self.branch3x3dbl_1 = BasicConv2d(in_channels, 64, kernel_size=1)
+        self.branch3x3dbl_2 = BasicConv2d(64, 96, kernel_size=3, padding=1)
+        self.branch3x3dbl_3 = BasicConv2d(96, 96, kernel_size=3, padding=1)
+
+        self.branch_pool = BasicConv2d(in_channels, pool_features, kernel_size=1)
+
+    def forward(self, x):
+        branch1x1 = self.branch1x1(x)
+
+        branch5x5 = self.branch5x5_1(x)
+        branch5x5 = self.branch5x5_2(branch5x5)
+
+        branch3x3dbl = self.branch3x3dbl_1(x)
+        branch3x3dbl = self.branch3x3dbl_2(branch3x3dbl)
+        branch3x3dbl = self.branch3x3dbl_3(branch3x3dbl)
+
+        branch_pool = F.avg_pool2d(x, kernel_size=3, stride=1, padding=1)
+        branch_pool = self.branch_pool(branch_pool)
+
+        outputs = [branch1x1, branch5x5, branch3x3dbl, branch_pool] # concat
+        return torch.cat(outputs, 1)
+
+class BasicConv2d(nn.Module):
+
+    def __init__(self, in_channels, out_channels, **kwargs):
+        super(BasicConv2d, self).__init__()
+        self.conv = nn.Conv2d(in_channels, out_channels, bias=False, **kwargs)
+        self.bn = nn.BatchNorm2d(out_channels, eps=0.001)
+
+    def forward(self, x):
+        x = self.conv(x)
+        x = self.bn(x)
+        return F.relu(x, inplace=True)
