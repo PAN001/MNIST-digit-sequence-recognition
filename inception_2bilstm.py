@@ -29,7 +29,8 @@ class Net(nn.Module):
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
         init.constant(self.conv1.bias, 0.1)
 
-        self.mixed = InceptionA(10, pool_features=16)
+        self.inception_input_chanel = self.conv1_output_chanel
+        self.mixed = InceptionA(self.inception_input_chanel, pool_features=16)
         self.conv_H = 10
 
         # conv2
