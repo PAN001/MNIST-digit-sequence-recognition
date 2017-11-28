@@ -50,7 +50,7 @@ class Net(nn.Module):
         self.conv3_kernelsize = (3, 3)
         self.conv3_stride = (2, 2)
         self.conv3 = nn.Conv2d(self.conv3_input_chanel, self.conv3_output_chanel, self.conv3_kernelsize, self.conv3_stride)
-        self.conv_H = 8
+        self.conv_H = 7
 
         # LSTM
         self.lstm_input_size = self.conv_H * self.conv3_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
