@@ -30,11 +30,12 @@ class Net(nn.Module):
         init.constant(self.conv1.bias, 0.1)
 
         self.inception_input_chanel = self.conv1_output_chanel
-        self.mixed = InceptionA(self.inception_input_chanel, pool_features=16)
+        self.inception_output_chanel = 16;
+        self.mixed = InceptionA(self.inception_input_chanel, pool_features=self.inception_output_chanel)
         self.conv_H = 10
 
         # conv2
-        self.conv2_input_chanel = 16
+        self.conv2_input_chanel = self.inception_output_chanel * 4
         self.conv2_output_chanel = 32
         self.conv2_kernelsize = (3, 3)
         self.conv2_stride = (2, 2)
