@@ -22,27 +22,38 @@ class Net(nn.Module):
         self.conv1_input_chanel = 1
         self.conv1_output_chanel = 32
         self.conv1_kernelsize = (3, 3)
-        self.conv1_stride = (2, 2)
+        self.conv1_stride = (1, 1)
         self.conv1 = nn.Conv2d(self.conv1_input_chanel, self.conv1_output_chanel, self.conv1_kernelsize, self.conv1_stride)
 
         # initialization
         init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
         init.constant(self.conv1.bias, 0.1)
 
-        self.inception_input_chanel = self.conv1_output_chanel
-        self.inception_output_chanel = 16;
-        self.mixed = InceptionA(self.inception_input_chanel, pool_features=self.inception_output_chanel)
-
         # conv2
-        self.conv2_input_chanel = self.inception_output_chanel * 4
-        self.conv2_output_chanel = 32
+        self.conv2_input_chanel = 32
+        self.conv2_output_chanel = 64
         self.conv2_kernelsize = (3, 3)
         self.conv2_stride = (2, 2)
         self.conv2 = nn.Conv2d(self.conv2_input_chanel, self.conv2_output_chanel, self.conv2_kernelsize, self.conv2_stride)
+
+        # initialization
+        init.xavier_uniform(self.conv1.weight, gain=np.sqrt(2))
+        init.constant(self.conv1.bias, 0.1)
+
+        self.inception_input_chanel = self.conv2_output_chanel
+        self.inception_output_chanel = 32;
+        self.mixed = InceptionA(self.inception_input_chanel, pool_features=self.inception_output_chanel)
+
+        # conv3
+        self.conv3_input_chanel = self.inception_output_chanel * 4
+        self.conv3_output_chanel = self.inception_output_chanel * 2
+        self.conv3_kernelsize = (3, 3)
+        self.conv3_stride = (2, 2)
+        self.conv3 = nn.Conv2d(self.conv3_input_chanel, self.conv3_output_chanel, self.conv3_kernelsize, self.conv3_stride)
         self.conv_H = 8
 
         # LSTM
-        self.lstm_input_size = self.conv_H * self.conv2_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
+        self.lstm_input_size = self.conv_H * self.conv3_output_chanel  # number of features = H * cnn_output_chanel = 32 * 32 = 1024
         self.lstm_hidden_size = 32
         self.lstm_num_layers = 2
         self.lstm_hidden = None
@@ -77,10 +88,12 @@ class Net(nn.Module):
         out = self.conv1(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
         print "after conv1: ", out.size()
         out = F.relu(out)
+        out = self.conv2(x) # D(out) = (batch_size, cov1_output_chanel, H, W)
+        print "after conv2: ", out.size()
         out = self.mixed(out)
         print "after inception: ", out.size()
-        out = self.conv2(out);
-        print "after conv2: ", out.size()
+        out = self.conv3(out);
+        print "after conv3: ", out.size()
 
         # reshape
         out = out.permute(0, 3, 2, 1) # D(out) = (batch_size, W, H, cnn_output_chanel)
@@ -117,14 +130,14 @@ class InceptionA(nn.Module):
 
     def __init__(self, in_channels, pool_features):
         super(InceptionA, self).__init__()
-        self.branch1x1 = BasicConv2d(in_channels, 16, kernel_size=1)
+        self.branch1x1 = BasicConv2d(in_channels, pool_features, kernel_size=1)
 
-        self.branch5x5_1 = BasicConv2d(in_channels, 8, kernel_size=1)
-        self.branch5x5_2 = BasicConv2d(8, 16, kernel_size=5, padding=2)
+        self.branch5x5_1 = BasicConv2d(in_channels, 16, kernel_size=1)
+        self.branch5x5_2 = BasicConv2d(16, pool_features, kernel_size=5, padding=2)
 
         self.branch3x3dbl_1 = BasicConv2d(in_channels, 24, kernel_size=1)
-        self.branch3x3dbl_2 = BasicConv2d(24, 16, kernel_size=3, padding=1)
-        self.branch3x3dbl_3 = BasicConv2d(16, 16, kernel_size=3, padding=1)
+        self.branch3x3dbl_2 = BasicConv2d(24, pool_features, kernel_size=3, padding=1)
+        self.branch3x3dbl_3 = BasicConv2d(pool_features, pool_features, kernel_size=3, padding=1)
 
         self.branch_pool = BasicConv2d(in_channels, pool_features, kernel_size=1)
 
