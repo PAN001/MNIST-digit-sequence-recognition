@@ -10,5 +10,8 @@
 # model-4: 2lcnn_2bilstm_100
 # python main.py --cuda --epoch 1000 --lr 0.01 --log-interval 1 --id 2bilstm_2cnn_100 --batch-size 16 --model-path 2bilstm_2cnn_100_best_model.pt
 
-# model-5
-python main.py --cuda --epoch 1000 --lr 0.01 --log-interval 1 --id inception_2bilstm_100 --batch-size 16 --train-len 20 --test-len 20
+# model-6
+python main.py --cuda --model-path 2scnn_2bilstm_scaled_100_best_model.pt --eval
+
+# model-7
+# python main.py --cuda --epoch 1000 --lr 0.01 --log-interval 1 --id inception_2bilstm_100 --batch-size 16 --train-len 20 --test-len 20
