@@ -16,8 +16,8 @@ import time
 
 # import model
 # from model_2scnn_2bilstm import *
-# from model_2scnn_2bilstm_scaled import *
-from inception_2bilstm import *
+from model_2scnn_2bilstm_scaled import *
+# from inception_2bilstm import *
 
 def train(epoch):
     model.train()
