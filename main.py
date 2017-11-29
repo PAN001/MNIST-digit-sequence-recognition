@@ -88,8 +88,8 @@ def train(epoch):
 
             print ""
 
-        # log
-        log((epoch - 1) * (training_num / args.batch_size) + batch_idx, losses.val, train_log_path)
+            # log
+            log((epoch - 1) * (training_num / args.batch_size) + batch_idx, losses.val, train_log_path)
 
 def validate():
     print "----------------------------------------Validation--------------------------------------------------"
