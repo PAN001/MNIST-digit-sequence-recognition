@@ -67,9 +67,9 @@ dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-data_path = "./dataset/test_data_100_10000.npy"
+data_path = "./dataset/train_data_100_10000.npy"
 np.save(data_path, dataset_data)
 print "Saved: ", data_path
-label_path = "./dataset/test_labels_100_10000.npy"
+label_path = "./dataset/train_labels_100_10000.npy"
 np.save(label_path, dataset_labels)
 print "Saved: ", label_path

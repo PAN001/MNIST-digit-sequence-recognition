@@ -179,9 +179,9 @@ The first model has the following architecture:
 |           | Model-1: sCNN (CNN with samll kernei size) + LSTM + CTC       |
 |-----------|---------------------------------------------------------------|
 | Conv1     | 1 input channel, 5*5 kernel size, 10 feature map, stride = 1  |
-| Maxpool1  | 10 input channel, 2*2 kernel size, stride = 1                 |
+| Maxpool1  | 10 input channel, 2*2 kernel size, stride = 2                 |
 | Conv2     | 10 input channel, 5*5 kernel size, 20 feature map, stride = 1 |
-| Maxpool2  | 20 input channel, 2*2 kernel size, stride = 1                 |
+| Maxpool2  | 20 input channel, 2*2 kernel size, stride = 2                 |
 | Batchnorm |                                                               |
 | Dropout   | p = 0.5                                                       |
 | LSTM      | 32 hidden size, 1 hidden layer                                |
@@ -193,10 +193,24 @@ The first model has the following architecture:
 |           	| Model-1: lCNN (CNN with large kernei size) + BLSTM + CTC       	|
 |-----------	|-------------------------------------------------------------------|
 | Conv1     	| 1 input channel, 5*5 kernel size, 10 feature map, stride = 1 	    |
-| Maxpool1  	| 10 input channel, 1*2 kernel size, stride = 1                 	|
-| Conv2     	| 10 input channel, 1*2 kernel size, 20 feature map, stride = 1 	|
-| Maxpool2  	| 20 input channel, 1*2 kernel size, stride = 1                 	|
+| Maxpool1  	| 10 input channel, 2*2 kernel size, stride = 2                 	|
+| Conv2     	| 10 input channel, 5*5 kernel size, 20 feature map, stride = 1 	|
+| Maxpool2  	| 20 input channel, 2*2 kernel size, stride = 2                 	|
 | Batchnorm 	|                                                               	|
+| BLSTM      	| 32 hidden size, 2 hidden layers                                	|
+| Softmax   	| =>11                                                          	|
+| CTC       	|                                                               	|
+
+## Model-6: scaled-sCNN (CNN with small kernei size) + BLSTM (2 layers) + CTC
+
+|           	| Model-1: lCNN (CNN with large kernei size) + BLSTM + CTC       	|
+|-----------	|-------------------------------------------------------------------|
+| Conv1     	| 1 input channel, 3*3 kernel size, 10 feature map, stride = 1 	    |
+| Conv2     	| 10 input channel, 5*5 kernel size, 20 feature map, stride = 1 	|
+| Maxpool    	| 20 input channel, 3*3 kernel size, stride = 3                 	|
+| Conv3     	| 20 input channel, 5*5 kernel size, 25 feature map, stride = 1 	|
+| Batchnorm 	|                                                               	|
+| Dropout    	| p = 0.5                                                         	|
 | BLSTM      	| 32 hidden size, 2 hidden layers                                	|
 | Softmax   	| =>11                                                          	|
 | CTC       	|                                                               	|
