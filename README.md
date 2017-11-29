@@ -217,7 +217,28 @@ The first model has the following architecture:
 
 Validation set (100-10000): Average loss: 2.6410, Average edit dist: 0.7509
 
-# Experiment Result
+# Experiments
+## Experiment settings
+
+- Optimizer: Adam optimizer with `learning rate=0.01`, `betas=(0.9, 0.999)`, `eps=1e-8`, `weight_decay=0`. Batch size is set to `16`.
+
+- Training set: 10000 samples with 100 digits in each sample
+- Validation set: 1000 samples with 100 digits in each sample
+
+The experiment environment is in Python 2.7 and built up AWS p2 instance - powered by Tesla K80 Accelerators,with one GPU that provides 12 GiB of memory.
+
+# Experiment
+![All models: Loss vs. Batch](./plots/loss.png)
+
+As shown above, model-6 converges fastest amd achieves best performance. Furthermore, the detailed statistics of model-6 after 58 epochs is as followed:
+
+![Model-6 training: Loss vs. Batch](./plots/model-6_train_loss.png)
+![Model-6 Validation: LER vs. Epoch](./plots/model-6_validation_ler.png)
+
+The best performance of model-6 is in epoch 40 with average LER **0.603%** and loss **2.087** on validation set.
+
+# Performance on different sequence length
+
 - training(20)/test(5)
 
     Validation set: Average loss: 0.4893, Average edit dist: 0.1348
