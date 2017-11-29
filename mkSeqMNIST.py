@@ -7,12 +7,13 @@ from scipy.misc import imsave
 from PIL import Image
 import os
 import datetime
+import random
 from matplotlib import pyplot as plt
 
 N = 100 # number of digits in the contiguous sequence
-M = 10000 # number of samples
-space = 200
-overlap = 15
+M = 1000 # number of samples
+space = range(200, 10000)
+overlap = range(15, 25) # bigger -> more overlapped
 
 random.seed(123456789)
 
@@ -33,7 +34,7 @@ for i in range(N):
     if i == 0:
         dataset_data = d
     else:
-        oq = rint(0, overlap-9) + 9
+        oq = rint(0, random.choice(overlap) - 9) + 9
         dd = np.append(np.zeros((M, 36, dataset_data.shape[2]-oq)), d, axis=2)
         dataset_data = np.append(dataset_data, np.zeros((M,36,28-oq)), axis=2)
         dataset_data += dd
@@ -54,22 +55,25 @@ for i in range(M):
     img = np.zeros((36, 0))
     # probs = torch.Tensor(range(0, N + 1))
 
-    dist = torch.multinomial(torch.ones(N+1), space, replacement=True)
+    dist = torch.multinomial(torch.ones(N+1), random.choice(space), replacement=True)
     for j in range(N+1):
         img = np.append(img, np.zeros((36, (dist==j).sum())), axis=1)
         img = np.append(img, dataset_data[i,:,28*j:28*(j+1)], axis=1)
     img = dataset_data[i,:,:]
     images.append(img)
-    # name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
-    # imsave(name, img.clip(0, 255))
+    name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
+    imsave(name, img.clip(0, 255))
 
-dataset_data = np.array(images) / 255.0
+dataset_data = np.array(images)
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-data_path = "./dataset/train_data_100_10000.npy"
+data_path = "./dataset/test_data_100_1000_random.npy"
 np.save(data_path, dataset_data)
 print "Saved: ", data_path
-label_path = "./dataset/train_labels_100_10000.npy"
+label_path = "./dataset/test_labels_100_1000_random.npy"
 np.save(label_path, dataset_labels)
 print "Saved: ", label_path
+
+
+# dist = torch.multinomial(torch.ones(N+1), space, replacement=True)

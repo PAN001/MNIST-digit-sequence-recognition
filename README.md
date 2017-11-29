@@ -215,6 +215,7 @@ The first model has the following architecture:
 | Softmax   	| =>11                                                          	|
 | CTC       	|                                                               	|
 
+Validation set (100-10000): Average loss: 2.6410, Average edit dist: 0.7509
 
 # Experiment Result
 - training(20)/test(5)
