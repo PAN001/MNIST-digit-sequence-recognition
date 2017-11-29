@@ -11,8 +11,8 @@ from matplotlib import pyplot as plt
 
 N = 100 # number of digits in the contiguous sequence
 M = 10000 # number of samples
-space = 200
-overlap = 15
+space = 400 #200
+overlap = 20 #15
 
 random.seed(123456789)
 
@@ -67,9 +67,9 @@ dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-data_path = "./dataset/test_data_100_10000.npy"
+data_path = "./dataset/test_data_100_1000_400s_20o.npy"
 np.save(data_path, dataset_data)
 print "Saved: ", data_path
-label_path = "./dataset/test_labels_100_10000.npy"
+label_path = "./dataset/test_labels_100_100_400s_20o.npy"
 np.save(label_path, dataset_labels)
 print "Saved: ", label_path
