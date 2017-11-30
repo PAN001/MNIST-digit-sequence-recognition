@@ -230,7 +230,7 @@ The experiment environment is in Python 2.7 and built up AWS p2 instance - power
 # Experiment
 ![All models: Loss vs. Batch](./plots/loss.png)
 
-As shown above, model-6 converges fastest amd achieves best performance. Furthermore, the detailed statistics of model-6 after 58 epochs is as followed:
+As shown above, model-6 converges fastest and achieves best performance. Furthermore, the detailed statistics of model-6 after 58 epochs is as followed:
 
 ![Model-6 training: Loss vs. Batch](./plots/model-6_train_loss.png)
 ![Model-6 Validation: LER vs. Epoch](./plots/model-6_validation_ler.png)
