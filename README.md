@@ -260,10 +260,11 @@ The stability of the model is also tested. As show below, a
 
     - random_1000:
 
-        Validation set: Average loss: 346.0694, Average edit dist: 63.4220
+        Validation set: Average loss: 111.4074, Average edit dist: 12.7760
 
     - normal_1000:
 
+        Validation set: Average loss: 2.2551, Average edit dist: 0.6470
         
 
 - Model-6 trained on random_10000 (from beginning) after 31 epochs:
