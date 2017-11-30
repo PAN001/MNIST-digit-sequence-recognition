@@ -12,10 +12,10 @@ from matplotlib import pyplot as plt
 
 N = 100 # number of digits in the contiguous sequence
 M = 1000 # number of samples
-# space = range(200, 10000)
-# overlap = range(15, 25) # bigger -> more overlapped
-space = range(200, 201)
-overlap = range(15, 16) # bigger -> more overlapped
+space = range(200, 10000)
+overlap = range(15, 25) # bigger -> more overlapped
+# space = range(200, 201)
+# overlap = range(15, 16) # bigger -> more overlapped
 
 random.seed(123456789)
 
@@ -66,14 +66,14 @@ for i in range(M):
     name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
     imsave(name, img.clip(0, 255))
 
-dataset_data = np.array(images)
+dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
 if not os.path.exists('./dataset'): os.makedirs('./dataset')
-data_path = "./dataset/data_100_1000.npy"
+data_path = "./dataset/data_100_1000_random.npy"
 np.save(data_path, dataset_data)
 print "Saved: ", data_path
-label_path = "./dataset/labels_100_1000.npy"
+label_path = "./dataset/labels_100_1000_random.npy"
 np.save(label_path, dataset_labels)
 print "Saved: ", label_path
 
