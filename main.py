@@ -215,6 +215,8 @@ parser.add_argument('--train-len', type=str, default='100', metavar='TRLEN',
                     help='number of digits in each sequence image (training)')
 parser.add_argument('--test-len', type=str, default='100', metavar='TELEN',
                     help='number of digits in each sequence image (testing)')
+parser.add_argument('--new', action='store_true', default=False,
+                    help='whether to save a new model')
 
 # parser.add_argument('--resume', default='', type=str, metavar='PATH',
 #                     help='path to latest checkpoint (default: None)')
@@ -295,6 +297,10 @@ if args.model_path:
         optimizer.load_state_dict(checkpoint['optimizer'])
         print("=> loaded checkpoint '{}' (epoch {})"
               .format(args.model_path, checkpoint['epoch']))
+
+        if args.new:
+            best_edit_dist = sys.maxint
+            print("=> Save as a new model")
     else:
         print("=> no checkpoint found at '{}'".format(args.model_path))
 
