@@ -250,8 +250,12 @@ print "validation_log_path: ", validation_log_path
 train_data_path = "./dataset/data_" + args.train_len + "_10000_random.npy"
 train_labels_path = "./dataset/labels_" + args.train_len + "_10000_random.npy"
 
-validate_data_path = "./dataset/test_data_" + args.test_len + "_1000.npy"
-validate_labels_path = "./dataset/test_labels_" + args.test_len + "_1000.npy"
+# validate_data_path = "./dataset/test_data_" + args.test_len + "_1000.npy"
+# validate_labels_path = "./dataset/test_labels_" + args.test_len + "_1000.npy"
+
+validate_data_path = "./dataset/test_data_" + args.test_len + "_sun.npy"
+validate_labels_path = "./dataset/test_labels_" + args.test_len + "_sun.npy"
+
 
 # load data
 if not args.eval:
