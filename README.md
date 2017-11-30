@@ -239,6 +239,8 @@ The best performance of model-6 is in epoch 40 with average LER **0.603%** and l
 
 # Performance on different sequence length
 
+The stability of the model is also tested. As show below, a 
+
 - training(20)/test(5)
 
     Validation set: Average loss: 0.4893, Average edit dist: 0.1348
@@ -250,3 +252,26 @@ The best performance of model-6 is in epoch 40 with average LER **0.603%** and l
 - training(20)/test(100)
 
     Validation set: Average loss: 16.9200, Average edit dist: 4.4844
+
+
+# 
+
+- Model-6 trained on normal_10000 after 41 epochs:
+
+    - random_1000:
+
+        Validation set: Average loss: 346.0694, Average edit dist: 63.4220
+
+    - normal_1000:
+
+        
+
+- Model-6 trained on random_10000 (from beginning) after 31 epochs:
+
+    - random_1000:
+    
+        Validation set: Average loss: 12.4041, Average edit dist: 3.0410
+
+    - normal_1000:
+
+        Validation set: Average loss: 14.9714, Average edit dist: 4.0700
