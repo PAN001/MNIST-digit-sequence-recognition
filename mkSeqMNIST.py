@@ -9,9 +9,19 @@ import os
 import datetime
 import random
 from matplotlib import pyplot as plt
+import argparse
 
-N = 100 # number of digits in the contiguous sequence
-M = 10000 # number of samples
+parser = argparse.ArgumentParser(description='Generate Sequence MNIST Dataset')
+parser.add_argument('--N', type=int, default=100, metavar='N',
+                    help='number of digits in each sequence')
+parser.add_argument('--M', type=int, default=1000, metavar='M',
+                    help='number of samples')
+parser.add_argument('--root-path', type=str, default='./dataset/', metavar='RP',
+                    help='root path to the data to store')
+args = parser.parse_args()
+N = args.N # number of digits in the contiguous sequence
+M = args.M # number of samples
+
 # space = range(200, 10000)
 # overlap = range(15, 25) # bigger -> more overlapped
 space = range(200, 201)
@@ -63,17 +73,17 @@ for i in range(M):
         img = np.append(img, dataset_data[i,:,28*j:28*(j+1)], axis=1)
     img = dataset_data[i,:,:]
     images.append(img)
-    name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
-    imsave(name, img.clip(0, 255))
+    # name = './images/img_' + ''.join(map(lambda x: str(int(x)), dataset_labels[i])) + '.png'
+    # imsave(name, img.clip(0, 255))
 
 dataset_data = np.array(images) / 255.0
 
 t = datetime.datetime.now().time()
-if not os.path.exists('./dataset'): os.makedirs('./dataset')
-data_path = "./dataset/data_100_10000.npy"
+if not os.path.exists(args.root_path): os.makedirs(args.root_path)
+data_path = args.root_path + "data_100_10000.npy"
 np.save(data_path, dataset_data)
 print "Saved: ", data_path
-label_path = "./dataset/labels_100_10000.npy"
+label_path = args.root_path + "labels_100_10000.npy"
 np.save(label_path, dataset_labels)
 print "Saved: ", label_path
 
