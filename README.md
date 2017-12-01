@@ -227,19 +227,44 @@ Validation set (100-10000): Average loss: 2.6410, Average edit dist: 0.7509
 
 The experiment environment is in Python 2.7 and built up AWS p2 instance - powered by Tesla K80 Accelerators,with one GPU that provides 12 GiB of memory.
 
-# Experiment
-![All models: Loss vs. Batch](./plots/loss.png)
+## Training dataset
+
+- normal training dataset: the overlap between each image is set to a fixed value of 15 pixels
+
+- random training dataset: the overlap between each image is set to a random value ranged from 15 pixels to 25 pixels
+
+## Experiments on normal training data
+
+| ![All models: Loss vs. Batch](./plots/loss.png) | 
+|:--:| 
+| Six models training on normal_10000_100 |
 
 As shown above, model-6 converges fastest and achieves best performance. Furthermore, the detailed statistics of model-6 after 58 epochs is as followed:
 
 ![Model-6 training: Loss vs. Batch](./plots/model-6_train_loss.png)
 ![Model-6 Validation: LER vs. Epoch](./plots/model-6_validation_ler.png)
 
+
 The best performance of model-6 is in epoch 40 with average LER **0.603%** and loss **2.087** on validation set.
 
-# Performance on different sequence length
+## Experiments on random training data
 
-The stability of the model is also tested. As show below, a 
+Model-6 trained on normal training dataset after 40 epochs (i.e. best model in first experiment) is further trained on new random training dataset for the other 82 epochs.
+
+| ![All models: Loss vs. Batch](./plots/model-6_random_retrained_train_loss.png) | 
+|:--:| 
+| Model-6 Training on random_10000_100 |
+
+| ![All models: Loss vs. Batch](./plots/model-6_random_retrained_validation_ler.png) | 
+|:--:| 
+| Model-6 Validation on random_1000_100 |
+
+The best model in epoch **105** (counting the 40 epochs for the pre-trained model) with average LER **2.538%** and loss **8.893** on validation set.
+
+
+## Experiments on different sequence length
+
+The stability of the model is also tested. As show below, a simple model-1 trained after several epochs is used to test:
 
 - training(20)/test(5)
 
@@ -253,26 +278,7 @@ The stability of the model is also tested. As show below, a
 
     Validation set: Average loss: 16.9200, Average edit dist: 4.4844
 
+It is observed that models tend to be more stable if trained on longer sequence (i.e. with more digits). 
 
-# 
+## Stability of two best models
 
-- Model-6 trained on normal_10000 after 41 epochs:
-
-    - random_1000:
-
-        Validation set: Average loss: 111.4074, Average edit dist: 12.7760
-
-    - normal_1000:
-
-        Validation set: Average loss: 2.2551, Average edit dist: 0.6470
-        
-
-- Model-6 trained on random_10000 (from beginning) after 31 epochs:
-
-    - random_1000:
-    
-        Validation set: Average loss: 12.4041, Average edit dist: 3.0410
-
-    - normal_1000:
-
-        Validation set: Average loss: 14.9714, Average edit dist: 4.0700
