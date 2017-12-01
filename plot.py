@@ -82,28 +82,60 @@ def read_validation(loss_path):
 # plt.show()
 # # plt.savefig("./plots/loss.png")
 
-# # model-6 train
-# train_losses_list6 = read_in("./saved_model_log/6-2scnn_2bilstm_scaled_10000_59epoch/2scnn_2bilstm_scaled_100_train_log.txt");
+# # model-6-random train
+# train_losses_list6 = read_in("./saved_model_log/6-2scnn_2bilstm_scaled_100_10000_random_retrained_123/2scnn_2bilstm_scaled_100_random_retrained_train_log.txt");
+# train_losses_list6 = train_losses_list6[0:-1:50] # scale by 50
 # fig = plt.figure(2, figsize=(40, 10))
 # plt.plot(train_losses_list6)
-# plt.title('Model-6 Training: loss vs. batch (batch size = 16)', fontsize=28)
+# plt.title('Model-6 Training (random): loss vs. batch (batch size = 16)', fontsize=28)
 # plt.ylabel('loss', fontsize=18)
-# plt.xlabel('batch', fontsize=18)
+# plt.xlabel('batch (*50)', fontsize=18)
 # axes = plt.gca()
-# axes.set_ylim([0, 600])
+# # axes.set_ylim([0, 600])
 # # axes.set_xlim([500, 2500])
 # # plt.legend(['model-1', 'model-2', 'model-3', 'model-4', 'model-5', 'model-6'], loc='upper left')
-# plt.xticks([0,500,1000,1500,2000,2500,3000,3500], ["0", "5000", "10000", "15000", "20000", "25000", "30000", "35000"])
+# plt.xticks([0,100,200,300,400], ["0", "5000", "10000", "15000", "20000"])
 # # plt.show()
-# plt.savefig("./plots/model-6_train_loss.png")
+# plt.savefig("./plots/model-6_random_retrained_train_loss.png")
 
-# model-6 validation
-val_losses_list6, val_lers_list6 = read_validation("./saved_model_log/6-2scnn_2bilstm_scaled_10000_59epoch/2scnn_2bilstm_scaled_100_validation_log.txt");
-# # LER
+
+# model-6-random validation
+validation_losses_list6, validation_lers_list6 = read_validation(
+    "./saved_model_log/6-2scnn_2bilstm_scaled_100_10000_random_retrained_123/2scnn_2bilstm_scaled_100_random_retrained_validation_log.txt");
+# validation_losses_list6 = validation_losses_list6[0:-1:50]  # scale by 50
+fig = plt.figure(2, figsize=(40, 10))
+plt.plot(validation_lers_list6)
+plt.title('Model-6 Validation (random): LER vs. epoch (batch size = 16)', fontsize=28)
+plt.ylabel('LER', fontsize=18)
+plt.xlabel('epoch', fontsize=18)
+# axes = plt.gca()
+# axes.set_ylim([0, 600])
+# axes.set_xlim([500, 2500])
+# plt.legend(['model-1', 'model-2', 'model-3', 'model-4', 'model-5', 'model-6'], loc='upper left')
+# plt.xticks([0, 100, 200, 300, 400], ["0", "5000", "10000", "15000", "20000"])
+# plt.show()
+plt.savefig("./plots/model-6_random_retrained_validation_ler.png")
+
+# # model-6 validation
+# val_losses_list6, val_lers_list6 = read_validation("./saved_model_log/6-2scnn_2bilstm_scaled_10000_59epoch/2scnn_2bilstm_scaled_100_validation_log.txt");
+# # # LER
+# # fig = plt.figure(2, figsize=(40, 10))
+# # plt.plot(val_lers_list6)
+# # plt.title('Model-6 Validation: LER vs. epoch', fontsize=28)
+# # plt.ylabel('LER(%)', fontsize=18)
+# # plt.xlabel('batch', fontsize=18)
+# # axes = plt.gca()
+# # # axes.set_ylim([0, 600])
+# # # axes.set_xlim([500, 2500])
+# # # plt.legend(['model-1', 'model-2', 'model-3', 'model-4', 'model-5', 'model-6'], loc='upper left')
+# # # plt.xticks([0,500,1000,1500,2000,2500,3000,3500], ["0", "5000", "10000", "15000", "20000", "25000", "30000", "35000"])
+# # # plt.show()
+# # plt.savefig("./plots/model-6_validation_ler.png")
+# # loss
 # fig = plt.figure(2, figsize=(40, 10))
-# plt.plot(val_lers_list6)
-# plt.title('Model-6 Validation: LER vs. epoch', fontsize=28)
-# plt.ylabel('LER(%)', fontsize=18)
+# plt.plot(val_losses_list6)
+# plt.title('Model-6 Validation: loss vs. epoch', fontsize=28)
+# plt.ylabel('loss', fontsize=18)
 # plt.xlabel('batch', fontsize=18)
 # axes = plt.gca()
 # # axes.set_ylim([0, 600])
@@ -111,17 +143,4 @@ val_losses_list6, val_lers_list6 = read_validation("./saved_model_log/6-2scnn_2b
 # # plt.legend(['model-1', 'model-2', 'model-3', 'model-4', 'model-5', 'model-6'], loc='upper left')
 # # plt.xticks([0,500,1000,1500,2000,2500,3000,3500], ["0", "5000", "10000", "15000", "20000", "25000", "30000", "35000"])
 # # plt.show()
-# plt.savefig("./plots/model-6_validation_ler.png")
-# loss
-fig = plt.figure(2, figsize=(40, 10))
-plt.plot(val_losses_list6)
-plt.title('Model-6 Validation: loss vs. epoch', fontsize=28)
-plt.ylabel('loss', fontsize=18)
-plt.xlabel('batch', fontsize=18)
-axes = plt.gca()
-# axes.set_ylim([0, 600])
-# axes.set_xlim([500, 2500])
-# plt.legend(['model-1', 'model-2', 'model-3', 'model-4', 'model-5', 'model-6'], loc='upper left')
-# plt.xticks([0,500,1000,1500,2000,2500,3000,3500], ["0", "5000", "10000", "15000", "20000", "25000", "30000", "35000"])
-# plt.show()
-plt.savefig("./plots/model-6_validation_loss.png")
+# plt.savefig("./plots/model-6_validation_loss.png")
