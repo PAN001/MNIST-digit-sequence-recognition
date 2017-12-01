@@ -18,6 +18,7 @@ parser.add_argument('--M', type=int, default=1000, metavar='M',
                     help='number of samples')
 parser.add_argument('--root-path', type=str, default='./dataset/', metavar='RP',
                     help='root path to the data to store')
+
 args = parser.parse_args()
 N = args.N # number of digits in the contiguous sequence
 M = args.M # number of samples
