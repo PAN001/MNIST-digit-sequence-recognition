@@ -1,3 +1,10 @@
+# Create and activate new virtual environment
+virtualenv venv
+source venv/bin/activate
+
+# Install requirements
+pip install -r requirements.txt
+
 # Generate dataset
 python mkSeqMNIST.py --N 100 --M 1000 
 

@@ -5,3 +5,4 @@ dataset/*
 images/*
 handwrittenDigitSequenceRec/*
 *.pyc
+venv/*
