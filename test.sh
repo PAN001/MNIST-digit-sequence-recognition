@@ -14,4 +14,4 @@ echo "=> Dataset done"
 
 echo "=> Running model and testing ..."
 # Load pre-trained model and test
-python main.py --cuda --model-path 2scnn_2bilstm_scaled_100_best_model.pt --eval --test-len 100
+python main.py --cuda --model-path 2scnn_2bilstm_scaled_100_best_model.pt --eval --test-len 100 -id test
