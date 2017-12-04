@@ -238,7 +238,7 @@ kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 
 # global variables
 start_epoch = 1
-best_edit_dist = sys.maxint
+best_edit_dist = float('inf')
 validate_edit_dists = [] # for each epoch
 validate_losses = [] # for each epoch
 best_model_path = "./" + args.id +  "_best_model.pt"
@@ -301,7 +301,7 @@ if args.model_path:
               .format(args.model_path, checkpoint['epoch']))
 
         if args.new:
-            best_edit_dist = sys.maxint
+            best_edit_dist = float('inf')
             print("=> Save as a new model")
     else:
         print("=> no checkpoint found at '{}'".format(args.model_path))
