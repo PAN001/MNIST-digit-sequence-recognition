@@ -16,7 +16,7 @@ There is a readme.html which is converted from this markdown file for demonstrat
 
 # Code
 
-For the sake of convenience, a test shell script test.sh is provided for testing the pretrained model on test set. Simply run the following, and it will help set up the environment and fit the model automatically:
+For the sake of convenience, a test shell script test.sh is provided for testing the pretrained model on test set. Simply run the following, and it will help set up the environment, download and generate the dataset and then load and fit the model automatically:
 
 ```shell
 sh test.sh
@@ -46,11 +46,10 @@ from model_bilstm import *
 The scrip `main.py` allows to train the model from the beginning or pretrained model, fit the samples based on pretrained model, and plot figures. The detailed usage is as follows:
 
 ```shell
-(virtual_env)bash-3.2$ python main.py -h
 usage: main.py [-h] [--batch-size N] [--validate-batch-size N] [--epoch N]
                [--lr LR] [--momentum M] [--cuda] [--seed S] [--log-interval N]
                [--eval] [--model-path MP] [--id ID] [--train-len TRLEN]
-               [--test-len TELEN]
+               [--test-len TELEN] [--new]
 
 Sequence MNIST Recognition
 
@@ -58,7 +57,7 @@ optional arguments:
   -h, --help            show this help message and exit
   --batch-size N        input batch size for training (default: 32)
   --validate-batch-size N
-                        input batch size for validating (default: 10)
+                        input batch size for validating (default: 256)
   --epoch N             number of epochs to train (default: 20)
   --lr LR               learning rate (default: 0.01)
   --momentum M          SGD momentum (default: 0.5)
@@ -71,18 +70,31 @@ optional arguments:
   --id ID               id of each training instance
   --train-len TRLEN     number of digits in each sequence image (training)
   --test-len TELEN      number of digits in each sequence image (testing)
+  --new                 whether to save a new model
 ```
 
 The `main.py` script also supports checkpoint mechanism (which saves the best model after each epoch) and log function (logs loss and edit distance on training set after each batch and those on validation set after each epoch).
 
 ## Run the Code: Test Model
 
-The best model with 90.88% accuracy on Cifar10 test set at epoch 339 with loss of 0.4994 are stored as all_cnn_weights_0.9088_0.4994.hdf5. The following code loads the pretrained model and then fits the test data:
+Two best models:
+
+1. Model-6-normal: **0.647%** LER on normal testing dataset
+2. Model-6-random: **2.538%** LER on random testing dataset 
+
+The following code loads the pretrained model and then fits the test data:
 
 ```shell
 
-python main.py --
+python main.py --cuda --model-path 2scnn_2bilstm_scaled_100_best_model.pt --eval
 
+```
+
+## Monitor GPU usage
+
+```shell
+# monitor every 0.1 sec
+watch -n 1 nvidia-smi
 ```
 
 # Evaluation Metrics
@@ -282,3 +294,9 @@ It is observed that models tend to be more stable if trained on longer sequence 
 
 ## Stability of two best models
 
+|                | LER_random | Loss_random | LER_normal | Loss_normal |
+|----------------|------------|-------------|------------|-------------|
+| Model-6-random | **2.538%** | 8.893       | 5.540%     | 19.991      |
+| Model-6-normal | 12.776%    | 111.407     | **0.647%** | 2.255       |
+
+As shown the table above, the performance of the model trained on normal dataset degrades significanly when testing on random dataset. Meanwhile, the model trained on random dataset seems more stable, but appears overfitting on random dataset as the LER incrases when testing on normal dataset.
