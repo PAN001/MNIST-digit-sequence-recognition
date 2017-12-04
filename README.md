@@ -2,7 +2,7 @@
 # MNIST Digit Sequence Recognition
 The data consists of sequences of digits from the MNIST dataset padded vertically with random pixels then randomly shifted vertically within a given range. The goal is to correctly recognize the sequence.
 
-![mnist_sequence_sample](./img/mnist_sequence_sample.png)
+![mnist_sequence_sample](https://raw.githubusercontent.com/PAN001/CTC/master/img/mnist_sequence_sample.png)
 
 # Introduction
 There is a readme.html which is converted from this markdown file for demonstration.
@@ -257,14 +257,14 @@ The experiment environment is in Python 2.7 and built upon AWS p2 instance - pow
 
 ## Experiments on normal training data
 
-| ![All models: Loss vs. Batch](./plots/loss.png) | 
+| ![All models: Loss vs. Batch](https://raw.githubusercontent.com/PAN001/CTC/master/plots/loss.png) | 
 |:--:| 
 | Six models training on normal_10000_100 |
 
 As shown above, model-6 converges fastest and achieves best performance. Furthermore, the detailed statistics of model-6 after 58 epochs is as followed:
 
-![Model-6 training: Loss vs. Batch](./plots/model-6_train_loss.png)
-![Model-6 Validation: LER vs. Epoch](./plots/model-6_validation_ler.png)
+![Model-6 training: Loss vs. Batch](https://raw.githubusercontent.com/PAN001/CTC/master/plots/model-6_train_loss.png)
+![Model-6 Validation: LER vs. Epoch](https://raw.githubusercontent.com/PAN001/CTC/master/plots/model-6_validation_ler.png)
 
 
 The best performance of model-6 is in epoch 40 with average LER **0.603%** and loss **2.087** on validation set.
@@ -273,11 +273,11 @@ The best performance of model-6 is in epoch 40 with average LER **0.603%** and l
 
 Model-6 trained on normal training dataset after 40 epochs (i.e. best model in first experiment) is further trained on new random training dataset for the other 82 epochs.
 
-| ![All models: Loss vs. Batch](./plots/model-6_random_retrained_train_loss.png) | 
+| ![All models: Loss vs. Batch](https://raw.githubusercontent.com/PAN001/CTC/master/plots/model-6_random_retrained_train_loss.png) | 
 |:--:| 
 | Model-6 Training on random_10000_100 |
 
-| ![All models: Loss vs. Batch](./plots/model-6_random_retrained_validation_ler.png) | 
+| ![All models: Loss vs. Batch](https://raw.githubusercontent.com/PAN001/CTC/master/plots/model-6_random_retrained_validation_ler.png) | 
 |:--:| 
 | Model-6 Validation on random_1000_100 |
 
