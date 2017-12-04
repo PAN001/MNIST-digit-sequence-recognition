@@ -1,22 +1,32 @@
 # Introduction
+# MNIST Digit Sequence Recognition
+The data consists of sequences of digits from the MNIST dataset padded vertically with random pixels then randomly shifted vertically within a given range. The goal is to correctly recognize the sequence.
 
+![mnist_sequence_sample](./images/mnist_sequence_sample.png)
+
+# Introduction
 There is a readme.html which is converted from this markdown file for demonstration.
 
 `CTCLoss.py`
 
 - Pytorch implementation of Connectionist Temporal Classification (CTC) loss function by extending `torch.autograd`
 
-`CNN_LSTM_FC_model.py`
+`model_2scnn_2bilstm_scaled.py`
 
 - A Pytoch based CNN+LSTM+CTC model
 
-`train.py`
+`main.py`
 
-- Trainig script
+- Main routine
+
+Two best models:
+
+1. Model-6-normal: **0.647%** LER on normal testing dataset
+2. Model-6-random: **2.538%** LER on random testing dataset 
 
 # Code
 
-For the sake of convenience, a test shell script test.sh is provided for testing the pretrained model on test set. Simply run the following, and it will help set up the environment, download and generate the dataset and then load and fit the model automatically:
+For the sake of convenience, a test shell script test.sh is provided for testing the pretrained model on test set. Simply run the shell scropt below, and it will help set up the environment, download and generate the dataset and then load and fit the model automatically:
 
 ```shell
 sh test.sh
@@ -94,12 +104,12 @@ python main.py --cuda --model-path 2scnn_2bilstm_scaled_100_best_model.pt --eval
 
 ```shell
 # monitor every 0.1 sec
-watch -n 1 nvidia-smi
+watch -n 0.1 nvidia-smi
 ```
 
 # Evaluation Metrics
 
-Due to the nature of the sequence recognition, accuracy is not appropriate here as evaluation metric since for example only one different digit in one hundred digits will result in accuracy 0 even if all the other 99 are matched with the target. In this case,  label error rate (LER) combined with edit distance is used.
+Due to the nature of the sequence recognition, accuracy is not appropriate here as an evaluation metric since for example only one different digit in one hundred digits will result in accuracy 0 even if all the other 99 are matched with the target. In this case,  label error rate (LER) combined with edit distance is used.
 
 ## Edit Distance
 
@@ -231,13 +241,13 @@ Validation set (100-10000): Average loss: 2.6410, Average edit dist: 0.7509
 
 # Experiments
 ## Experiment settings
-
+
 - Optimizer: Adam optimizer with `learning rate=0.01`, `betas=(0.9, 0.999)`, `eps=1e-8`, `weight_decay=0`. Batch size is set to `16`.
 
 - Training set: 10000 samples with 100 digits in each sample
 - Validation set: 1000 samples with 100 digits in each sample
 
-The experiment environment is in Python 2.7 and built up AWS p2 instance - powered by Tesla K80 Accelerators,with one GPU that provides 12 GiB of memory.
+The experiment environment is in Python 2.7 and built upon AWS p2 instance - powered by Tesla K80 Accelerators,with one GPU that provides 12 GiB of memory.
 
 ## Training dataset
 
