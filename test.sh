@@ -7,10 +7,10 @@ source venv/bin/activate
 pip install -r requirements.txt
 echo "=> Environment set up"
 
-echo "=> Downloading MNIST dataset and generating sequence test set ..."
-# Generate dataset
-python mkSeqMNIST.py --N 100 --M 1000 
-echo "=> Dataset done"
+# echo "=> Downloading MNIST dataset and generating sequence test set ..."
+# # Generate dataset
+# python mkSeqMNIST.py --N 100 --M 1000 
+# echo "=> Dataset done"
 
 echo "=> Running model and testing ..."
 # Load pre-trained model and test
