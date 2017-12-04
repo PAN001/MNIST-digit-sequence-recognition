@@ -1,16 +1,16 @@
-# # Create and activate new virtual environment
-# echo "=> Setting up environment ..."
-# virtualenv venv
-# source venv/bin/activate
+# Create and activate new virtual environment
+echo "=> Setting up environment ..."
+virtualenv venv
+source venv/bin/activate
 
-# # Install requirements
-# pip install -r requirements.txt
-# echo "=> Environment set up"
+# Install requirements
+pip install -r requirements.txt
+echo "=> Environment set up"
 
-# echo "=> Downloading MNIST dataset and generating sequence test set ..."
-# # Generate dataset
-# python mkSeqMNIST.py --N 100 --M 1000 
-# echo "=> Dataset done"
+echo "=> Downloading MNIST dataset and generating sequence test set ..."
+# Generate dataset
+python mkSeqMNIST.py --N 100 --M 1000 
+echo "=> Dataset done"
 
 echo "=> Running model and testing ..."
 # Load pre-trained model and test
