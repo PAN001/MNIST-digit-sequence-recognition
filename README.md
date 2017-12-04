@@ -13,7 +13,7 @@ There is a readme.html which is converted from this markdown file for demonstrat
 
 `model_2scnn_2bilstm_scaled.py`
 
-- A Pytoch based CNN+LSTM+CTC model
+- A Pytoch based CNN+LSTM+CTC model
 
 `main.py`
 
