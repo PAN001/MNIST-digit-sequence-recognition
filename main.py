@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import argparse
 import torch
 import torch.nn as nn
@@ -60,7 +62,7 @@ def train(epoch):
 
         # standard output
         if batch_idx % args.log_interval == 0:
-            print args.id
+            print(args.id)
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t'
                   'Loss {loss.val:.4f} (avg: {loss.avg:.4f})\t'
                   'Time {batch_time.val:.3f} (avg: {batch_time.avg:.3f}, sum: {batch_time.sum:.3f})\t'.format(
@@ -71,28 +73,28 @@ def train(epoch):
             test_out_np = out_np[0].reshape(1, out_np[0].shape[0], out_np[0].shape[1])
             predictions, predictions_no_merge = decoder.decode_best_path(test_out_np)
 
-            print "best_path_predictions_no_merge[0]: "
-            print np.array(predictions_no_merge[0])
+            print("best_path_predictions_no_merge[0]: ")
+            print(np.array(predictions_no_merge[0]))
 
-            print "best_path_predictions_merge[0]: "
-            print np.array(predictions[0])
+            print("best_path_predictions_merge[0]: ")
+            print(np.array(predictions[0]))
 
-            print "label[0]: "
-            print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
+            print("label[0]: ")
+            print(target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0])
 
             target_np = target.data.cpu().numpy() if args.cuda else target.data.numpy()
             test_target_np = target_np[0].reshape(1, -1)
 
             edit_dists, _, _, _, _ = decoder.edit_distance(test_target_np, predictions)
-            print "Edit distance is: ", edit_dists[0]
+            print("Edit distance is: ", edit_dists[0])
 
-            print ""
+            print("")
 
             # log
             log((epoch - 1) * (training_num / args.batch_size) + batch_idx, losses.val, train_log_path)
 
 def validate():
-    print "----------------------------------------Validation--------------------------------------------------"
+    print("----------------------------------------Validation--------------------------------------------------")
     model.eval()
 
     validate_loss = 0.0
@@ -126,28 +128,28 @@ def validate():
         # decoder.display_edit_diff(target_np, predictions)
         validate_edit_dist += sum(edit_dists)
 
-        print "best_path_predictions_no_merge[0]: "
-        print np.array(predictions_no_merge[0])
+        print("best_path_predictions_no_merge[0]: ")
+        print(np.array(predictions_no_merge[0]))
 
-        print "best_path_predictions_merge[0]: "
-        print np.array(predictions[0])
+        print("best_path_predictions_merge[0]: ")
+        print(np.array(predictions[0]))
 
         # predictions_beam, scores_beam = criterion.decode_beam(out.data.numpy())
         # print "beam_predictions: "
         # print predictions_beam
 
-        print "label[0]: "
-        print target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0]
+        print("label[0]: ")
+        print(target.data.cpu().numpy()[0] if args.cuda else target.data.numpy()[0])
         # print "label:"
         # print target.data.cpu().numpy() if cuda else target.data.numpy()
 
     validate_loss /= len(validate_loader.dataset) # average loss
-    print "validate_edit_dist before averaging: ", validate_edit_dist
+    print("validate_edit_dist before averaging: ", validate_edit_dist)
     validate_edit_dist /= float(len(validate_loader.dataset)) # average edit dist
     print('\nValidation set: Average loss: {:.4f}, Average edit dist: {:.4f}\n'.format(
         validate_loss, validate_edit_dist))
 
-    print "----------------------------------------------------------------------------------------------------"
+    print("----------------------------------------------------------------------------------------------------")
     return validate_edit_dist, validate_loss
 
 def save(filename):
@@ -157,7 +159,7 @@ def save(filename):
 def save_checkpoint(state, is_best, filename='checkpoint.pt'):
     torch.save(state, filename)
     if is_best or state["epoch"] < 20:
-        print "=> Update best model to: ", best_model_path
+        print("=> Update best model to: ", best_model_path)
         shutil.copyfile(filename, best_model_path) # update the best model: copy from filename to "model_best.pt"
 
 def log(epoch, validate_loss, log_path, validate_edit_dist = None):
@@ -167,7 +169,7 @@ def log(epoch, validate_loss, log_path, validate_edit_dist = None):
         else:
             file.write(str(epoch) + "," + str(validate_loss) + "\n")
 
-    print "=> Logged"
+    print("=> Logged")
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -240,14 +242,14 @@ best_edit_dist = sys.maxint
 validate_edit_dists = [] # for each epoch
 validate_losses = [] # for each epoch
 best_model_path = "./" + args.id +  "_best_model.pt"
-print "best_model_path: ", best_model_path
+print("best_model_path: ", best_model_path)
 
 classes = 11
 
 train_log_path = "./" + args.id + "_train_log.txt"
-print "train_log_path: ", train_log_path
+print("train_log_path: ", train_log_path)
 validation_log_path = "./" + args.id + "_validation_log.txt"
-print "validation_log_path: ", validation_log_path
+print("validation_log_path: ", validation_log_path)
 
 train_data_path = "./dataset/data_" + args.train_len + "_10000.npy"
 train_labels_path = "./dataset/labels_" + args.train_len + "_10000.npy"
@@ -261,7 +263,7 @@ validate_labels_path = "./dataset/labels_" + args.test_len + "_1000.npy"
 
 # load data
 if not args.eval:
-    print "=> Loading train data: ", train_data_path
+    print("=> Loading train data: ", train_data_path)
     train_data = np.load(train_data_path)
     training_num = train_data.shape[0]
     train_data = torch.Tensor(train_data)
@@ -269,15 +271,15 @@ if not args.eval:
     train_dataset = data_utils.TensorDataset(train_data, train_labels)
     train_loader = torch.utils.data.DataLoader(train_dataset,
         batch_size=args.batch_size, shuffle=True, **kwargs)
-    print "=> Loaded train data: ", train_data_path
+    print("=> Loaded train data: ", train_data_path)
 
-print "=> Loading validation data: ", validate_data_path
+print("=> Loading validation data: ", validate_data_path)
 validate_data = torch.Tensor(np.load(validate_data_path))
 validate_labels = torch.IntTensor(np.load(validate_labels_path).astype(int))
 validate_dataset = data_utils.TensorDataset(validate_data, validate_labels)
 validate_loader = torch.utils.data.DataLoader(validate_dataset,
     batch_size=args.validate_batch_size, shuffle=True, **kwargs)
-print "=> Loaded validation data: ", validate_data_path
+print("=> Loaded validation data: ", validate_data_path)
 
 # initialize the model
 model = Net(args.cuda)
@@ -308,7 +310,7 @@ if args.cuda:
     model.cuda()
 
 # print the model architecture
-print model
+print(model)
 
 # validate one test batch
 if args.eval:
