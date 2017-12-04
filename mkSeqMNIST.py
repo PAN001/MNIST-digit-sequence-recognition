@@ -53,9 +53,6 @@ for i in range(N):
         dataset_data += dd
     dataset_labels = np.append(dataset_labels, p[:,:,0:1], axis=2)
 
-    print ".",
-print ""
-
 dataset_labels = dataset_labels[:,0,:]
 # Creates a dataset of 60000 (28*N + (N-1)*overlap) * 36 images
 # containing N numbers in sequence and their labels
@@ -83,10 +80,10 @@ t = datetime.datetime.now().time()
 if not os.path.exists(args.root_path): os.makedirs(args.root_path)
 data_path = args.root_path + "data_" + str(N) + "_" + str(M) + ".npy"
 np.save(data_path, dataset_data)
-print "Saved: ", data_path
+print("Saved: ", data_path)
 label_path = args.root_path + "labels_" + str(N) + "_" + str(M) + ".npy"
 np.save(label_path, dataset_labels)
-print "Saved: ", label_path
+print("Saved: ", label_path)
 
 
 # dist = torch.multinomial(torch.ones(N+1), space, replacement=True)
