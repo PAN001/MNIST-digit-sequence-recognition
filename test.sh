@@ -14,4 +14,4 @@
 
 echo "=> Running model and testing ..."
 # Load pre-trained model and test
-python main.py --cuda --model-path saved_models/6-2scnn_2bilstm_scaled_10000_59epoch/2scnn_2bilstm_scaled_100_best_model.pt --eval --test-len 100 --id test
+python main.py --cuda --model-path saved_model/6-2scnn_2bilstm_scaled_10000_59epoch/2scnn_2bilstm_scaled_100_best_model.pt --eval --test-len 100 --id test
