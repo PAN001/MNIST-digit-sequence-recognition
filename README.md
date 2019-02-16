@@ -1,4 +1,3 @@
-# Introduction
 # MNIST Digit Sequence Recognition
 The data consists of sequences of digits from the MNIST dataset padded vertically with random pixels then randomly shifted vertically within a given range. The goal is to correctly recognize the sequence.
 
